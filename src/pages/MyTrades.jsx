@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
-import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star } from "lucide-react";
+import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star, MessageCircle } from "lucide-react";
 
 const statusConfig = {
   pending: { label: "Pending", color: "bg-amber-50 text-amber-700 border-amber-200", icon: Clock },
@@ -45,9 +45,26 @@ export default function MyTrades() {
     }
   };
 
-  const updateProposal = async (id, status) => {
+  const updateProposal = async (id, status, proposal) => {
     await base44.entities.TradeProposal.update(id, { status });
     toast({ title: `Proposal ${status}` });
+
+    // Email the proposer when a business responds
+    if (status === "accepted" || status === "declined") {
+      try {
+        const allUsers = await base44.entities.User.list();
+        const proposer = allUsers.find((u) => u.id === proposal?.proposer_id);
+        if (proposer?.email) {
+          const action = status === "accepted" ? "accepted" : "declined";
+          await base44.integrations.Core.SendEmail({
+            to: proposer.email,
+            subject: `Your trade proposal was ${action}`,
+            body: `Hi there,\n\nYour trade proposal for "${proposal?.listing_title}" has been ${action}.\n\n${status === "accepted" ? "🎉 Great news! Reach out to discuss next steps." : "Don't worry — there are plenty more opportunities on Hyperr."}\n\nLog in to view your trades:\nhttps://app.hyperr.com/my-trades`,
+          });
+        }
+      } catch (_) {}
+    }
+
     loadData();
   };
 
@@ -98,19 +115,26 @@ export default function MyTrades() {
 
         {type === "received" && proposal.status === "pending" && (
           <div className="flex gap-2 pt-2">
-            <Button size="sm" className="rounded-lg" onClick={() => updateProposal(proposal.id, "accepted")}>
+            <Button size="sm" className="rounded-lg" onClick={() => updateProposal(proposal.id, "accepted", proposal)}>
               <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Accept
             </Button>
-            <Button size="sm" variant="outline" className="rounded-lg" onClick={() => updateProposal(proposal.id, "declined")}>
+            <Button size="sm" variant="outline" className="rounded-lg" onClick={() => updateProposal(proposal.id, "declined", proposal)}>
               <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline
             </Button>
           </div>
         )}
 
         {proposal.status === "accepted" && (
-          <Button size="sm" variant="outline" className="rounded-lg" onClick={() => updateProposal(proposal.id, "completed")}>
-            <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Mark Completed
-          </Button>
+          <div className="flex gap-2 pt-2 flex-wrap">
+            <Button size="sm" variant="outline" className="rounded-lg" onClick={() => updateProposal(proposal.id, "completed", proposal)}>
+              <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Mark Completed
+            </Button>
+            <Button size="sm" variant="ghost" className="rounded-lg text-muted-foreground gap-1.5" asChild>
+              <Link to={`/messages?with=${type === "received" ? proposal.proposer_id : proposal.listing_owner_id}&name=${encodeURIComponent(type === "received" ? (proposal.proposer_business_name || "Proposer") : "Listing Owner")}&trade=${encodeURIComponent(proposal.listing_title || "")}`}>
+                <MessageCircle className="w-3.5 h-3.5" /> Message
+              </Link>
+            </Button>
+          </div>
         )}
         {proposal.status === "completed" && type === "received" && (
           <Button size="sm" variant="ghost" className="rounded-lg text-muted-foreground" onClick={() => setReviewTarget({ revieweeId: proposal.proposer_id, title: proposal.listing_title })}>

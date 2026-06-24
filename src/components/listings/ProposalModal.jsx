@@ -54,6 +54,20 @@ export default function ProposalModal({ listing, open, onClose, user }) {
         status: "pending",
       });
 
+      // Email the listing owner
+      const listingOwners = await base44.entities.User ? [] : [];
+      try {
+        const ownerUsers = await base44.entities.User.list();
+        const owner = ownerUsers.find((u) => u.id === listing.created_by_id);
+        if (owner?.email) {
+          await base44.integrations.Core.SendEmail({
+            to: owner.email,
+            subject: `New trade proposal on "${listing.title}"`,
+            body: `Hi there,\n\n${myProfile?.business_name || user.full_name} has sent you a trade proposal for your listing "${listing.title}".\n\nPromotion offered: ${form.proposed_promotion}\nPlatform: ${form.platform}\n\nMessage:\n${form.message}\n\nLog in to Hyperr to review and respond.\n\nhttps://app.hyperr.com/my-trades`,
+          });
+        }
+      } catch (_) {}
+
       toast({ title: "Proposal sent!", description: "The listing owner will review your proposal." });
       onClose();
       setForm({ message: "", proposed_promotion: "", audience_size: "", platform: "" });

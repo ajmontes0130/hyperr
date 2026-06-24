@@ -15,6 +15,7 @@ export default function Messages() {
   const withId = params.get("with");
   const withName = params.get("name");
   const withAvatar = params.get("avatar");
+  const tradeContext = params.get("trade"); // listing title linked from trade
 
   const [user, setUser] = useState(null);
   const [threads, setThreads] = useState([]); // list of { threadId, otherName, otherAvatar, otherId, lastMessage, unread }
@@ -89,6 +90,7 @@ export default function Messages() {
             otherId: withId,
             otherName: withName || "Creator",
             otherAvatar: withAvatar || "",
+            tradeTitle: tradeContext || null,
             messages: [],
             unread: 0,
           };
@@ -215,7 +217,12 @@ export default function Messages() {
                   <Users className="w-4 h-4 text-primary/40" />
                 </div>
               )}
-              <span className="font-semibold text-sm">{activeThread.otherName}</span>
+              <div>
+                <span className="font-semibold text-sm">{activeThread.otherName}</span>
+                {activeThread.tradeTitle && (
+                  <p className="text-xs text-muted-foreground">Re: {activeThread.tradeTitle}</p>
+                )}
+              </div>
             </div>
 
             {/* Messages */}

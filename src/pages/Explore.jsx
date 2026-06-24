@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import { Heart, X, ChevronLeft, ChevronRight, Loader2, MessageCircle, Star, MapPin, Users } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, Loader2, MessageCircle, Star, MapPin, Users, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LevelBadge from "@/components/creator/LevelBadge";
+
+const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
+const audienceBands = [
+  { label: "Any size", value: "all" },
+  { label: "Nano (< 10K)", value: "nano" },
+  { label: "Micro (10K – 50K)", value: "micro" },
+  { label: "Mid (50K – 250K)", value: "mid" },
+  { label: "Macro (250K – 1M)", value: "macro" },
+  { label: "Mega (1M+)", value: "mega" },
+];
 
 const platformColors = {
   instagram_followers: "bg-pink-100 text-pink-700",
@@ -29,12 +40,16 @@ const formatNum = (n) => {
 };
 
 export default function Explore() {
-  const [creators, setCreators] = useState([]);
+  const [allCreators, setAllCreators] = useState([]);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(new Set());
   const [user, setUser] = useState(null);
   const [animDir, setAnimDir] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterNiche, setFilterNiche] = useState("All");
+  const [filterAudience, setFilterAudience] = useState("all");
+  const [filterLocation, setFilterLocation] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -44,14 +59,37 @@ export default function Explore() {
       base44.entities.CreatorProfile.list("-total_reach"),
     ]).then(([me, list]) => {
       setUser(me);
-      setCreators(list);
+      setAllCreators(list);
       return base44.entities.SavedCreator.filter({ user_id: me.id });
     }).then((savedList) => {
       setSaved(new Set(savedList.map((s) => s.creator_profile_id)));
     }).finally(() => setLoading(false));
   }, []);
 
+  const audienceMatch = (reach, band) => {
+    if (band === "all") return true;
+    if (band === "nano") return reach < 10000;
+    if (band === "micro") return reach >= 10000 && reach < 50000;
+    if (band === "mid") return reach >= 50000 && reach < 250000;
+    if (band === "macro") return reach >= 250000 && reach < 1000000;
+    if (band === "mega") return reach >= 1000000;
+    return true;
+  };
+
+  const creators = useMemo(() => {
+    return allCreators.filter((c) => {
+      const matchNiche = filterNiche === "All" || (c.niche && c.niche.includes(filterNiche));
+      const matchAudience = audienceMatch(c.total_reach || 0, filterAudience);
+      const matchLocation = !filterLocation.trim() || (c.location || "").toLowerCase().includes(filterLocation.toLowerCase());
+      return matchNiche && matchAudience && matchLocation;
+    });
+  }, [allCreators, filterNiche, filterAudience, filterLocation]);
+
+  // Reset index when filters change
+  useEffect(() => { setIndex(0); }, [filterNiche, filterAudience, filterLocation]);
+
   const creator = creators[index];
+  const filtersActive = filterNiche !== "All" || filterAudience !== "all" || filterLocation.trim();
 
   const go = (dir) => {
     setAnimDir(dir);
@@ -111,6 +149,58 @@ export default function Explore() {
       </div>
 
       <div className="max-w-xl mx-auto">
+        {/* Filter bar */}
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg border transition-colors ${showFilters || filtersActive ? "bg-primary text-white border-primary" : "bg-white text-muted-foreground border-border hover:bg-muted"}`}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filters {filtersActive && !showFilters && <span className="w-2 h-2 rounded-full bg-white inline-block" />}
+            </button>
+            {filtersActive && (
+              <button
+                onClick={() => { setFilterNiche("All"); setFilterAudience("all"); setFilterLocation(""); }}
+                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+              >
+                <X className="w-3 h-3" /> Clear filters
+              </button>
+            )}
+          </div>
+
+          {showFilters && (
+            <div className="bg-white rounded-2xl border p-4 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Niche</p>
+                  <Select value={filterNiche} onValueChange={setFilterNiche}>
+                    <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>{niches.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Audience Size</p>
+                  <Select value={filterAudience} onValueChange={setFilterAudience}>
+                    <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>{audienceBands.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Location</p>
+                  <input
+                    placeholder="City or country…"
+                    value={filterLocation}
+                    onChange={(e) => setFilterLocation(e.target.value)}
+                    className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">{creators.length} creator{creators.length !== 1 ? "s" : ""} match your filters</p>
+            </div>
+          )}
+        </div>
+
         {/* Card */}
         <div
           className={`bg-white rounded-3xl border shadow-lg overflow-hidden transition-all duration-200 ${
