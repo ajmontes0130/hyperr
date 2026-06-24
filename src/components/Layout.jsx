@@ -55,7 +55,7 @@ export default function Layout() {
               <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
                 <Handshake className="w-5 h-5 text-white" />
               </div>
-              <span className="font-display font-bold text-xl tracking-tight">BarterHub</span>
+              <span className="font-display font-bold text-xl tracking-tight">Hyperr</span>
             </Link>
 
             {/* Desktop nav — compact icons + labels */}
