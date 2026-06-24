@@ -27,6 +27,7 @@ import MyCashOffers from '@/pages/MyCashOffers';
 import Explore from '@/pages/Explore';
 import SavedCreators from '@/pages/SavedCreators';
 import Messages from '@/pages/Messages';
+import Onboarding from '@/pages/Onboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/onboarding" element={<Onboarding />} />
 
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
