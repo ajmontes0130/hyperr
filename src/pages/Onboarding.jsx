@@ -138,7 +138,7 @@ export default function Onboarding() {
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="w-full max-w-lg">
           <div className="text-center mb-10">
-            <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/efcdb9e70_image.png" alt="Hyper" className="h-14 w-auto mx-auto" />
+            <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png" alt="Hyper" className="h-14 w-auto mx-auto" />
             <h1 className="font-display font-bold text-2xl mt-4 mb-2">Welcome! What describes you best?</h1>
             <p className="text-muted-foreground">We'll set up the right profile for you.</p>
           </div>
@@ -181,7 +181,7 @@ export default function Onboarding() {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-xl mx-auto">
         <div className="text-center mb-8">
-          <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/efcdb9e70_image.png" alt="Hyper" className="h-12 w-auto mx-auto" />
+          <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png" alt="Hyper" className="h-12 w-auto mx-auto" />
           <h1 className="font-display font-bold text-2xl mt-3 mb-1">
             {accountType === "creator" ? "Set up your creator profile" : "Set up your business profile"}
           </h1>
