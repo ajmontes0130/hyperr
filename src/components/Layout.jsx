@@ -51,11 +51,8 @@ export default function Layout() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-                <Handshake className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-display font-bold text-xl tracking-tight mx-2">Hyperr</span>
+            <Link to="/" className="flex items-center flex-shrink-0">
+              <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/efcdb9e70_image.png" alt="Hyper" className="h-10 w-auto" />
             </Link>
 
             {/* Desktop nav — compact icons + labels */}
