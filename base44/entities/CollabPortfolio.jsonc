@@ -1,0 +1,55 @@
+{
+  "name": "CollabPortfolio",
+  "type": "object",
+  "properties": {
+    "creator_profile_id": {
+      "type": "string"
+    },
+    "brand_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "TikTok",
+        "YouTube",
+        "Blog",
+        "Podcast",
+        "Twitter/X",
+        "Newsletter",
+        "Event",
+        "Other"
+      ]
+    },
+    "content_url": {
+      "type": "string"
+    },
+    "thumbnail_url": {
+      "type": "string"
+    },
+    "collab_type": {
+      "type": "string",
+      "enum": [
+        "Barter",
+        "Paid",
+        "Gifted"
+      ]
+    },
+    "month_year": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "creator_profile_id",
+    "brand_name",
+    "title",
+    "platform"
+  ]
+}

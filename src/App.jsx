@@ -20,6 +20,10 @@ import CreateListing from '@/pages/CreateListing';
 import MyListings from '@/pages/MyListings';
 import MyTrades from '@/pages/MyTrades';
 import Profile from '@/pages/Profile';
+import CreatorDirectory from '@/pages/CreatorDirectory';
+import CreatorProfilePage from '@/pages/CreatorProfilePage';
+import CreatorProfileEdit from '@/pages/CreatorProfileEdit';
+import MyCashOffers from '@/pages/MyCashOffers';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,6 +60,10 @@ const AuthenticatedApp = () => {
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/my-trades" element={<MyTrades />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/creators" element={<CreatorDirectory />} />
+          <Route path="/creator/:id" element={<CreatorProfilePage />} />
+          <Route path="/creator-profile" element={<CreatorProfileEdit />} />
+          <Route path="/cash-offers" element={<MyCashOffers />} />
         </Route>
       </Route>
 

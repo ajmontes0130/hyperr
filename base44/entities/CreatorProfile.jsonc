@@ -1,0 +1,102 @@
+{
+  "name": "CreatorProfile",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "niche": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Food & Dining",
+          "Travel",
+          "Fashion & Style",
+          "Beauty & Skincare",
+          "Fitness & Health",
+          "Tech & Gaming",
+          "Lifestyle",
+          "Finance",
+          "Education",
+          "Entertainment",
+          "Music",
+          "Art & Design",
+          "Parenting",
+          "Business",
+          "Sustainability",
+          "Other"
+        ]
+      }
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "instagram_handle": {
+      "type": "string"
+    },
+    "instagram_followers": {
+      "type": "number"
+    },
+    "tiktok_handle": {
+      "type": "string"
+    },
+    "tiktok_followers": {
+      "type": "number"
+    },
+    "youtube_handle": {
+      "type": "string"
+    },
+    "youtube_subscribers": {
+      "type": "number"
+    },
+    "twitter_handle": {
+      "type": "string"
+    },
+    "twitter_followers": {
+      "type": "number"
+    },
+    "total_reach": {
+      "type": "number"
+    },
+    "creator_level": {
+      "type": "string",
+      "enum": [
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Platinum",
+        "Diamond"
+      ]
+    },
+    "base_rate": {
+      "type": "number"
+    },
+    "accepts_cash_offers": {
+      "type": "boolean",
+      "default": true
+    },
+    "accepts_barter": {
+      "type": "boolean",
+      "default": true
+    },
+    "website": {
+      "type": "string"
+    },
+    "avg_rating": {
+      "type": "number"
+    },
+    "total_collabs": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "display_name"
+  ]
+}

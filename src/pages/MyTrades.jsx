@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight } from "lucide-react";
+import ReviewModal from "@/components/creator/ReviewModal";
+import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star } from "lucide-react";
 
 const statusConfig = {
   pending: { label: "Pending", color: "bg-amber-50 text-amber-700 border-amber-200", icon: Clock },
@@ -19,6 +20,7 @@ export default function MyTrades() {
   const [sent, setSent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [reviewTarget, setReviewTarget] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -110,6 +112,11 @@ export default function MyTrades() {
             <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Mark Completed
           </Button>
         )}
+        {proposal.status === "completed" && type === "received" && (
+          <Button size="sm" variant="ghost" className="rounded-lg text-muted-foreground" onClick={() => setReviewTarget({ revieweeId: proposal.proposer_id, title: proposal.listing_title })}>
+            <Star className="w-3.5 h-3.5 mr-1.5" /> Leave a Review
+          </Button>
+        )}
       </div>
     );
   };
@@ -161,6 +168,19 @@ export default function MyTrades() {
           )}
         </TabsContent>
       </Tabs>
+
+      {reviewTarget && user && (
+        <ReviewModal
+          open={!!reviewTarget}
+          onClose={() => { setReviewTarget(null); loadData(); }}
+          proposal={null}
+          user={user}
+          reviewerType="business"
+          revieweeId={reviewTarget.revieweeId}
+          revieweeType="creator"
+          collabTitle={reviewTarget.title}
+        />
+      )}
     </div>
   );
 }

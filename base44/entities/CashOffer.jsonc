@@ -1,0 +1,67 @@
+{
+  "name": "CashOffer",
+  "type": "object",
+  "properties": {
+    "creator_profile_id": {
+      "type": "string"
+    },
+    "creator_user_id": {
+      "type": "string"
+    },
+    "business_profile_id": {
+      "type": "string"
+    },
+    "business_user_id": {
+      "type": "string"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "TikTok",
+        "YouTube",
+        "Blog",
+        "Podcast",
+        "Twitter/X",
+        "Newsletter",
+        "Event",
+        "Other"
+      ]
+    },
+    "deliverables": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined",
+        "completed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "creator_profile_id",
+    "amount",
+    "platform",
+    "deliverables"
+  ]
+}

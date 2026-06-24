@@ -1,0 +1,46 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "trade_proposal_id": {
+      "type": "string"
+    },
+    "reviewer_id": {
+      "type": "string"
+    },
+    "reviewer_name": {
+      "type": "string"
+    },
+    "reviewer_type": {
+      "type": "string",
+      "enum": [
+        "business",
+        "creator"
+      ]
+    },
+    "reviewee_id": {
+      "type": "string"
+    },
+    "reviewee_type": {
+      "type": "string",
+      "enum": [
+        "business",
+        "creator"
+      ]
+    },
+    "rating": {
+      "type": "number"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "collab_title": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "reviewer_id",
+    "reviewee_id",
+    "rating"
+  ]
+}
