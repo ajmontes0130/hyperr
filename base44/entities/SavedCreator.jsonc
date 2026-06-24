@@ -1,0 +1,25 @@
+{
+  "name": "SavedCreator",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "creator_profile_id": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "creator_avatar": {
+      "type": "string"
+    },
+    "creator_level": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "creator_profile_id"
+  ]
+}

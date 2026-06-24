@@ -24,6 +24,9 @@ import CreatorDirectory from '@/pages/CreatorDirectory';
 import CreatorProfilePage from '@/pages/CreatorProfilePage';
 import CreatorProfileEdit from '@/pages/CreatorProfileEdit';
 import MyCashOffers from '@/pages/MyCashOffers';
+import Explore from '@/pages/Explore';
+import SavedCreators from '@/pages/SavedCreators';
+import Messages from '@/pages/Messages';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -64,6 +67,9 @@ const AuthenticatedApp = () => {
           <Route path="/creator/:id" element={<CreatorProfilePage />} />
           <Route path="/creator-profile" element={<CreatorProfileEdit />} />
           <Route path="/cash-offers" element={<MyCashOffers />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/saved-creators" element={<SavedCreators />} />
+          <Route path="/messages" element={<Messages />} />
         </Route>
       </Route>
 

@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { LayoutGrid, Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles } from "lucide-react";
+import { LayoutGrid, Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navGroups = [
   {
-    label: "Marketplace",
+    label: "Discover",
     items: [
       { label: "Marketplace", path: "/", icon: Search },
+      { label: "Explore", path: "/explore", icon: Compass },
       { label: "Creators", path: "/creators", icon: Users },
+      { label: "Saved", path: "/saved-creators", icon: Heart },
+      { label: "Messages", path: "/messages", icon: MessageCircle },
     ],
   },
   {
