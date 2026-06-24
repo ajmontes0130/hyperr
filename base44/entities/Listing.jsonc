@@ -1,0 +1,84 @@
+{
+  "name": "Listing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "offering_type": {
+      "type": "string",
+      "enum": [
+        "Product",
+        "Service",
+        "Experience"
+      ]
+    },
+    "offering_details": {
+      "type": "string"
+    },
+    "estimated_value": {
+      "type": "number"
+    },
+    "wanted_promotion_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Instagram Post",
+          "Instagram Reel",
+          "TikTok Video",
+          "YouTube Video",
+          "Blog Post",
+          "Podcast Mention",
+          "Twitter/X Post",
+          "Newsletter Feature",
+          "Event Appearance",
+          "Other"
+        ]
+      }
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Restaurant & Food",
+        "Retail & Fashion",
+        "Health & Beauty",
+        "Tech & Software",
+        "Travel & Hospitality",
+        "Fitness & Wellness",
+        "Entertainment",
+        "Professional Services",
+        "Education",
+        "Other"
+      ]
+    },
+    "location": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "active"
+    },
+    "business_profile_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "offering_type",
+    "offering_details",
+    "wanted_promotion_type",
+    "category"
+  ]
+}

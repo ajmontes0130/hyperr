@@ -1,0 +1,61 @@
+{
+  "name": "TradeProposal",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "listing_owner_id": {
+      "type": "string"
+    },
+    "proposer_id": {
+      "type": "string"
+    },
+    "proposer_business_name": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "proposed_promotion": {
+      "type": "string"
+    },
+    "audience_size": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "TikTok",
+        "YouTube",
+        "Blog",
+        "Podcast",
+        "Twitter/X",
+        "Newsletter",
+        "Event",
+        "Other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined",
+        "completed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "listing_id",
+    "listing_owner_id",
+    "message",
+    "proposed_promotion",
+    "platform"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "name": "BusinessProfile",
+  "type": "object",
+  "properties": {
+    "business_name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Restaurant & Food",
+        "Retail & Fashion",
+        "Health & Beauty",
+        "Tech & Software",
+        "Travel & Hospitality",
+        "Fitness & Wellness",
+        "Entertainment",
+        "Professional Services",
+        "Education",
+        "Other"
+      ]
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "instagram_handle": {
+      "type": "string"
+    },
+    "tiktok_handle": {
+      "type": "string"
+    },
+    "youtube_handle": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "business_name",
+    "category"
+  ]
+}

@@ -1,0 +1,189 @@
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, Upload, Save, Building2 } from "lucide-react";
+
+const categories = ["Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
+
+export default function Profile() {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [profileId, setProfileId] = useState(null);
+  const [form, setForm] = useState({
+    business_name: "",
+    description: "",
+    category: "",
+    logo_url: "",
+    website: "",
+    location: "",
+    instagram_handle: "",
+    tiktok_handle: "",
+    youtube_handle: "",
+  });
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      const me = await base44.auth.me();
+      const profiles = await base44.entities.BusinessProfile.filter({ created_by_id: me.id });
+      if (profiles.length > 0) {
+        const p = profiles[0];
+        setProfileId(p.id);
+        setForm({
+          business_name: p.business_name || "",
+          description: p.description || "",
+          category: p.category || "",
+          logo_url: p.logo_url || "",
+          website: p.website || "",
+          location: p.location || "",
+          instagram_handle: p.instagram_handle || "",
+          tiktok_handle: p.tiktok_handle || "",
+          youtube_handle: p.youtube_handle || "",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogo = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setForm((prev) => ({ ...prev, logo_url: file_url }));
+    } catch {
+      toast({ title: "Upload failed", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.business_name || !form.category) {
+      toast({ title: "Business name and category are required", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    try {
+      if (profileId) {
+        await base44.entities.BusinessProfile.update(profileId, form);
+      } else {
+        const created = await base44.entities.BusinessProfile.create(form);
+        setProfileId(created.id);
+      }
+      toast({ title: "Profile saved!" });
+    } catch (err) {
+      toast({ title: "Error saving profile", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <h1 className="font-display font-bold text-2xl sm:text-3xl mb-2">Business Profile</h1>
+      <p className="text-muted-foreground mb-8">This is how other businesses will see you on BarterHub.</p>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-2xl border p-6 space-y-5">
+          <div className="flex items-center gap-5">
+            <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+              {form.logo_url ? (
+                <img src={form.logo_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <Building2 className="w-8 h-8 text-primary/40" />
+              )}
+            </div>
+            <div>
+              <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed hover:border-primary/50 cursor-pointer transition-colors text-sm text-muted-foreground hover:text-foreground">
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                {uploading ? "Uploading…" : "Upload logo"}
+                <input type="file" accept="image/*" className="hidden" onChange={handleLogo} />
+              </label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Business Name *</Label>
+            <Input value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} placeholder="Your business name" />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Category *</Label>
+            <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
+              <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+              <SelectContent>
+                {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>About Your Business</Label>
+            <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Tell others about your business…" rows={3} />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Website</Label>
+              <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://…" />
+            </div>
+            <div className="space-y-2">
+              <Label>Location</Label>
+              <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="City, State" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border p-6 space-y-5">
+          <h2 className="font-display font-semibold text-lg">Social Accounts</h2>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Instagram</Label>
+              <Input value={form.instagram_handle} onChange={(e) => setForm({ ...form, instagram_handle: e.target.value })} placeholder="@yourbusiness" />
+            </div>
+            <div className="space-y-2">
+              <Label>TikTok</Label>
+              <Input value={form.tiktok_handle} onChange={(e) => setForm({ ...form, tiktok_handle: e.target.value })} placeholder="@yourbusiness" />
+            </div>
+            <div className="space-y-2">
+              <Label>YouTube</Label>
+              <Input value={form.youtube_handle} onChange={(e) => setForm({ ...form, youtube_handle: e.target.value })} placeholder="@yourchannel" />
+            </div>
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full h-12 text-base rounded-xl" disabled={saving}>
+          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+          Save Profile
+        </Button>
+      </form>
+    </div>
+  );
+}
