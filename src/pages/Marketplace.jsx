@@ -9,7 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Loader2, Package } from "lucide-react";
+import { Search, Loader2, Package, PlusCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const categories = ["All", "Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 const promoTypes = ["All", "Instagram Post", "Instagram Reel", "TikTok Video", "YouTube Video", "Blog Post", "Podcast Mention", "Twitter/X Post", "Newsletter Feature", "Event Appearance", "Other"];
@@ -28,6 +29,8 @@ export default function Marketplace() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [promoType, setPromoType] = useState("All");
+  const [offeringType, setOfferingType] = useState("All");
+  const [valueRange, setValueRange] = useState("all");
 
   useEffect(() => {
     loadListings();
@@ -49,7 +52,13 @@ export default function Marketplace() {
     const matchSearch = !search || l.title?.toLowerCase().includes(search.toLowerCase()) || l.offering_details?.toLowerCase().includes(search.toLowerCase());
     const matchCat = category === "All" || l.category === category;
     const matchPromo = promoType === "All" || (l.wanted_promotion_type && l.wanted_promotion_type.includes(promoType));
-    return matchSearch && matchCat && matchPromo;
+    const matchType = offeringType === "All" || l.offering_type === offeringType;
+    const matchValue = valueRange === "all" || (() => {
+      const [min, max] = valueRange.split("-").map(Number);
+      const v = l.estimated_value || 0;
+      return v >= min && v <= max;
+    })();
+    return matchSearch && matchCat && matchPromo && matchType && matchValue;
   });
 
   return (
@@ -66,8 +75,8 @@ export default function Marketplace() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl border p-4 mb-8 flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      <div className="bg-white rounded-2xl border p-4 mb-8 space-y-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search listings..."
@@ -76,26 +85,44 @@ export default function Marketplace() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((c) => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={promoType} onValueChange={setPromoType}>
-          <SelectTrigger className="w-full sm:w-52">
-            <SelectValue placeholder="Promotion type" />
-          </SelectTrigger>
-          <SelectContent>
-            {promoTypes.map((p) => (
-              <SelectItem key={p} value={p}>{p}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Offering Type</p>
+            <Select value={offeringType} onValueChange={setOfferingType}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {offeringTypes.map((t) => <SelectItem key={t} value={t}>{t === "All" ? "All types" : t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Category</p>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {categories.map((c) => <SelectItem key={c} value={c}>{c === "All" ? "All categories" : c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Promotion Wanted</p>
+            <Select value={promoType} onValueChange={setPromoType}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {promoTypes.map((p) => <SelectItem key={p} value={p}>{p === "All" ? "Any type" : p}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Offering Value</p>
+            <Select value={valueRange} onValueChange={setValueRange}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {valueRanges.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       {/* Listings */}
@@ -107,7 +134,16 @@ export default function Marketplace() {
         <div className="text-center py-20">
           <Package className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
           <h3 className="font-display font-semibold text-lg mb-1">No listings found</h3>
-          <p className="text-muted-foreground text-sm">Try adjusting your filters or check back later.</p>
+          <p className="text-muted-foreground text-sm mb-6">
+            {listings.length === 0 ? "No listings yet — be the first to post one." : "Try adjusting your filters."}
+          </p>
+          {listings.length === 0 && (
+            <Link to="/create-listing">
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                <PlusCircle className="w-4 h-4" /> Post a Listing
+              </button>
+            </Link>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -6,6 +6,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Search, Loader2, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const levels = ["All", "Bronze", "Silver", "Gold", "Platinum", "Diamond"];
@@ -24,6 +25,7 @@ export default function CreatorDirectory() {
   const [search, setSearch] = useState("");
   const [niche, setNiche] = useState("All");
   const [level, setLevel] = useState("All");
+  const [reach, setReach] = useState("all");
 
   useEffect(() => {
     base44.entities.CreatorProfile.list("-total_reach").then(setCreators).finally(() => setLoading(false));
@@ -33,7 +35,12 @@ export default function CreatorDirectory() {
     const matchSearch = !search || c.display_name?.toLowerCase().includes(search.toLowerCase()) || c.bio?.toLowerCase().includes(search.toLowerCase());
     const matchNiche = niche === "All" || (c.niche && c.niche.includes(niche));
     const matchLevel = level === "All" || c.creator_level === level;
-    return matchSearch && matchNiche && matchLevel;
+    const matchReach = reach === "all" || (() => {
+      const [min, max] = reach.split("-").map(Number);
+      const r = c.total_reach || 0;
+      return r >= min && r <= max;
+    })();
+    return matchSearch && matchNiche && matchLevel && matchReach;
   });
 
   return (
@@ -47,23 +54,40 @@ export default function CreatorDirectory() {
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl border p-4 mb-8 flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      <div className="bg-white rounded-2xl border p-4 mb-8 space-y-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search creators…" className="pl-10" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <Select value={niche} onValueChange={setNiche}>
-          <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Niche" /></SelectTrigger>
-          <SelectContent>
-            {niches.map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={level} onValueChange={setLevel}>
-          <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Level" /></SelectTrigger>
-          <SelectContent>
-            {levels.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Niche</p>
+            <Select value={niche} onValueChange={setNiche}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {niches.map((n) => <SelectItem key={n} value={n}>{n === "All" ? "All niches" : n}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Creator Tier</p>
+            <Select value={level} onValueChange={setLevel}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {levels.map((l) => <SelectItem key={l} value={l}>{l === "All" ? "All tiers" : l}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1 col-span-2 sm:col-span-1">
+            <p className="text-xs font-medium text-muted-foreground px-1">Total Reach</p>
+            <Select value={reach} onValueChange={setReach}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {reachRanges.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       {loading ? (
@@ -72,7 +96,16 @@ export default function CreatorDirectory() {
         <div className="text-center py-20">
           <Users className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
           <h3 className="font-display font-semibold text-lg mb-1">No creators found</h3>
-          <p className="text-muted-foreground text-sm">Try adjusting your filters.</p>
+          <p className="text-muted-foreground text-sm mb-6">
+            {creators.length === 0 ? "No creators have joined yet — invite your first creator." : "Try adjusting your filters."}
+          </p>
+          {creators.length === 0 && (
+            <Link to="/explore">
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                <Users className="w-4 h-4" /> Explore Creators
+              </button>
+            </Link>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

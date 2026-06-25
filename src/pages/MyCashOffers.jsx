@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
-import { Loader2, DollarSign, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Users, LayoutGrid } from "lucide-react";
+import { Link } from "react-router-dom";
 import moment from "moment";
 
 const statusConfig = {
@@ -127,13 +128,35 @@ export default function MyCashOffers() {
         </TabsList>
         <TabsContent value="received">
           {received.length === 0
-            ? <div className="text-center py-16 bg-white rounded-2xl border"><DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" /><h3 className="font-display font-semibold text-lg mb-1">No cash offers received</h3><p className="text-sm text-muted-foreground">Brands will send offers here when they want to collaborate.</p></div>
+            ? (
+              <div className="text-center py-16 bg-white rounded-2xl border">
+                <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+                <h3 className="font-display font-semibold text-lg mb-1">No cash offers received</h3>
+                <p className="text-sm text-muted-foreground mb-5">Brands send cash offers here when they want to work with you.</p>
+                <Link to="/creator-profile">
+                  <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                    Complete Your Creator Profile
+                  </button>
+                </Link>
+              </div>
+            )
             : <div className="space-y-4">{received.map((o) => <OfferCard key={o.id} offer={o} type="received" />)}</div>
           }
         </TabsContent>
         <TabsContent value="sent">
           {sent.length === 0
-            ? <div className="text-center py-16 bg-white rounded-2xl border"><DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" /><h3 className="font-display font-semibold text-lg mb-1">No cash offers sent</h3><p className="text-sm text-muted-foreground">Browse the creator directory to send collaboration offers.</p></div>
+            ? (
+              <div className="text-center py-16 bg-white rounded-2xl border">
+                <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+                <h3 className="font-display font-semibold text-lg mb-1">No cash offers sent</h3>
+                <p className="text-sm text-muted-foreground mb-5">Find a creator you love and send them a paid collab offer.</p>
+                <Link to="/creators">
+                  <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                    <Users className="w-4 h-4" /> Browse Creators
+                  </button>
+                </Link>
+              </div>
+            )
             : <div className="space-y-4">{sent.map((o) => <OfferCard key={o.id} offer={o} type="sent" />)}</div>
           }
         </TabsContent>
