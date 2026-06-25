@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import ProposalModal from "@/components/listings/ProposalModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe } from "lucide-react";
+import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info } from "lucide-react";
 import moment from "moment";
 
 export default function ListingDetail() {
@@ -14,10 +14,9 @@ export default function ListingDetail() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [proposalOpen, setProposalOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
+  useEffect(() => { loadData(); }, [id]);
 
   const loadData = async () => {
     setLoading(true);
@@ -28,7 +27,6 @@ export default function ListingDetail() {
       ]);
       setListing(listingData);
       setUser(me);
-
       if (listingData.business_profile_id) {
         try {
           const prof = await base44.entities.BusinessProfile.get(listingData.business_profile_id);
@@ -42,24 +40,17 @@ export default function ListingDetail() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
-  if (!listing) {
-    return (
-      <div className="text-center py-20">
-        <h2 className="font-display font-semibold text-xl mb-2">Listing not found</h2>
-        <Link to="/" className="text-primary text-sm hover:underline">Back to Marketplace</Link>
-      </div>
-    );
-  }
+  if (!listing) return (
+    <div className="text-center py-20">
+      <h2 className="font-display font-semibold text-xl mb-2">Listing not found</h2>
+      <Link to="/" className="text-primary text-sm hover:underline">Back to Marketplace</Link>
+    </div>
+  );
 
   const isOwner = user && listing.created_by_id === user.id;
+  const images = listing.image_urls?.length > 0 ? listing.image_urls : (listing.image_url ? [listing.image_url] : []);
 
   return (
     <div>
@@ -70,9 +61,44 @@ export default function ListingDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Main */}
         <div className="lg:col-span-3 space-y-6">
+          {/* Image gallery */}
           <div className="bg-white rounded-2xl border overflow-hidden">
-            {listing.image_url ? (
-              <img src={listing.image_url} alt={listing.title} className="w-full aspect-video object-cover" />
+            {images.length > 0 ? (
+              <div>
+                <div className="relative">
+                  <img src={images[activeImage]} alt={listing.title} className="w-full aspect-video object-cover" />
+                  {images.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => setActiveImage((i) => (i - 1 + images.length) % images.length)}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 text-white rounded-full flex items-center justify-center transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setActiveImage((i) => (i + 1) % images.length)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 text-white rounded-full flex items-center justify-center transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        {images.map((_, i) => (
+                          <button key={i} onClick={() => setActiveImage(i)} className={`w-2 h-2 rounded-full transition-colors ${i === activeImage ? "bg-white" : "bg-white/50"}`} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+                {images.length > 1 && (
+                  <div className="flex gap-2 p-3 overflow-x-auto">
+                    {images.map((url, i) => (
+                      <button key={i} onClick={() => setActiveImage(i)} className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-colors ${i === activeImage ? "border-primary" : "border-transparent"}`}>
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center">
                 <span className="text-6xl opacity-30">📦</span>
@@ -84,6 +110,9 @@ export default function ListingDetail() {
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Badge className="bg-primary/10 text-primary border-primary/20">{listing.offering_type}</Badge>
               <Badge variant="outline">{listing.category}</Badge>
+              {listing.min_creator_tier && listing.min_creator_tier !== "Any" && (
+                <Badge variant="secondary">Min. {listing.min_creator_tier} tier required</Badge>
+              )}
               {listing.status !== "active" && (
                 <Badge variant="secondary" className="capitalize">{listing.status}</Badge>
               )}
@@ -96,7 +125,11 @@ export default function ListingDetail() {
                 <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {listing.location}</span>
               )}
               {listing.estimated_value > 0 && (
-                <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4" /> ~${listing.estimated_value} value</span>
+                <span className="flex items-center gap-1.5 group relative">
+                  <DollarSign className="w-4 h-4" />
+                  Business valuation: ~${listing.estimated_value.toLocaleString()}
+                  <Info className="w-3.5 h-3.5 text-muted-foreground/50 ml-0.5" title="This is the business's own estimate of what they're offering. Informational only, not contractual." />
+                </span>
               )}
               <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> {moment(listing.created_date).fromNow()}</span>
             </div>
@@ -118,15 +151,35 @@ export default function ListingDetail() {
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Promotion requirements */}
           <div className="bg-white rounded-2xl border p-6">
             <h3 className="font-display font-semibold text-lg mb-4">Looking For</h3>
-            <div className="flex flex-wrap gap-2">
-              {listing.wanted_promotion_type?.map((type) => (
-                <Badge key={type} className="bg-accent text-accent-foreground border-0 font-medium">
-                  {type}
-                </Badge>
-              ))}
-            </div>
+            {listing.promotion_requirements?.length > 0 ? (
+              <div className="space-y-3">
+                {listing.promotion_requirements.map((req, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-accent/50">
+                    <Badge className="bg-accent text-accent-foreground border-0 flex-shrink-0 mt-0.5">{req.type}</Badge>
+                    <div className="text-sm">
+                      <span className="font-medium">×{req.quantity || 1}</span>
+                      {req.note && <span className="text-muted-foreground"> — {req.note}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {listing.wanted_promotion_type?.map((type) => (
+                  <Badge key={type} className="bg-accent text-accent-foreground border-0 font-medium">{type}</Badge>
+                ))}
+              </div>
+            )}
+
+            {listing.usage_rights && (
+              <div className="mt-4 pt-4 border-t">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Requirements & Usage Rights</p>
+                <p className="text-sm text-foreground leading-relaxed">{listing.usage_rights}</p>
+              </div>
+            )}
           </div>
 
           {profile && (
@@ -164,12 +217,7 @@ export default function ListingDetail() {
         </div>
       </div>
 
-      <ProposalModal
-        listing={listing}
-        open={proposalOpen}
-        onClose={() => setProposalOpen(false)}
-        user={user}
-      />
+      <ProposalModal listing={listing} open={proposalOpen} onClose={() => setProposalOpen(false)} user={user} />
     </div>
   );
 }

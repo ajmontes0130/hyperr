@@ -45,10 +45,34 @@
       "enum": [
         "pending",
         "accepted",
+        "in_progress",
+        "delivered",
+        "completed",
         "declined",
-        "completed"
+        "disputed"
       ],
       "default": "pending"
+    },
+    "creator_delivered": {
+      "type": "boolean",
+      "default": false
+    },
+    "business_confirmed": {
+      "type": "boolean",
+      "default": false
+    },
+    "disputed": {
+      "type": "boolean",
+      "default": false
+    },
+    "dispute_reason": {
+      "type": "string"
+    },
+    "delivery_note": {
+      "type": "string"
+    },
+    "delivery_url": {
+      "type": "string"
     }
   },
   "required": [
