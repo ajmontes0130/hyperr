@@ -28,6 +28,7 @@ import MyCashOffers from '@/pages/MyCashOffers';
 import Explore from '@/pages/Explore';
 import SavedCreators from '@/pages/SavedCreators';
 import Messages from '@/pages/Messages';
+import ProposalTemplates from '@/pages/ProposalTemplates';
 import Onboarding from '@/pages/Onboarding';
 import TermsOfService from '@/pages/TermsOfService';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
@@ -87,6 +88,7 @@ const AuthenticatedApp = () => {
           <Route path="/explore" element={<Explore />} />
           <Route path="/saved-creators" element={<SavedCreators />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/proposal-templates" element={<ProposalTemplates />} />
         </Route>
       </Route>
 

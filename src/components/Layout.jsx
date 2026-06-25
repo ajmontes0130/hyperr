@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid } from "lucide-react";
+import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -23,6 +23,7 @@ const businessNav = [
   { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Barter Trades", path: "/my-trades", icon: Handshake },
   { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
+  { label: "Templates", path: "/proposal-templates", icon: FileText },
   { label: "Business Profile", path: "/profile", icon: User },
 ];
 

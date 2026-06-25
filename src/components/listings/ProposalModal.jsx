@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Dialog,
@@ -18,19 +18,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, ChevronDown, FileText } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter/X", "Newsletter", "Event", "Other"];
 
 export default function ProposalModal({ listing, open, onClose, user }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [templates, setTemplates] = useState([]);
   const [form, setForm] = useState({
     message: "",
     proposed_promotion: "",
     audience_size: "",
     platform: "",
   });
+
+  useEffect(() => {
+    if (open && user) {
+      base44.entities.ProposalTemplate.filter({ created_by_id: user.id }, "-created_date")
+        .then(setTemplates)
+        .catch(() => {});
+    }
+  }, [open, user]);
+
+  const applyTemplate = (t) => {
+    setForm({ platform: t.platform, proposed_promotion: t.proposed_promotion, audience_size: t.audience_size || "", message: t.message });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,6 +107,24 @@ export default function ProposalModal({ listing, open, onClose, user }) {
           </p>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5 mt-2">
+          {templates.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="outline" className="w-full rounded-xl justify-between">
+                  <span className="flex items-center gap-2"><FileText className="w-4 h-4" /> Load from template</span>
+                  <ChevronDown className="w-4 h-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full min-w-[320px]">
+                {templates.map((t) => (
+                  <DropdownMenuItem key={t.id} onClick={() => applyTemplate(t)} className="flex flex-col items-start gap-0.5 py-2">
+                    <span className="font-medium">{t.name}</span>
+                    <span className="text-xs text-muted-foreground">{t.platform}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <div className="space-y-2">
             <Label>Platform</Label>
             <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v })}>

@@ -1,0 +1,38 @@
+{
+  "name": "ProposalTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "TikTok",
+        "YouTube",
+        "Blog",
+        "Podcast",
+        "Twitter/X",
+        "Newsletter",
+        "Event",
+        "Other"
+      ]
+    },
+    "proposed_promotion": {
+      "type": "string"
+    },
+    "audience_size": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "platform",
+    "proposed_promotion",
+    "message"
+  ]
+}
