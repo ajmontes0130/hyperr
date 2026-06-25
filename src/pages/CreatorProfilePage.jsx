@@ -7,7 +7,7 @@ import CashOfferModal from "@/components/creator/CashOfferModal";
 import ReviewModal from "@/components/creator/ReviewModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Globe, Instagram, Youtube, DollarSign, Loader2, ExternalLink, Handshake } from "lucide-react";
+import { ArrowLeft, MapPin, Globe, DollarSign, Loader2, ExternalLink, Handshake, ShieldCheck, ShieldAlert } from "lucide-react";
 import { formatFollowers, levelConfig } from "@/lib/creatorUtils";
 import moment from "moment";
 
@@ -60,10 +60,10 @@ export default function CreatorProfilePage() {
   const cfg = levelConfig[level];
 
   const socials = [
-    { label: "Instagram", handle: creator.instagram_handle, followers: creator.instagram_followers, color: "bg-gradient-to-br from-pink-500 to-purple-600" },
-    { label: "TikTok", handle: creator.tiktok_handle, followers: creator.tiktok_followers, color: "bg-gradient-to-br from-slate-800 to-slate-600" },
-    { label: "YouTube", handle: creator.youtube_handle, followers: creator.youtube_subscribers, color: "bg-gradient-to-br from-red-500 to-red-700" },
-    { label: "Twitter/X", handle: creator.twitter_handle, followers: creator.twitter_followers, color: "bg-gradient-to-br from-sky-500 to-sky-700" },
+    { label: "Instagram", handle: creator.instagram_handle, followers: creator.instagram_followers, verified: creator.instagram_verified, color: "bg-gradient-to-br from-pink-500 to-purple-600" },
+    { label: "TikTok", handle: creator.tiktok_handle, followers: creator.tiktok_followers, verified: creator.tiktok_verified, color: "bg-gradient-to-br from-slate-800 to-slate-600" },
+    { label: "YouTube", handle: creator.youtube_handle, followers: creator.youtube_subscribers, verified: creator.youtube_verified, color: "bg-gradient-to-br from-red-500 to-red-700" },
+    { label: "Twitter/X", handle: creator.twitter_handle, followers: creator.twitter_followers, verified: creator.twitter_verified, color: "bg-gradient-to-br from-sky-500 to-sky-700" },
   ].filter((s) => s.handle || s.followers > 0);
 
   return (
@@ -90,7 +90,7 @@ export default function CreatorProfilePage() {
               </p>
             )}
             <div className="flex justify-center mb-4">
-              <LevelBadge level={level} size="lg" />
+              <LevelBadge level={level} size="lg" showInfo />
             </div>
             <div className="flex items-center justify-center gap-2 mb-4">
               <StarRating value={Math.round(creator.avg_rating || 0)} readonly size={5} />
@@ -120,8 +120,19 @@ export default function CreatorProfilePage() {
                   <div key={s.label} className="flex items-center justify-between">
                     <span className={`text-white text-xs font-bold px-2.5 py-1 rounded-lg ${s.color}`}>{s.label}</span>
                     <div className="text-right">
-                      <p className="font-semibold text-sm">{formatFollowers(s.followers)}</p>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <p className={`font-semibold text-sm ${!s.verified ? "text-amber-600" : ""}`}>
+                          {formatFollowers(s.followers)}
+                        </p>
+                        {s.verified
+                          ? <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" title="Verified" />
+                          : <ShieldAlert className="w-3.5 h-3.5 text-amber-500" title="Unverified" />
+                        }
+                      </div>
                       {s.handle && <p className="text-xs text-muted-foreground">{s.handle}</p>}
+                      {!s.verified && (
+                        <span className="text-xs text-amber-600 font-medium">Unverified</span>
+                      )}
                     </div>
                   </div>
                 ))}

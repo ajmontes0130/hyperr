@@ -232,19 +232,33 @@ export default function CreatorProfileEdit() {
           <p className="text-xs text-muted-foreground -mt-3">Your level is calculated from your total follower count across all platforms.</p>
 
           {[
-            { label: "Instagram", handleKey: "instagram_handle", followerKey: "instagram_followers", placeholder: "@handle" },
-            { label: "TikTok", handleKey: "tiktok_handle", followerKey: "tiktok_followers", placeholder: "@handle" },
-            { label: "YouTube", handleKey: "youtube_handle", followerKey: "youtube_subscribers", placeholder: "@channel", followerLabel: "Subscribers" },
-            { label: "Twitter / X", handleKey: "twitter_handle", followerKey: "twitter_followers", placeholder: "@handle" },
+            { label: "Instagram", handleKey: "instagram_handle", followerKey: "instagram_followers", verifiedKey: "instagram_verified", placeholder: "@handle" },
+            { label: "TikTok", handleKey: "tiktok_handle", followerKey: "tiktok_followers", verifiedKey: "tiktok_verified", placeholder: "@handle" },
+            { label: "YouTube", handleKey: "youtube_handle", followerKey: "youtube_subscribers", verifiedKey: "youtube_verified", placeholder: "@channel", followerLabel: "Subscribers" },
+            { label: "Twitter / X", handleKey: "twitter_handle", followerKey: "twitter_followers", verifiedKey: "twitter_verified", placeholder: "@handle" },
           ].map((s) => (
-            <div key={s.label} className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs">{s.label} Handle</Label>
-                <Input value={form[s.handleKey]} onChange={(e) => setForm({ ...form, [s.handleKey]: e.target.value })} placeholder={s.placeholder} />
+            <div key={s.label} className="space-y-2 pb-3 border-b last:border-0">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold">{s.label}</Label>
+                {form[s.verifiedKey]
+                  ? <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">✓ Verified</span>
+                  : <button
+                      type="button"
+                      onClick={() => alert("Social API verification coming soon. Connect your account to get a verified badge.")}
+                      className="text-xs text-primary font-medium hover:underline"
+                    >
+                      Connect to verify →
+                    </button>
+                }
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs">{s.followerLabel || "Followers"}</Label>
-                <Input type="number" value={form[s.followerKey]} onChange={(e) => setForm({ ...form, [s.followerKey]: e.target.value })} placeholder="0" />
+              <div className="grid grid-cols-2 gap-3">
+                <Input value={form[s.handleKey]} onChange={(e) => setForm({ ...form, [s.handleKey]: e.target.value })} placeholder={s.placeholder} />
+                <div className="relative">
+                  <Input type="number" value={form[s.followerKey]} onChange={(e) => setForm({ ...form, [s.followerKey]: e.target.value })} placeholder="0" className={!form[s.verifiedKey] && form[s.followerKey] ? "border-amber-300 focus-visible:ring-amber-400" : ""} />
+                  {!form[s.verifiedKey] && form[s.followerKey] > 0 && (
+                    <span className="absolute -bottom-4 left-0 text-xs text-amber-600">Unverified</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}

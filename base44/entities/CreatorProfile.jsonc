@@ -44,11 +44,19 @@
     "instagram_followers": {
       "type": "number"
     },
+    "instagram_verified": {
+      "type": "boolean",
+      "default": false
+    },
     "tiktok_handle": {
       "type": "string"
     },
     "tiktok_followers": {
       "type": "number"
+    },
+    "tiktok_verified": {
+      "type": "boolean",
+      "default": false
     },
     "youtube_handle": {
       "type": "string"
@@ -56,11 +64,19 @@
     "youtube_subscribers": {
       "type": "number"
     },
+    "youtube_verified": {
+      "type": "boolean",
+      "default": false
+    },
     "twitter_handle": {
       "type": "string"
     },
     "twitter_followers": {
       "type": "number"
+    },
+    "twitter_verified": {
+      "type": "boolean",
+      "default": false
     },
     "total_reach": {
       "type": "number"

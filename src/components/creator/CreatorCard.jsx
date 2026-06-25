@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, ShieldCheck, ShieldAlert } from "lucide-react";
 import LevelBadge from "./LevelBadge";
 import StarRating from "./StarRating";
 import { formatFollowers } from "@/lib/creatorUtils";
 
 const platformIcons = {
-  instagram_followers: { label: "IG", color: "bg-pink-100 text-pink-700" },
-  tiktok_followers:    { label: "TT", color: "bg-slate-100 text-slate-700" },
-  youtube_subscribers: { label: "YT", color: "bg-red-100 text-red-700" },
-  twitter_followers:   { label: "𝕏",  color: "bg-sky-100 text-sky-700" },
+  instagram_followers: { label: "IG", color: "bg-pink-100 text-pink-700", verifiedKey: "instagram_verified" },
+  tiktok_followers:    { label: "TT", color: "bg-slate-100 text-slate-700", verifiedKey: "tiktok_verified" },
+  youtube_subscribers: { label: "YT", color: "bg-red-100 text-red-700", verifiedKey: "youtube_verified" },
+  twitter_followers:   { label: "𝕏",  color: "bg-sky-100 text-sky-700", verifiedKey: "twitter_verified" },
 };
 
 export default function CreatorCard({ creator }) {
@@ -45,7 +45,7 @@ export default function CreatorCard({ creator }) {
             </span>
           )}
           <div className="mt-1.5">
-            <LevelBadge level={creator.creator_level || "Bronze"} size="sm" />
+            <LevelBadge level={creator.creator_level || "Bronze"} size="sm" showInfo />
           </div>
         </div>
       </div>
@@ -66,13 +66,18 @@ export default function CreatorCard({ creator }) {
       )}
 
       {socials.length > 0 && (
-        <div className="flex gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           {socials.map(({ key, val }) => {
             const p = platformIcons[key];
+            const isVerified = creator[p.verifiedKey];
             return (
               <span key={key} className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg font-medium ${p.color}`}>
                 <span className="font-bold">{p.label}</span>
                 <span>{formatFollowers(val)}</span>
+                {isVerified
+                  ? <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  : <ShieldAlert className="w-3 h-3 text-amber-500" />
+                }
               </span>
             );
           })}

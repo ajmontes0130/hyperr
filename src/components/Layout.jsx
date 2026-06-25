@@ -1,48 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { LayoutGrid, Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle } from "lucide-react";
+import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const navGroups = [
-{
-  label: "Discover",
-  items: [
-  { label: "Marketplace", path: "/", icon: Search },
+const creatorNav = [
   { label: "Explore", path: "/explore", icon: Compass },
-  { label: "Creators", path: "/creators", icon: Users },
+  { label: "Marketplace", path: "/", icon: Search },
   { label: "Saved", path: "/saved-creators", icon: Heart },
-  { label: "Messages", path: "/messages", icon: MessageCircle }]
+  { label: "Messages", path: "/messages", icon: MessageCircle },
+  { label: "Barter Trades", path: "/my-trades", icon: Handshake },
+  { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
+  { label: "Creator Profile", path: "/creator-profile", icon: Sparkles },
+];
 
-},
-{
-  label: "Manage",
-  items: [
+const businessNav = [
+  { label: "Creators", path: "/creators", icon: Users },
   { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
   { label: "Post Listing", path: "/create-listing", icon: PlusCircle },
+  { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Barter Trades", path: "/my-trades", icon: Handshake },
-  { label: "Cash Offers", path: "/cash-offers", icon: DollarSign }]
-
-},
-{
-  label: "Profile",
-  items: [
+  { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
   { label: "Business Profile", path: "/profile", icon: User },
-  { label: "Creator Profile", path: "/creator-profile", icon: Sparkles }]
+];
 
-}];
-
-
-const allNav = navGroups.flatMap((g) => g.items);
+const defaultNav = [...creatorNav, ...businessNav].filter(
+  (v, i, a) => a.findIndex((x) => x.path === v.path) === i
+);
 
 export default function Layout() {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [accountType, setAccountType] = useState(null); // "creator" | "business" | null
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then((me) => {
+      setUser(me);
+      // account_type is stored on the user object via updateMe during onboarding
+      setAccountType(me?.account_type || null);
+    }).catch(() => {});
   }, []);
+
+  const navItems = accountType === "creator"
+    ? creatorNav
+    : accountType === "business"
+    ? businessNav
+    : defaultNav;
 
   const isActive = (path) => location.pathname === path;
 
@@ -52,78 +56,89 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center flex-shrink-0">
-              <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png" alt="Hyper" className="h-10 w-auto" />
+              <img
+                src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png"
+                alt="Hyper"
+                className="h-10 w-auto"
+              />
             </Link>
 
-            {/* Desktop nav — compact icons + labels */}
+            {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1">
-              {allNav.map((item) =>
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                isActive(item.path) ?
-                "bg-primary text-white shadow-sm" :
-                "text-muted-foreground hover:text-foreground hover:bg-muted"}`
-                }>
-                
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    isActive(item.path)
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
                   <item.icon className="w-4 h-4" />
                   {item.label}
                 </Link>
-              )}
+              ))}
             </nav>
 
             <div className="hidden lg:flex items-center gap-3">
-              {user &&
-              <span className="text-sm text-muted-foreground truncate max-w-[140px]">{user.full_name || user.email}</span>
-              }
-              <Button variant="ghost" size="sm" onClick={() => base44.auth.logout("/")} className="text-muted-foreground">
+              {user && (
+                <span className="text-sm text-muted-foreground truncate max-w-[140px]">
+                  {user.full_name || user.email}
+                </span>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => base44.auth.logout("/")}
+                className="text-muted-foreground"
+              >
                 <LogOut className="w-4 h-4" />
               </Button>
             </div>
 
-            <button className="lg:hidden p-2 rounded-lg hover:bg-muted" onClick={() => setMobileOpen(!mobileOpen)}>
+            <button
+              className="lg:hidden p-2 rounded-lg hover:bg-muted"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
         {/* Mobile nav */}
-        {mobileOpen &&
-        <div className="lg:hidden border-t bg-white px-4 pb-4 space-y-1">
-            {navGroups.map((group) =>
-          <div key={group.label} className="pt-3">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-1">{group.label}</p>
-                {group.items.map((item) =>
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
-              isActive(item.path) ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"}`
-              }>
-              
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </Link>
-            )}
-              </div>
-          )}
+        {mobileOpen && (
+          <div className="lg:hidden border-t bg-white px-4 pb-4 space-y-1">
+            <div className="pt-3">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                    isActive(item.path) ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
             <div className="pt-3 border-t mt-2">
               <button
-              onClick={() => base44.auth.logout("/")}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full">
-              
+                onClick={() => base44.auth.logout("/")}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full"
+              >
                 <LogOut className="w-4 h-4" /> Sign Out
               </button>
             </div>
           </div>
-        }
+        )}
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </main>
-    </div>);
-
+    </div>
+  );
 }

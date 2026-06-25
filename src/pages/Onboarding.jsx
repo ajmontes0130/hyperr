@@ -82,6 +82,9 @@ export default function Onboarding() {
   const handleSubmit = async () => {
     setSaving(true);
     try {
+      // Save account type to user profile for role-based nav
+      await base44.auth.updateMe({ account_type: accountType });
+
       if (accountType === "creator") {
         if (!creatorForm.display_name) {
           toast({ title: "Display name is required", variant: "destructive" });
@@ -209,7 +212,7 @@ export default function Onboarding() {
             <>
               <div className="space-y-2">
                 <Label>Display Name *</Label>
-                <Input value={creatorForm.display_name} onChange={(e) => setCreatorForm({ ...creatorForm, display_name: e.target.value })} placeholder="How you'll appear on Hyperr" />
+                <Input value={creatorForm.display_name} onChange={(e) => setCreatorForm({ ...creatorForm, display_name: e.target.value })} placeholder="How you'll appear on Hyper" />
               </div>
               <div className="space-y-2">
                 <Label>Bio</Label>
@@ -287,7 +290,7 @@ export default function Onboarding() {
           </Button>
           <Button className="flex-1 h-11" onClick={handleSubmit} disabled={saving}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-            {saving ? "Saving…" : "Finish & Enter Hyperr"}
+            {saving ? "Saving…" : "Finish & Enter Hyper"}
           </Button>
         </div>
         <p className="text-center text-xs text-muted-foreground mt-3">You can skip and update your profile anytime</p>
