@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import MobileBackButton from "@/components/MobileBackButton";
 import { base44 } from "@/api/base44Client";
 import ProposalModal from "@/components/listings/ProposalModal";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ export default function ListingDetail() {
 
   return (
     <div>
+      <MobileBackButton />
       <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Marketplace
       </Link>

@@ -14,6 +14,10 @@ import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
 import { calcTotalReach, calcLevel } from "@/lib/creatorUtils";
 import { Loader2, Upload, Save, Plus, Trash2 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const niches = ["Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter/X", "Newsletter", "Event", "Other"];
@@ -38,6 +42,7 @@ export default function CreatorProfileEdit() {
   const [newItem, setNewItem] = useState({ brand_name: "", title: "", description: "", platform: "", content_url: "", thumbnail_url: "", collab_type: "Barter", month_year: "" });
   const [addingItem, setAddingItem] = useState(false);
   const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -167,6 +172,17 @@ export default function CreatorProfileEdit() {
     toast({ title: "Item removed" });
   };
 
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      if (profileId) await base44.entities.CreatorProfile.delete(profileId);
+      await base44.auth.logout("/");
+    } catch {
+      toast({ title: "Error deleting account", variant: "destructive" });
+      setDeletingAccount(false);
+    }
+  };
+
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
   const previewLevel = computedLevel();
@@ -294,6 +310,38 @@ export default function CreatorProfileEdit() {
           Save Profile
         </Button>
       </form>
+
+      {/* Account Deletion */}
+      <div className="mt-4 pt-6 border-t">
+        <h3 className="font-display font-semibold text-base mb-1 text-destructive">Danger Zone</h3>
+        <p className="text-sm text-muted-foreground mb-4">Permanently delete your creator account and all associated data.</p>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive hover:text-white select-none">
+              <Trash2 className="w-4 h-4 mr-2 select-none" /> Delete Account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete your creator profile and cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="select-none">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="bg-destructive hover:bg-destructive/90 select-none"
+              >
+                {deletingAccount && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                Yes, delete my account
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
 
       {/* Portfolio */}
       {profileId && (

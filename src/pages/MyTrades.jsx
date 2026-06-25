@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
 import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star, MessageCircle, Truck, AlertTriangle, PackageCheck } from "lucide-react";
+import PullToRefresh from "@/components/PullToRefresh";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from "@/components/ui/dialog";
@@ -81,10 +82,18 @@ export default function MyTrades() {
   };
 
   const updateStatus = async (id, status, proposal) => {
-    await base44.entities.TradeProposal.update(id, { status });
-    toast({ title: `Trade ${statusConfig[status]?.label || status}` });
-    await sendStatusEmail(proposal, status);
-    loadData();
+    // Optimistic update
+    const applyOptimistic = (list) => list.map((p) => p.id === id ? { ...p, status } : p);
+    setReceived((prev) => applyOptimistic(prev));
+    setSent((prev) => applyOptimistic(prev));
+    try {
+      await base44.entities.TradeProposal.update(id, { status });
+      toast({ title: `Trade ${statusConfig[status]?.label || status}` });
+      await sendStatusEmail(proposal, status);
+    } catch {
+      toast({ title: "Update failed", variant: "destructive" });
+      loadData(); // revert on error
+    }
   };
 
   const handleMarkInProgress = async (proposal) => {
@@ -308,6 +317,7 @@ export default function MyTrades() {
   }
 
   return (
+    <PullToRefresh onRefresh={loadData}>
     <div>
       <h1 className="font-display font-bold text-2xl sm:text-3xl mb-2">My Trades</h1>
       <p className="text-muted-foreground mb-8">Manage incoming proposals and track your deals through to completion.</p>
@@ -426,5 +436,6 @@ export default function MyTrades() {
         />
       )}
     </div>
+    </PullToRefresh>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import MobileBackButton from "@/components/MobileBackButton";
 import { base44 } from "@/api/base44Client";
 import LevelBadge from "@/components/creator/LevelBadge";
 import StarRating from "@/components/creator/StarRating";
@@ -68,6 +69,7 @@ export default function CreatorProfilePage() {
 
   return (
     <div>
+      <MobileBackButton />
       <Link to="/creators" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Creators
       </Link>

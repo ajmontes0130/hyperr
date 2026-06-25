@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Loader2, Package, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const categories = ["All", "Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 const promoTypes = ["All", "Instagram Post", "Instagram Reel", "TikTok Video", "YouTube Video", "Blog Post", "Podcast Mention", "Twitter/X Post", "Newsletter Feature", "Event Appearance", "Other"];
@@ -62,6 +63,7 @@ export default function Marketplace() {
   });
 
   return (
+    <PullToRefresh onRefresh={loadListings}>
     <div>
       {/* Hero */}
       <div className="text-center mb-10">
@@ -153,5 +155,6 @@ export default function Marketplace() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }

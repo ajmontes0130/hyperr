@@ -3,6 +3,8 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 const creatorNav = [
   { label: "Explore", path: "/explore", icon: Compass },
@@ -30,14 +32,14 @@ const defaultNav = [...creatorNav, ...businessNav].filter(
 
 export default function Layout() {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [accountType, setAccountType] = useState(null); // "creator" | "business" | null
+  const [accountType, setAccountType] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then((me) => {
       setUser(me);
-      // account_type is stored on the user object via updateMe during onboarding
       setAccountType(me?.account_type || null);
     }).catch(() => {});
   }, []);
@@ -50,9 +52,15 @@ export default function Layout() {
 
   const isActive = (path) => location.pathname === path;
 
+  // Close mobile menu on route change
+  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border/50">
+      <header
+        className="sticky top-0 z-50 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-border/50"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center flex-shrink-0">
@@ -69,13 +77,13 @@ export default function Layout() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
                     isActive(item.path)
                       ? "bg-primary text-white shadow-sm"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   }`}
                 >
-                  <item.icon className="w-4 h-4 flex-shrink-0" />
+                  <item.icon className="w-4 h-4 flex-shrink-0 select-none" />
                   {item.label}
                 </Link>
               ))}
@@ -91,35 +99,36 @@ export default function Layout() {
                 variant="ghost"
                 size="sm"
                 onClick={() => base44.auth.logout("/")}
-                className="text-muted-foreground flex-shrink-0"
+                className="text-muted-foreground flex-shrink-0 select-none"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 select-none" />
               </Button>
             </div>
 
+            {/* Mobile hamburger — shown on mobile when not using bottom nav for full menu */}
             <button
-              className="lg:hidden p-2 rounded-lg hover:bg-muted"
+              className="lg:hidden p-2 rounded-lg hover:bg-muted select-none"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileOpen ? <X className="w-5 h-5 select-none" /> : <Menu className="w-5 h-5 select-none" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile full nav drawer */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-white px-4 pb-4 space-y-1">
+          <div className="lg:hidden border-t bg-white dark:bg-card px-4 pb-4 space-y-1">
             <div className="pt-3">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium select-none ${
                     isActive(item.path) ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"
                   }`}
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className="w-4 h-4 select-none" />
                   {item.label}
                 </Link>
               ))}
@@ -127,18 +136,24 @@ export default function Layout() {
             <div className="pt-3 border-t mt-2">
               <button
                 onClick={() => base44.auth.logout("/")}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full select-none"
               >
-                <LogOut className="w-4 h-4" /> Sign Out
+                <LogOut className="w-4 h-4 select-none" /> Sign Out
               </button>
             </div>
           </div>
         )}
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        style={{ paddingBottom: isMobile ? "calc(4rem + env(safe-area-inset-bottom))" : undefined }}
+      >
         <Outlet />
       </main>
+
+      {/* Fixed bottom tab bar on mobile */}
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 }

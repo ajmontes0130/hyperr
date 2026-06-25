@@ -12,13 +12,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Upload, Save, Building2 } from "lucide-react";
+import { Loader2, Upload, Save, Building2, Trash2 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const categories = ["Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 
 export default function Profile() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [profileId, setProfileId] = useState(null);
@@ -98,6 +103,17 @@ export default function Profile() {
       toast({ title: "Error saving profile", variant: "destructive" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      if (profileId) await base44.entities.BusinessProfile.delete(profileId);
+      await base44.auth.logout("/");
+    } catch {
+      toast({ title: "Error deleting account", variant: "destructive" });
+      setDeletingAccount(false);
     }
   };
 
@@ -184,6 +200,38 @@ export default function Profile() {
           Save Profile
         </Button>
       </form>
+
+      {/* Account Deletion */}
+      <div className="mt-10 pt-6 border-t">
+        <h3 className="font-display font-semibold text-base mb-1 text-destructive">Danger Zone</h3>
+        <p className="text-sm text-muted-foreground mb-4">Permanently delete your account and all associated data.</p>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive hover:text-white select-none">
+              <Trash2 className="w-4 h-4 mr-2 select-none" /> Delete Account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete your business profile and cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="select-none">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="bg-destructive hover:bg-destructive/90 select-none"
+              >
+                {deletingAccount && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                Yes, delete my account
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }
