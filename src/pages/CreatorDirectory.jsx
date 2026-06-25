@@ -9,6 +9,14 @@ import { Search, Loader2, Users } from "lucide-react";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const levels = ["All", "Bronze", "Silver", "Gold", "Platinum", "Diamond"];
+const reachRanges = [
+  { label: "Any reach", value: "all" },
+  { label: "Under 10K", value: "0-10000" },
+  { label: "10K – 50K", value: "10000-50000" },
+  { label: "50K – 250K", value: "50000-250000" },
+  { label: "250K – 1M", value: "250000-1000000" },
+  { label: "1M+", value: "1000000-999999999" },
+];
 
 export default function CreatorDirectory() {
   const [creators, setCreators] = useState([]);

@@ -13,6 +13,14 @@ import { Search, Loader2, Package } from "lucide-react";
 
 const categories = ["All", "Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 const promoTypes = ["All", "Instagram Post", "Instagram Reel", "TikTok Video", "YouTube Video", "Blog Post", "Podcast Mention", "Twitter/X Post", "Newsletter Feature", "Event Appearance", "Other"];
+const offeringTypes = ["All", "Product", "Service", "Experience"];
+const valueRanges = [
+  { label: "Any value", value: "all" },
+  { label: "Under $50", value: "0-50" },
+  { label: "$50 – $200", value: "50-200" },
+  { label: "$200 – $500", value: "200-500" },
+  { label: "$500+", value: "500-999999" },
+];
 
 export default function Marketplace() {
   const [listings, setListings] = useState([]);
