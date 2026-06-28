@@ -107,65 +107,87 @@ function WhaleBackground({ rm }) {
     window.addEventListener("resize", resize, { passive: true });
 
     // Pre-render shark silhouettes as offscreen canvases.
-    // Shark faces RIGHT: pointed snout at right (x=240), tail at left (x=0).
-    // dir=1  (moving right): draw as-is — snout leads right. ✓
-    // dir=-1 (moving left): flip horizontally — snout leads left. ✓
-    // Viewbox: 240 wide × 100 tall
+    // Shark faces RIGHT (snout at x=320), tail at left (x=0). Viewbox 320×120.
+    // dir=1  (moving right): draw as-is. ✓
+    // dir=-1 (moving left): flip horizontally. ✓
+    const VW = 320, VH = 120;
     const whaleCache = WHALE_CONFIGS.map((cfg) => {
-      const VW = 240, VH = 100;
-      const wh = (cfg.width * VH) / VW;
+      const wh = Math.round((cfg.width * VH) / VW);
       const oc = document.createElement("canvas");
       oc.width = cfg.width;
       oc.height = wh;
       const octx = oc.getContext("2d");
       octx.fillStyle = cfg.fill;
-      const sx = cfg.width / VW;
-      const sy = wh / VH;
       octx.save();
-      octx.scale(sx, sy);
+      octx.scale(cfg.width / VW, wh / VH);
 
-      // Main body: torpedo shape, snout at RIGHT (x=240), tail peduncle narrows at LEFT (x≈20)
+      // ── Main body ──────────────────────────────────────────────
+      // Snout tip at right (320,58), tail peduncle narrows at left (~55,52)
       octx.beginPath();
-      octx.moveTo(240, 50);                            // snout tip
-      octx.bezierCurveTo(230, 36, 200, 28, 160, 26);  // upper jaw → back
-      octx.bezierCurveTo(110, 24, 50, 26, 22, 34);    // upper body to tail stock
-      octx.lineTo(10, 42);                             // tail peduncle top
-      octx.lineTo(10, 58);                             // tail peduncle bottom
-      octx.lineTo(22, 66);                             // lower tail stock
-      octx.bezierCurveTo(50, 74, 110, 76, 160, 74);   // lower body back
-      octx.bezierCurveTo(200, 72, 230, 64, 240, 50);  // lower jaw → snout
+      // Upper profile: snout → forehead → back → dorsal base → tail stock top
+      octx.moveTo(320, 58);
+      octx.bezierCurveTo(315, 42, 295, 30, 265, 24);
+      octx.bezierCurveTo(230, 18, 185, 16, 150, 18);
+      octx.bezierCurveTo(120, 20, 100, 22, 85, 26);  // dorsal fin rear base
+      octx.bezierCurveTo(72, 30, 62, 38, 58, 46);    // upper tail stock
+      octx.lineTo(55, 52);                             // tail peduncle top
+      // Lower profile: tail stock bottom → belly → lower jaw
+      octx.lineTo(58, 62);
+      octx.bezierCurveTo(64, 70, 76, 76, 95, 80);
+      octx.bezierCurveTo(130, 86, 185, 88, 230, 84);
+      octx.bezierCurveTo(265, 80, 295, 72, 312, 62);
+      octx.bezierCurveTo(318, 60, 320, 58, 320, 58);
       octx.closePath();
       octx.fill();
 
-      // Dorsal fin — tall triangle on top, roughly mid-body
+      // ── Dorsal fin ─────────────────────────────────────────────
+      // Tall swept-back fin, base ~x85–130, peak up high
       octx.beginPath();
-      octx.moveTo(130, 26);   // base back
-      octx.lineTo(155, 2);    // fin tip
-      octx.lineTo(175, 24);   // base front
+      octx.moveTo(130, 18);   // front base (merges with body top)
+      octx.bezierCurveTo(140, 10, 155, 2, 158, 0);   // leading edge up to tip
+      octx.bezierCurveTo(155, 8, 138, 18, 125, 20);  // trailing edge back down
+      octx.lineTo(85, 26);    // rear base
+      octx.bezierCurveTo(100, 22, 118, 18, 130, 18);
       octx.closePath();
       octx.fill();
 
-      // Pectoral fin — swept back lower fin
+      // ── Pectoral fin (large, swept) ────────────────────────────
       octx.beginPath();
-      octx.moveTo(170, 68);   // root front
-      octx.lineTo(130, 92);   // fin tip
-      octx.lineTo(145, 70);   // root back
+      octx.moveTo(215, 80);   // front root on belly
+      octx.bezierCurveTo(205, 90, 185, 108, 175, 114); // leading edge to tip
+      octx.bezierCurveTo(178, 106, 188, 94, 195, 84);  // trailing edge
+      octx.lineTo(215, 80);
       octx.closePath();
       octx.fill();
 
-      // Caudal (tail) fin — vertical fork at left
-      // upper lobe
+      // ── Small ventral/pelvic fins ──────────────────────────────
       octx.beginPath();
-      octx.moveTo(10, 42);
-      octx.bezierCurveTo(0, 30, 0, 14, 6, 8);
-      octx.bezierCurveTo(10, 18, 12, 32, 10, 42);
+      octx.moveTo(118, 86);
+      octx.lineTo(104, 100);
+      octx.lineTo(112, 87);
       octx.closePath();
       octx.fill();
-      // lower lobe
+
       octx.beginPath();
-      octx.moveTo(10, 58);
-      octx.bezierCurveTo(0, 70, 0, 86, 6, 92);
-      octx.bezierCurveTo(10, 82, 12, 68, 10, 58);
+      octx.moveTo(100, 84);
+      octx.lineTo(88, 96);
+      octx.lineTo(96, 84);
+      octx.closePath();
+      octx.fill();
+
+      // ── Caudal (tail) fin — crescent fork at LEFT ──────────────
+      // Upper lobe: sweeps up-left from peduncle top
+      octx.beginPath();
+      octx.moveTo(58, 46);
+      octx.bezierCurveTo(46, 38, 28, 18, 18, 8);   // outer tip
+      octx.bezierCurveTo(28, 24, 42, 38, 55, 52);
+      octx.closePath();
+      octx.fill();
+      // Lower lobe: sweeps down-left from peduncle bottom (slightly shorter)
+      octx.beginPath();
+      octx.moveTo(58, 62);
+      octx.bezierCurveTo(46, 70, 30, 86, 22, 96);  // outer tip
+      octx.bezierCurveTo(32, 82, 46, 68, 55, 52);
       octx.closePath();
       octx.fill();
 
@@ -209,7 +231,7 @@ function WhaleBackground({ rm }) {
       stateRef.current.forEach((whale, i) => {
         const cfg = WHALE_CONFIGS[i];
         whale.x += cfg.dir * cfg.speed * speedMult * dt;
-        const wh = (cfg.width * 100) / 240;
+        const wh = (cfg.width * 120) / 320;
         if (cfg.dir === 1 && whale.x > w + 50) whale.x = -cfg.width - 50;
         if (cfg.dir === -1 && whale.x < -cfg.width - 50) whale.x = w + 50;
 
@@ -246,7 +268,7 @@ function WhaleBackground({ rm }) {
           ctx.rotate(pitch);
         }
 
-        ctx.drawImage(whaleCache[i], -cfg.width / 2, -(cfg.width * 100) / 240 / 2);
+        ctx.drawImage(whaleCache[i], -cfg.width / 2, -(cfg.width * 120) / 320 / 2);
         ctx.restore();
       });
 
