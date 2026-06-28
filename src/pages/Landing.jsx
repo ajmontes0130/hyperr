@@ -227,7 +227,7 @@ function TradeVisual({ rm }) {
       )}
 
       {/* status pill */}
-      <div style={{ ...pillStyle, position: "absolute", top: 4, left: "50%", transform: `translateX(-50%) ${phase >= 4 ? "scale(1)" : "scale(0.85)"}`, whiteSpace: "nowrap", zIndex: 10 }}>
+      <div style={{ position: "absolute", top: 4, left: "50%", transform: `translateX(-50%) scale(${phase >= 4 ? 1 : 0.85})`, opacity: phase >= 4 ? 1 : 0, transition: pillStyle.transition, whiteSpace: "nowrap", zIndex: 10 }}>
         <span style={{ ...monoFont, display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 14px", borderRadius: 999, fontSize: 11, fontWeight: 600, background: "rgba(46,230,166,0.1)", border: "1px solid rgba(46,230,166,0.35)", color: "#2EE6A6" }}>
           ✓ Completed
         </span>
@@ -373,9 +373,10 @@ function Hero() {
 }
 
 /* ─── band ────────────────────────────────────────────────────── */
+const BAND_NOUNS = ["Products", "Services", "Experiences", "Exposure"];
 function Band() {
   const rm = useReducedMotion();
-  const nouns = ["Products", "Services", "Experiences", "Exposure"];
+  const nouns = BAND_NOUNS;
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -443,9 +444,9 @@ function HowItWorks() {
           {steps.map((s, i) => (
             <div
               key={s.num}
-              style={{ ...reveal(i * 100 + 200), background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "36px 32px", cursor: "default", transition: `all 0.3s ease, opacity 0.55s ease ${i * 100 + 200}ms, transform 0.55s ease ${i * 100 + 200}ms` }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; }}
+              style={{ ...reveal(i * 100 + 200), background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "36px 32px", cursor: "default" }}
+              onMouseEnter={(e) => { if (vis) { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
+              onMouseLeave={(e) => { if (vis) { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
             >
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 36, fontWeight: 600, color: "#2DD4FF", marginBottom: 20, lineHeight: 1 }}>
                 {s.num}
@@ -611,9 +612,9 @@ function Trust() {
           {cards.map((c, i) => (
             <div
               key={c.title}
-              style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: `all 0.3s ease, opacity 0.5s ease ${i * 80 + 150}ms, transform 0.5s ease ${i * 80 + 150}ms`, background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "28px 24px", cursor: "default" }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; }}
+              style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: `opacity 0.5s ease ${i * 80 + 150}ms, transform 0.5s ease ${i * 80 + 150}ms`, background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "28px 24px", cursor: "default" }}
+              onMouseEnter={(e) => { if (vis) { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
+              onMouseLeave={(e) => { if (vis) { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
             >
               <div style={{ width: 44, height: 44, borderRadius: 12, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: c.color, marginBottom: 20 }}>
                 {c.icon}
