@@ -182,7 +182,9 @@ function WhaleBackground({ rm }) {
         if (cfg.dir === -1 && whale.x < -cfg.width - 50) whale.x = w + 50;
 
         const baseY = (cfg.topPct / 100) * h;
-        const bobY = Math.sin(t * 0.6 + BOB_PHASES[i]) * BOB_AMTS[i];
+        // primary vertical bob + a slower undulation for organic feel
+        const bobY = Math.sin(t * 0.5 + BOB_PHASES[i]) * BOB_AMTS[i]
+                   + Math.sin(t * 0.18 + BOB_PHASES[i] * 0.5) * BOB_AMTS[i] * 0.4;
         const y = baseY + bobY;
 
         // compute fade alpha based on y position
@@ -190,18 +192,28 @@ function WhaleBackground({ rm }) {
         if (y < fadeH) fadeAlpha = Math.max(0, y / fadeH);
         else if (y + wh > h - fadeH) fadeAlpha = Math.max(0, (h - y - wh) / fadeH);
 
+        // gentle pitch: nose dips slightly on the downstroke, rises on upstroke
+        const bobVel = Math.cos(t * 0.5 + BOB_PHASES[i]) * 0.5 * BOB_AMTS[i]
+                     + Math.cos(t * 0.18 + BOB_PHASES[i] * 0.5) * 0.18 * BOB_AMTS[i] * 0.4;
+        const pitch = Math.atan2(bobVel, cfg.speed) * 0.6;
+
+        const cx = whale.x + cfg.width / 2;
+        const cy = y + (cfg.width * 96) / 240 / 2;
+
         ctx.save();
         ctx.globalAlpha = cfg.opacity * fadeAlpha;
         ctx.filter = `blur(${cfg.blur}px)`;
+        ctx.translate(cx, cy);
 
         if (cfg.dir === -1) {
-          // facing left — flip horizontally around whale center
-          ctx.translate(whale.x + cfg.width, y);
+          // moving left — flip so whale faces left (into its direction of travel)
           ctx.scale(-1, 1);
-          ctx.drawImage(whaleCache[i], 0, 0);
+          ctx.rotate(-pitch);
         } else {
-          ctx.drawImage(whaleCache[i], whale.x, y);
+          ctx.rotate(pitch);
         }
+
+        ctx.drawImage(whaleCache[i], -cfg.width / 2, -(cfg.width * 96) / 240 / 2);
         ctx.restore();
       });
 
