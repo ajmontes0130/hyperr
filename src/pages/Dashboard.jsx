@@ -107,9 +107,9 @@ function WhaleBackground({ rm }) {
     window.addEventListener("resize", resize, { passive: true });
 
     // Pre-render whale silhouettes as offscreen canvases.
-    // The whale is drawn facing RIGHT (nose at right, tail flukes at left).
-    // dir=1 (moving right): draw as-is — nose leads. ✓
-    // dir=-1 (moving left): flip horizontally — nose leads left. ✓
+    // Whale faces LEFT: rounded head at left (x=0), tail flukes at right (x=240).
+    // dir=-1 (moving left): draw as-is — head leads left. ✓
+    // dir=1  (moving right): flip horizontally — head leads right. ✓
     const whaleCache = WHALE_CONFIGS.map((cfg) => {
       const wh = (cfg.width * 96) / 240;
       const oc = document.createElement("canvas");
@@ -121,31 +121,30 @@ function WhaleBackground({ rm }) {
       const sy = wh / 96;
       octx.save();
       octx.scale(sx, sy);
-      // Body: tail at left (x≈4), tapers to nose point at right (x=236)
+      // Body — rounded head at LEFT (x≈4), narrows to tail stock at RIGHT (x≈200)
       octx.beginPath();
-      octx.moveTo(4, 48);                              // tail base left
-      octx.bezierCurveTo(4, 38, 14, 33, 36, 32);      // belly sweeps up
-      octx.bezierCurveTo(90, 29, 150, 29, 196, 36);   // long mid-body
-      octx.bezierCurveTo(212, 39, 222, 36, 228, 28);
-      octx.lineTo(236, 18);                            // nose tip (right)
-      octx.bezierCurveTo(230, 30, 228, 36, 232, 42);
-      octx.lineTo(236, 64);                            // lower jaw tip
-      octx.bezierCurveTo(224, 56, 210, 54, 196, 54);
-      octx.bezierCurveTo(150, 58, 90, 60, 36, 56);
-      octx.bezierCurveTo(14, 54, 4, 62, 4, 48);
+      octx.moveTo(4, 48);
+      octx.bezierCurveTo(4, 28, 20, 18, 48, 16);
+      octx.bezierCurveTo(100, 12, 160, 14, 196, 22);
+      octx.bezierCurveTo(210, 26, 218, 30, 220, 38);
+      octx.lineTo(220, 58);
+      octx.bezierCurveTo(218, 66, 210, 70, 196, 74);
+      octx.bezierCurveTo(160, 82, 100, 84, 48, 80);
+      octx.bezierCurveTo(20, 78, 4, 68, 4, 48);
       octx.closePath();
       octx.fill();
-      // Tail flukes at left side
+      // Tail flukes at RIGHT — upper fluke
       octx.beginPath();
-      octx.moveTo(18, 42);
-      octx.bezierCurveTo(4, 30, 0, 22, 6, 18);
-      octx.bezierCurveTo(12, 28, 18, 34, 20, 40);
+      octx.moveTo(218, 38);
+      octx.bezierCurveTo(228, 24, 238, 14, 236, 6);
+      octx.bezierCurveTo(230, 12, 224, 24, 220, 36);
       octx.closePath();
       octx.fill();
+      // lower fluke
       octx.beginPath();
-      octx.moveTo(18, 54);
-      octx.bezierCurveTo(4, 66, 0, 74, 6, 78);
-      octx.bezierCurveTo(12, 68, 18, 62, 20, 56);
+      octx.moveTo(218, 58);
+      octx.bezierCurveTo(228, 72, 238, 82, 236, 90);
+      octx.bezierCurveTo(230, 84, 224, 72, 220, 60);
       octx.closePath();
       octx.fill();
       octx.restore();
@@ -216,12 +215,12 @@ function WhaleBackground({ rm }) {
         ctx.filter = `blur(${cfg.blur}px)`;
         ctx.translate(cx, cy);
 
-        if (cfg.dir === -1) {
-          // moving left: flip so nose points left
+        if (cfg.dir === 1) {
+          // moving right: flip so head points right
           ctx.scale(-1, 1);
           ctx.rotate(-pitch);
         } else {
-          // moving right: nose already points right
+          // moving left: head already points left
           ctx.rotate(pitch);
         }
 
