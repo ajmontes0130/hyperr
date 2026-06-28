@@ -11,7 +11,7 @@ export default function LevelBadge({ level, size = "md", showInfo = false }) {
   };
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className={`inline-flex items-center rounded-full border font-medium ${cfg.bg} ${cfg.color} ${cfg.border} ${sizes[size]}`}>
+      <span className={`inline-flex items-center rounded-full border font-medium ${cfg.badgeClass || ''} ${cfg.border} ${sizes[size]}`}>
         <span>{cfg.icon}</span>
         <span>{level}</span>
       </span>

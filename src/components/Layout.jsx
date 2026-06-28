@@ -59,7 +59,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-background">
       <header
-        className="sticky top-0 z-50 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-border/50"
+        className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl border-b border-border"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,8 +80,8 @@ export default function Layout() {
                   to={item.path}
                   className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
                     isActive(item.path)
-                      ? "bg-primary text-white shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   <item.icon className="w-4 h-4 flex-shrink-0 select-none" />
@@ -118,7 +118,7 @@ export default function Layout() {
 
         {/* Mobile full nav drawer */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-white dark:bg-card px-4 pb-4 space-y-1">
+          <div className="lg:hidden border-t bg-card px-4 pb-4 space-y-1">
             <div className="pt-3">
               {navItems.map((item) => (
                 <Link
@@ -126,7 +126,7 @@ export default function Layout() {
                   to={item.path}
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium select-none ${
-                    isActive(item.path) ? "bg-primary text-white" : "text-muted-foreground hover:bg-muted"
+                    isActive(item.path) ? "text-primary bg-secondary" : "text-muted-foreground hover:bg-secondary"
                   }`}
                 >
                   <item.icon className="w-4 h-4 select-none" />

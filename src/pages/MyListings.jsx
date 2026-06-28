@@ -60,7 +60,7 @@ export default function MyListings() {
       </div>
 
       {listings.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-2xl border">
+        <div className="text-center py-20 bg-card rounded-2xl border">
           <Package className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
           <h3 className="font-display font-semibold text-lg mb-1">No listings yet</h3>
           <p className="text-muted-foreground text-sm mb-6">Create your first listing to start trading.</p>
@@ -71,7 +71,7 @@ export default function MyListings() {
       ) : (
         <div className="space-y-4">
           {listings.map((listing) => (
-            <div key={listing.id} className="bg-white rounded-2xl border p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div key={listing.id} className="bg-card rounded-2xl border p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center hover:bg-secondary transition-colors">
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 flex-shrink-0 overflow-hidden">
                 {listing.image_url ? (
                   <img src={listing.image_url} alt="" className="w-full h-full object-cover" />

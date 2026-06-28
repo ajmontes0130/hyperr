@@ -19,10 +19,10 @@ const audienceBands = [
 ];
 
 const platformColors = {
-  instagram_followers: "bg-pink-100 text-pink-700",
-  tiktok_followers: "bg-slate-100 text-slate-700",
-  youtube_subscribers: "bg-red-100 text-red-700",
-  twitter_followers: "bg-sky-100 text-sky-700",
+  instagram_followers: "bg-[#2E121A] text-[#FF4D6D]",
+  tiktok_followers: "bg-secondary text-foreground",
+  youtube_subscribers: "bg-[#2E1313] text-[#EF4444]",
+  twitter_followers: "bg-[#0E2A33] text-[#2DD4FF]",
 };
 
 const platformLabels = {
@@ -154,7 +154,7 @@ export default function Explore() {
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg border transition-colors ${showFilters || filtersActive ? "bg-primary text-white border-primary" : "bg-white text-muted-foreground border-border hover:bg-muted"}`}
+              className={`flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg border transition-colors ${showFilters || filtersActive ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:bg-secondary"}`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters {filtersActive && !showFilters && <span className="w-2 h-2 rounded-full bg-white inline-block" />}
@@ -170,7 +170,7 @@ export default function Explore() {
           </div>
 
           {showFilters && (
-            <div className="bg-white rounded-2xl border p-4 space-y-3">
+            <div className="bg-card rounded-2xl border p-4 space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Niche</p>
@@ -203,16 +203,16 @@ export default function Explore() {
 
         {/* Card */}
         <div
-          className={`bg-white rounded-3xl border shadow-lg overflow-hidden transition-all duration-200 ${
+          className={`bg-card rounded-3xl border shadow-lg shadow-black/30 overflow-hidden transition-all duration-200 ${
             animDir === -1 ? "-translate-x-4 opacity-0" : animDir === 1 ? "translate-x-4 opacity-0" : "translate-x-0 opacity-100"
           }`}
         >
           {/* Hero image / avatar */}
-          <div className="relative h-56 bg-gradient-to-br from-primary/20 via-accent to-purple-100 flex items-center justify-center">
+          <div className="relative h-56 bg-gradient-to-br from-[#0E2A33] via-[#121823] to-[#1B2330] flex items-center justify-center">
             {creator.avatar_url ? (
-              <img src={creator.avatar_url} alt={creator.display_name} className="w-28 h-28 rounded-full object-cover ring-4 ring-white shadow-lg" />
+              <img src={creator.avatar_url} alt={creator.display_name} className="w-28 h-28 rounded-full object-cover ring-4 ring-border shadow-lg" />
             ) : (
-              <div className="w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-white shadow-lg">
+              <div className="w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-border shadow-lg">
                 <Users className="w-12 h-12 text-primary/40" />
               </div>
             )}
@@ -274,7 +274,7 @@ export default function Explore() {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className={`flex-1 rounded-xl gap-2 ${saved.has(creator.id) ? "border-rose-300 text-rose-500 bg-rose-50 hover:bg-rose-100" : ""}`}
+                className={`flex-1 rounded-xl gap-2 ${saved.has(creator.id) ? "border-[#FF4D6D]/40 text-[#FF4D6D] bg-[#2E121A] hover:bg-[#3a1525]" : ""}`}
                 onClick={toggleSave}
               >
                 <Heart className={`w-4 h-4 ${saved.has(creator.id) ? "fill-rose-500" : ""}`} />
@@ -303,7 +303,7 @@ export default function Explore() {
 
         {/* Saved quick strip */}
         {saved.size > 0 && (
-          <div className="mt-8 bg-white rounded-2xl border p-4">
+          <div className="mt-8 bg-card rounded-2xl border p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Your Saved Creators ({saved.size})
             </p>

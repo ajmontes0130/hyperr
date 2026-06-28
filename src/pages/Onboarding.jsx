@@ -148,7 +148,7 @@ export default function Onboarding() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => handlePickType("creator")}
-              className="group bg-white border-2 border-border hover:border-primary rounded-2xl p-8 text-left transition-all hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="group bg-card border-2 border-border hover:border-primary rounded-2xl p-8 text-left transition-all hover:shadow-lg hover:shadow-black/30 focus:outline-none"
             >
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <Sparkles className="w-7 h-7 text-primary" />
@@ -162,7 +162,7 @@ export default function Onboarding() {
 
             <button
               onClick={() => handlePickType("business")}
-              className="group bg-white border-2 border-border hover:border-primary rounded-2xl p-8 text-left transition-all hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="group bg-card border-2 border-border hover:border-primary rounded-2xl p-8 text-left transition-all hover:shadow-lg hover:shadow-black/30 focus:outline-none"
             >
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <Building2 className="w-7 h-7 text-primary" />
@@ -191,7 +191,7 @@ export default function Onboarding() {
           <p className="text-muted-foreground text-sm">Fill in as much as you like — you can always edit this later.</p>
         </div>
 
-        <div className="bg-white border rounded-2xl p-6 space-y-5">
+        <div className="bg-card border rounded-2xl p-6 space-y-5">
           {/* Avatar / Logo upload */}
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -230,7 +230,7 @@ export default function Onboarding() {
                       key={n}
                       type="button"
                       onClick={() => toggleNiche(n)}
-                      className={`px-3 py-1 rounded-full text-sm border transition-colors ${creatorForm.niche.includes(n) ? "bg-primary text-white border-primary" : "bg-white text-muted-foreground border-border hover:border-primary/50"}`}
+                      className={`px-3 py-1 rounded-full text-sm border transition-colors ${creatorForm.niche.includes(n) ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-muted-foreground border-border hover:border-primary/50"}`}
                     >
                       {n}
                     </button>

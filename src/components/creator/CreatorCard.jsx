@@ -6,10 +6,10 @@ import StarRating from "./StarRating";
 import { formatFollowers } from "@/lib/creatorUtils";
 
 const platformIcons = {
-  instagram_followers: { label: "IG", color: "bg-pink-100 text-pink-700", verifiedKey: "instagram_verified" },
-  tiktok_followers:    { label: "TT", color: "bg-slate-100 text-slate-700", verifiedKey: "tiktok_verified" },
-  youtube_subscribers: { label: "YT", color: "bg-red-100 text-red-700", verifiedKey: "youtube_verified" },
-  twitter_followers:   { label: "𝕏",  color: "bg-sky-100 text-sky-700", verifiedKey: "twitter_verified" },
+  instagram_followers: { label: "IG", color: "bg-[#2E121A] text-[#FF4D6D]", verifiedKey: "instagram_verified" },
+  tiktok_followers:    { label: "TT", color: "bg-secondary text-foreground", verifiedKey: "tiktok_verified" },
+  youtube_subscribers: { label: "YT", color: "bg-[#2E1313] text-[#EF4444]", verifiedKey: "youtube_verified" },
+  twitter_followers:   { label: "𝕏",  color: "bg-[#0E2A33] text-[#2DD4FF]", verifiedKey: "twitter_verified" },
 };
 
 export default function CreatorCard({ creator }) {
@@ -23,7 +23,7 @@ export default function CreatorCard({ creator }) {
   return (
     <Link
       to={`/creator/${creator.id}`}
-      className="group bg-white rounded-2xl border border-border/60 p-5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
+      className="group bg-card rounded-2xl border border-border p-5 hover:bg-secondary hover:border-[#34425A] hover:shadow-lg hover:shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 bg-gradient-to-br from-primary/10 to-primary/20">

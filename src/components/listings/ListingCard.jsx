@@ -4,16 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, ArrowRight } from "lucide-react";
 
 const typeColors = {
-  Product: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  Service: "bg-blue-50 text-blue-700 border-blue-200",
-  Experience: "bg-amber-50 text-amber-700 border-amber-200",
+  Product: "bg-[#0E2A22] text-[#34D399] border-[#34D399]/30",
+  Service: "bg-[#0E2A33] text-[#2DD4FF] border-[#2DD4FF]/30",
+  Experience: "bg-[#2E2410] text-[#FBBF3D] border-[#FBBF3D]/30",
 };
 
 export default function ListingCard({ listing }) {
   return (
     <Link
       to={`/listing/${listing.id}`}
-      className="group bg-white rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
+      className="group bg-card rounded-2xl border border-border overflow-hidden hover:bg-secondary hover:border-[#34425A] hover:shadow-lg hover:shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
     >
       <div className="aspect-[16/10] bg-gradient-to-br from-primary/5 to-primary/10 relative overflow-hidden">
         {listing.image_url ? (
