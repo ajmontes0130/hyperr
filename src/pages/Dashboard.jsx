@@ -57,11 +57,11 @@ function useCountUp(end, duration, active, rm) {
 /* whale background                                        */
 /* ─────────────────────────────────────────────────────── */
 const WHALE_CONFIGS = [
-  { topPct: 27, width: 230, opacity: 0.06, blur: 5, fill: "#173343", dir: -1, speed: 20 },
-  { topPct: 16, width: 262, opacity: 0.085, blur: 4, fill: "#173343", dir: 1, speed: 24 },
-  { topPct: 60, width: 300, opacity: 0.10, blur: 3, fill: "#1A3A4D", dir: -1, speed: 33 },
-  { topPct: 40, width: 344, opacity: 0.12, blur: 2, fill: "#1A3A4D", dir: 1, speed: 42 },
-  { topPct: 78, width: 404, opacity: 0.14, blur: 1.5, fill: "#1C404F", dir: 1, speed: 54 },
+  { topPct: 27, width: 230, opacity: 0.06, blur: 5, fill: "#173343", dir: -1, speed: 22 },
+  { topPct: 16, width: 262, opacity: 0.085, blur: 4, fill: "#173343", dir: 1, speed: 28 },
+  { topPct: 60, width: 300, opacity: 0.10, blur: 3, fill: "#1A3A4D", dir: -1, speed: 36 },
+  { topPct: 40, width: 344, opacity: 0.12, blur: 2, fill: "#1A3A4D", dir: 1, speed: 46 },
+  { topPct: 78, width: 404, opacity: 0.14, blur: 1.5, fill: "#1C404F", dir: 1, speed: 58 },
 ];
 
 const BOB_PHASES = [0, 1.1, 2.3, 0.7, 1.9];
@@ -106,47 +106,69 @@ function WhaleBackground({ rm }) {
     resize();
     window.addEventListener("resize", resize, { passive: true });
 
-    // Pre-render whale silhouettes as offscreen canvases.
-    // Whale faces LEFT: rounded head at left (x=0), tail flukes at right (x=240).
-    // dir=-1 (moving left): draw as-is — head leads left. ✓
-    // dir=1  (moving right): flip horizontally — head leads right. ✓
+    // Pre-render shark silhouettes as offscreen canvases.
+    // Shark faces RIGHT: pointed snout at right (x=240), tail at left (x=0).
+    // dir=1  (moving right): draw as-is — snout leads right. ✓
+    // dir=-1 (moving left): flip horizontally — snout leads left. ✓
+    // Viewbox: 240 wide × 100 tall
     const whaleCache = WHALE_CONFIGS.map((cfg) => {
-      const wh = (cfg.width * 96) / 240;
+      const VW = 240, VH = 100;
+      const wh = (cfg.width * VH) / VW;
       const oc = document.createElement("canvas");
       oc.width = cfg.width;
       oc.height = wh;
       const octx = oc.getContext("2d");
       octx.fillStyle = cfg.fill;
-      const sx = cfg.width / 240;
-      const sy = wh / 96;
+      const sx = cfg.width / VW;
+      const sy = wh / VH;
       octx.save();
       octx.scale(sx, sy);
-      // Body — rounded head at LEFT (x≈4), narrows to tail stock at RIGHT (x≈200)
+
+      // Main body: torpedo shape, snout at RIGHT (x=240), tail peduncle narrows at LEFT (x≈20)
       octx.beginPath();
-      octx.moveTo(4, 48);
-      octx.bezierCurveTo(4, 28, 20, 18, 48, 16);
-      octx.bezierCurveTo(100, 12, 160, 14, 196, 22);
-      octx.bezierCurveTo(210, 26, 218, 30, 220, 38);
-      octx.lineTo(220, 58);
-      octx.bezierCurveTo(218, 66, 210, 70, 196, 74);
-      octx.bezierCurveTo(160, 82, 100, 84, 48, 80);
-      octx.bezierCurveTo(20, 78, 4, 68, 4, 48);
+      octx.moveTo(240, 50);                            // snout tip
+      octx.bezierCurveTo(230, 36, 200, 28, 160, 26);  // upper jaw → back
+      octx.bezierCurveTo(110, 24, 50, 26, 22, 34);    // upper body to tail stock
+      octx.lineTo(10, 42);                             // tail peduncle top
+      octx.lineTo(10, 58);                             // tail peduncle bottom
+      octx.lineTo(22, 66);                             // lower tail stock
+      octx.bezierCurveTo(50, 74, 110, 76, 160, 74);   // lower body back
+      octx.bezierCurveTo(200, 72, 230, 64, 240, 50);  // lower jaw → snout
       octx.closePath();
       octx.fill();
-      // Tail flukes at RIGHT — upper fluke
+
+      // Dorsal fin — tall triangle on top, roughly mid-body
       octx.beginPath();
-      octx.moveTo(218, 38);
-      octx.bezierCurveTo(228, 24, 238, 14, 236, 6);
-      octx.bezierCurveTo(230, 12, 224, 24, 220, 36);
+      octx.moveTo(130, 26);   // base back
+      octx.lineTo(155, 2);    // fin tip
+      octx.lineTo(175, 24);   // base front
       octx.closePath();
       octx.fill();
-      // lower fluke
+
+      // Pectoral fin — swept back lower fin
       octx.beginPath();
-      octx.moveTo(218, 58);
-      octx.bezierCurveTo(228, 72, 238, 82, 236, 90);
-      octx.bezierCurveTo(230, 84, 224, 72, 220, 60);
+      octx.moveTo(170, 68);   // root front
+      octx.lineTo(130, 92);   // fin tip
+      octx.lineTo(145, 70);   // root back
       octx.closePath();
       octx.fill();
+
+      // Caudal (tail) fin — vertical fork at left
+      // upper lobe
+      octx.beginPath();
+      octx.moveTo(10, 42);
+      octx.bezierCurveTo(0, 30, 0, 14, 6, 8);
+      octx.bezierCurveTo(10, 18, 12, 32, 10, 42);
+      octx.closePath();
+      octx.fill();
+      // lower lobe
+      octx.beginPath();
+      octx.moveTo(10, 58);
+      octx.bezierCurveTo(0, 70, 0, 86, 6, 92);
+      octx.bezierCurveTo(10, 82, 12, 68, 10, 58);
+      octx.closePath();
+      octx.fill();
+
       octx.restore();
       return oc;
     });
@@ -187,7 +209,7 @@ function WhaleBackground({ rm }) {
       stateRef.current.forEach((whale, i) => {
         const cfg = WHALE_CONFIGS[i];
         whale.x += cfg.dir * cfg.speed * speedMult * dt;
-        const wh = (cfg.width * 96) / 240;
+        const wh = (cfg.width * 100) / 240;
         if (cfg.dir === 1 && whale.x > w + 50) whale.x = -cfg.width - 50;
         if (cfg.dir === -1 && whale.x < -cfg.width - 50) whale.x = w + 50;
 
@@ -215,16 +237,16 @@ function WhaleBackground({ rm }) {
         ctx.filter = `blur(${cfg.blur}px)`;
         ctx.translate(cx, cy);
 
-        if (cfg.dir === 1) {
-          // moving right: flip so head points right
+        if (cfg.dir === -1) {
+          // moving left: flip so snout points left
           ctx.scale(-1, 1);
           ctx.rotate(-pitch);
         } else {
-          // moving left: head already points left
+          // moving right: snout already points right
           ctx.rotate(pitch);
         }
 
-        ctx.drawImage(whaleCache[i], -cfg.width / 2, -(cfg.width * 96) / 240 / 2);
+        ctx.drawImage(whaleCache[i], -cfg.width / 2, -(cfg.width * 100) / 240 / 2);
         ctx.restore();
       });
 
