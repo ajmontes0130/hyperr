@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText } from "lucide-react";
+import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/MobileBottomNav";
 
 const creatorNav = [
+  { label: "Dashboard", path: "/", icon: LayoutDashboard },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Marketplace", path: "/", icon: Search },
   { label: "Saved", path: "/saved-creators", icon: Heart },
@@ -17,6 +18,7 @@ const creatorNav = [
 ];
 
 const businessNav = [
+  { label: "Dashboard", path: "/", icon: LayoutDashboard },
   { label: "Creators", path: "/creators", icon: Users },
   { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
   { label: "Post Listing", path: "/create-listing", icon: PlusCircle },
