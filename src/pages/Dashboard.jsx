@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Search, Heart, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 /* ─────────────────────────────────────────────────────── */
@@ -233,200 +233,10 @@ function WhaleBackground({ rm }) {
 }
 
 /* ─────────────────────────────────────────────────────── */
-/* top bar                                                 */
+/* constants                                               */
 /* ─────────────────────────────────────────────────────── */
 const mono = { fontFamily: "'JetBrains Mono', monospace" };
 const bricolage = { fontFamily: "'Bricolage Grotesque', sans-serif" };
-
-const navLinks = [
-  { label: "Home", href: "#", active: true },
-  { label: "Discover", href: "/" },
-  { label: "Trades", href: "/my-trades" },
-  { label: "Messages", href: "/messages" },
-];
-
-function TopBar({ user }) {
-  const [searchVal, setSearchVal] = useState("");
-  const initials = user?.full_name
-    ? user.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
-    : "?";
-  const firstName = user?.full_name?.split(" ")[0] || "You";
-
-  return (
-    <header
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        background: "rgba(10,14,20,0.72)",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        borderBottom: "1px solid #1B2330",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          padding: "0 24px",
-          height: 60,
-          display: "flex",
-          alignItems: "center",
-          gap: 32,
-        }}
-      >
-        {/* logo */}
-        <span
-          style={{
-            ...bricolage,
-            fontWeight: 800,
-            fontSize: 22,
-            color: "#2DD4FF",
-            letterSpacing: "-0.04em",
-            flexShrink: 0,
-          }}
-        >
-          hyperr
-        </span>
-
-        {/* nav links — hidden on mobile */}
-        <nav style={{ display: "flex", gap: 4, flex: 1 }} className="hidden md:flex">
-          {navLinks.map((l) => (
-            <Link
-              key={l.label}
-              to={l.href}
-              style={{
-                ...mono,
-                fontSize: 12.5,
-                fontWeight: 500,
-                padding: "6px 14px",
-                borderRadius: 8,
-                textDecoration: "none",
-                color: l.active ? "#2DD4FF" : "#8C97A3",
-                background: l.active ? "rgba(45,212,255,0.08)" : "transparent",
-                transition: "color 0.18s, background 0.18s",
-              }}
-              onMouseEnter={(e) => {
-                if (!l.active) {
-                  e.currentTarget.style.color = "#EAF1F7";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!l.active) {
-                  e.currentTarget.style.color = "#8C97A3";
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginLeft: "auto" }}>
-          {/* search — hidden on mobile */}
-          <div style={{ position: "relative" }} className="hidden md:block">
-            <Search
-              size={14}
-              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#5C6672" }}
-            />
-            <input
-              type="text"
-              placeholder="Search offers…"
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
-              style={{
-                ...mono,
-                fontSize: 12,
-                background: "#121823",
-                border: "1px solid #25303F",
-                borderRadius: 8,
-                padding: "7px 12px 7px 30px",
-                color: "#EAF1F7",
-                outline: "none",
-                width: 180,
-              }}
-            />
-          </div>
-
-          {/* bell */}
-          <button
-            style={{
-              position: "relative",
-              width: 36,
-              height: 36,
-              minWidth: 36,
-              borderRadius: 8,
-              background: "#121823",
-              border: "1px solid #25303F",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#8C97A3",
-            }}
-            aria-label="Notifications"
-          >
-            <Bell size={15} />
-            <span
-              style={{
-                position: "absolute",
-                top: 6,
-                right: 6,
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#FF4D6D",
-                boxShadow: "0 0 6px rgba(255,77,109,0.7)",
-                border: "1.5px solid #0A0E14",
-              }}
-            />
-          </button>
-
-          {/* user chip */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 9,
-              background: "#121823",
-              border: "1px solid #25303F",
-              borderRadius: 10,
-              padding: "5px 12px 5px 6px",
-              cursor: "pointer",
-              minHeight: 36,
-            }}
-          >
-            <div
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: "50%",
-                background: "rgba(45,212,255,0.15)",
-                border: "1.5px solid rgba(45,212,255,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                ...bricolage,
-                fontWeight: 800,
-                fontSize: 10,
-                color: "#2DD4FF",
-                flexShrink: 0,
-              }}
-            >
-              {initials}
-            </div>
-            <div style={{ lineHeight: 1 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#EAF1F7" }}>{firstName}</div>
-              <div style={{ ...mono, fontSize: 10, color: "#FFC247", marginTop: 1 }}>◆ Gold</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 /* ─────────────────────────────────────────────────────── */
 /* stats                                                   */
@@ -965,8 +775,6 @@ export default function Dashboard() {
 
       {/* all content sits above the whale layer */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        <TopBar user={user} />
-
         <main style={{ maxWidth: 1280, margin: "0 auto", padding: "48px 24px 0" }}>
           <Welcome rm={rm} user={user} stats={stats} />
 
