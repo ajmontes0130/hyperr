@@ -64,20 +64,38 @@ export default function MyTrades() {
   const sendStatusEmail = async (proposal, status) => {
     try {
       const allUsers = await base44.entities.User.list();
-      const recipientId = status === "accepted" || status === "declined"
+      // accepted/declined/in_progress → notify the proposer (creator)
+      // delivered/completed → notify the listing owner (business)
+      const recipientId = ["accepted", "declined", "in_progress"].includes(status)
         ? proposal.proposer_id
         : proposal.listing_owner_id;
       const recipient = allUsers.find((u) => u.id === recipientId);
       if (!recipient?.email) return;
 
       const messages = {
-        accepted: { subject: "Your trade proposal was accepted 🎉", body: `Great news! Your trade proposal for "${proposal.listing_title}" has been accepted.\n\nLog in to view and mark the trade as In Progress:\nhttps://app.hyper.com/my-trades` },
-        declined: { subject: "Your trade proposal was declined", body: `Your trade proposal for "${proposal.listing_title}" was declined. Don't worry — browse more opportunities on Hyper.` },
-        delivered: { subject: "Content marked as delivered", body: `The creator has marked their content as delivered for the trade "${proposal.listing_title}". Please review and confirm receipt in your Trades dashboard.` },
-        completed: { subject: "Trade completed ✅", body: `The trade for "${proposal.listing_title}" has been marked as completed. You can now leave a review.` },
+        accepted: {
+          subject: `Your trade proposal was accepted 🎉`,
+          body: `Great news!\n\nYour trade proposal for "${proposal.listing_title}" has been accepted.\n\nHead to your Trades dashboard to mark it as In Progress and kick things off:\nhttps://app.hyperr.com/my-trades\n\n— The hyperr team`,
+        },
+        declined: {
+          subject: `Update on your trade proposal`,
+          body: `Hi there,\n\nYour trade proposal for "${proposal.listing_title}" wasn't the right fit this time.\n\nDon't be discouraged — there are plenty of other opportunities waiting on the marketplace:\nhttps://app.hyperr.com\n\n— The hyperr team`,
+        },
+        in_progress: {
+          subject: `Trade is now in progress`,
+          body: `The trade for "${proposal.listing_title}" has been marked as In Progress.\n\nYou can track its progress and message the other party here:\nhttps://app.hyperr.com/my-trades\n\n— The hyperr team`,
+        },
+        delivered: {
+          subject: `Content delivered — please confirm receipt`,
+          body: `The creator has marked their content as delivered for "${proposal.listing_title}".\n\nPlease review the delivery and confirm receipt in your Trades dashboard to complete the trade:\nhttps://app.hyperr.com/my-trades\n\n— The hyperr team`,
+        },
+        completed: {
+          subject: `Trade completed ✅`,
+          body: `The trade for "${proposal.listing_title}" is now complete — great work!\n\nTake a moment to leave a review for the other party. It helps build trust on hyperr:\nhttps://app.hyperr.com/my-trades\n\n— The hyperr team`,
+        },
       };
       const msg = messages[status];
-      if (msg) await base44.integrations.Core.SendEmail({ to: recipient.email, ...msg });
+      if (msg) await base44.integrations.Core.SendEmail({ from_name: "hyperr", to: recipient.email, ...msg });
     } catch (_) {}
   };
 
@@ -98,6 +116,7 @@ export default function MyTrades() {
 
   const handleMarkInProgress = async (proposal) => {
     await updateStatus(proposal.id, "in_progress", proposal);
+    await sendStatusEmail(proposal, "in_progress");
   };
 
   const handleMarkDelivered = async () => {
