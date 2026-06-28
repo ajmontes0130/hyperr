@@ -67,11 +67,9 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center flex-shrink-0">
-              <img
-                src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png"
-                alt="Hyper"
-                className="h-10 w-auto"
-              />
+              <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: 26, color: "#2DD4FF", letterSpacing: "-0.04em" }}>
+                hyperr
+              </span>
             </Link>
 
             {/* Desktop nav */}
