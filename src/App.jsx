@@ -30,6 +30,7 @@ import SavedCreators from '@/pages/SavedCreators';
 import Messages from '@/pages/Messages';
 import ProposalTemplates from '@/pages/ProposalTemplates';
 import Onboarding from '@/pages/Onboarding';
+import Landing from '@/pages/Landing';
 import TermsOfService from '@/pages/TermsOfService';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/landing" element={<Landing />} />
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
 
