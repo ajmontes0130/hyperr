@@ -79,7 +79,6 @@ const AuthenticatedApp = () => {
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/landing" element={<Landing />} />
-      <Route path="/dashboard" element={<Dashboard />} />
 
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
@@ -97,6 +96,7 @@ const AuthenticatedApp = () => {
           <Route path="/saved-creators" element={<SavedCreators />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
 

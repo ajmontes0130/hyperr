@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Bell, Search, Heart, ArrowRight } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 /* ─────────────────────────────────────────────────────── */
 /* hooks                                                    */
@@ -84,17 +85,13 @@ function WhaleSVG({ fill, width }) {
 
 function WhaleBackground({ rm }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef(null);
-  const rafRef = useRef(null);
-
-  useEffect(() => {
-    if (rm) return;
-    const vw = window.innerWidth;
-    stateRef.current = WHALE_CONFIGS.map((cfg) => ({
+  const stateRef = useRef(
+    WHALE_CONFIGS.map((cfg) => ({
       ...cfg,
-      x: cfg.dir === 1 ? -cfg.width - 50 : vw + 50,
-    }));
-  }, [rm]);
+      x: cfg.dir === 1 ? -(cfg.width + 50) : (typeof window !== "undefined" ? window.innerWidth : 1440) + 50,
+    }))
+  );
+  const rafRef = useRef(null);
 
   useEffect(() => {
     if (rm || !canvasRef.current) return;
@@ -176,6 +173,7 @@ function WhaleBackground({ rm }) {
       // fade mask values (top/bottom 15%)
       const fadeH = h * 0.15;
 
+      if (!stateRef.current) return;
       stateRef.current.forEach((whale, i) => {
         const cfg = WHALE_CONFIGS[i];
         whale.x += cfg.dir * cfg.speed * speedMult * dt;
@@ -247,8 +245,12 @@ const navLinks = [
   { label: "Messages", href: "/messages" },
 ];
 
-function TopBar() {
+function TopBar({ user }) {
   const [searchVal, setSearchVal] = useState("");
+  const initials = user?.full_name
+    ? user.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+    : "?";
+  const firstName = user?.full_name?.split(" ")[0] || "You";
 
   return (
     <header
@@ -413,10 +415,10 @@ function TopBar() {
                 flexShrink: 0,
               }}
             >
-              KT
+              {initials}
             </div>
             <div style={{ lineHeight: 1 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#EAF1F7" }}>Kai</div>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#EAF1F7" }}>{firstName}</div>
               <div style={{ ...mono, fontSize: 10, color: "#FFC247", marginTop: 1 }}>◆ Gold</div>
             </div>
           </div>
@@ -429,21 +431,25 @@ function TopBar() {
 /* ─────────────────────────────────────────────────────── */
 /* stats                                                   */
 /* ─────────────────────────────────────────────────────── */
-const STATS = [
-  { label: "Active trades", value: 3, suffix: "", isCyan: false },
-  { label: "Completed", value: 12, suffix: "", isCyan: false },
-  { label: "Value traded", value: 4200, suffix: "K", isCyan: true, prefix: "$", divide: 1000 },
-  { label: "Avg rating", value: 49, suffix: "", isCyan: false, divide: 10, decimals: 1 },
-];
+function buildStats(stats) {
+  return [
+    { label: "Active trades", value: stats.active, isCyan: false },
+    { label: "Completed", value: stats.completed, isCyan: false },
+    { label: "Value traded", value: stats.valueTraded, isCyan: true, isValue: true },
+    { label: "Avg rating", value: stats.avgRating, isCyan: false, isRating: true },
+  ];
+}
 
 function StatCard({ stat, active, rm }) {
-  const raw = useCountUp(stat.value, 900, active, rm);
+  const raw = useCountUp(stat.isRating ? Math.round(stat.value * 10) : stat.value, 900, active, rm);
   let display;
-  if (stat.divide) {
-    display = (raw / stat.divide).toFixed(stat.decimals || 0);
-    if (stat.suffix === "K") display = "$" + display + "K";
+  if (stat.isValue) {
+    if (raw >= 1000) display = "$" + (raw / 1000).toFixed(1) + "K";
+    else display = "$" + raw;
+  } else if (stat.isRating) {
+    display = (raw / 10).toFixed(1);
   } else {
-    display = raw;
+    display = String(raw);
   }
 
   return (
@@ -468,7 +474,7 @@ function StatCard({ stat, active, rm }) {
           lineHeight: 1,
         }}
       >
-        {stat.divide && stat.suffix === "K" ? display : (stat.prefix || "") + display + (stat.suffix || "")}
+        {display}
       </span>
     </div>
   );
@@ -477,8 +483,13 @@ function StatCard({ stat, active, rm }) {
 /* ─────────────────────────────────────────────────────── */
 /* welcome section                                         */
 /* ─────────────────────────────────────────────────────── */
-function Welcome({ rm }) {
+function Welcome({ rm, user, stats }) {
   const [ref, vis] = useScrollReveal(0.05);
+  const firstName = user?.full_name?.split(" ")[0] || "there";
+  const activeCount = stats.active;
+  const subline = activeCount > 0
+    ? `${activeCount} trade${activeCount !== 1 ? "s" : ""} in motion. Here's what's moving today.`
+    : "Your dashboard is ready. Find your first trade below.";
 
   return (
     <section ref={ref} style={{ marginBottom: 48 }}>
@@ -523,10 +534,10 @@ function Welcome({ rm }) {
               margin: "0 0 10px",
             }}
           >
-            Welcome back, Kai.
+            Welcome back, {firstName}.
           </h1>
           <p style={{ fontSize: 15, color: "#8C97A3", lineHeight: 1.6, margin: 0 }}>
-            Three trades in motion. Here's what's moving today.
+            {subline}
           </p>
         </div>
 
@@ -567,7 +578,7 @@ function Welcome({ rm }) {
           transition: rm ? "none" : "opacity 0.6s cubic-bezier(.16,1,.3,1) 120ms, transform 0.6s cubic-bezier(.16,1,.3,1) 120ms",
         }}
       >
-        {STATS.map((s) => (
+        {buildStats(stats).map((s) => (
           <StatCard key={s.label} stat={s} active={vis} rm={rm} />
         ))}
       </div>
@@ -575,22 +586,11 @@ function Welcome({ rm }) {
   );
 }
 
-/* ─────────────────────────────────────────────────────── */
-/* offer cards                                             */
-/* ─────────────────────────────────────────────────────── */
-const OFFERS = [
-  { id: 1, name: "Free dinner for 2", business: "Lumen Bistro", location: "Austin", wants: "1 reel + 2 stories", value: 150, tags: ["FOOD", "LOCAL"] },
-  { id: 2, name: "3-month membership", business: "Iron Department", location: "Austin", wants: "3 reels over 90 days", value: 270, tags: ["FITNESS"] },
-  { id: 3, name: "Wireless earbuds ×2", business: "Aural Co.", location: "ships free", wants: "1 unboxing video", value: 320, tags: ["TECH"] },
-  { id: 4, name: "Weekend spa package", business: "Still Waters Spa", location: "Austin", wants: "1 reel + 1 review", value: 400, tags: ["WELLNESS"] },
-  { id: 5, name: "Coffee for a year", business: "Meridian Roasters", location: "ships free", wants: "4 posts over the year", value: 480, tags: ["FOOD"] },
-  { id: 6, name: "Skate deck + apparel", business: "Fault Line", location: "ships free", wants: "2 stories + 1 post", value: 210, tags: ["APPAREL"] },
-];
-
-function OfferCard({ offer, delay, rm }) {
+function OfferCard({ listing, delay, rm }) {
   const [ref, vis] = useScrollReveal(0.08);
   const [saved, setSaved] = useState(false);
-  const val = useCountUp(offer.value, 800, vis, rm);
+  const val = useCountUp(listing.estimated_value || 0, 800, vis, rm);
+  const tags = [listing.category, ...(listing.offering_type ? [listing.offering_type] : [])].filter(Boolean).map(t => t.toUpperCase().slice(0, 10));
 
   return (
     <div
@@ -610,32 +610,13 @@ function OfferCard({ offer, delay, rm }) {
           ? "none"
           : `opacity 0.6s cubic-bezier(.16,1,.3,1) ${delay}ms, transform 0.6s cubic-bezier(.16,1,.3,1) ${delay}ms, border-color 0.18s`,
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "#34404F";
-        e.currentTarget.style.transform = "translateY(-4px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "#25303F";
-        e.currentTarget.style.transform = vis ? "translateY(0)" : "translateY(22px)";
-      }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
-      {/* top row: tags + heart */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-          {offer.tags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                ...mono,
-                fontSize: 10,
-                fontWeight: 600,
-                padding: "3px 8px",
-                borderRadius: 6,
-                background: "#1B2330",
-                color: "#5C6672",
-                letterSpacing: "0.06em",
-              }}
-            >
+          {tags.slice(0, 2).map((tag) => (
+            <span key={tag} style={{ ...mono, fontSize: 10, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "#1B2330", color: "#5C6672", letterSpacing: "0.06em" }}>
               {tag}
             </span>
           ))}
@@ -643,98 +624,58 @@ function OfferCard({ offer, delay, rm }) {
         <button
           onClick={(e) => { e.stopPropagation(); setSaved((s) => !s); }}
           aria-label="Save offer"
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 7,
-            border: `1px solid ${saved ? "#2DD4FF" : "#25303F"}`,
-            background: saved ? "rgba(45,212,255,0.08)" : "transparent",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: saved ? "#2DD4FF" : "#5C6672",
-            flexShrink: 0,
-            transition: "border-color 0.18s, background 0.18s, color 0.18s",
-          }}
+          style={{ width: 30, height: 30, borderRadius: 7, border: `1px solid ${saved ? "#2DD4FF" : "#25303F"}`, background: saved ? "rgba(45,212,255,0.08)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: saved ? "#2DD4FF" : "#5C6672", flexShrink: 0, transition: "border-color 0.18s, background 0.18s, color 0.18s" }}
         >
           <Heart size={13} fill={saved ? "#2DD4FF" : "none"} />
         </button>
       </div>
 
-      {/* name */}
       <div>
-        <h3
-          style={{
-            ...bricolage,
-            fontWeight: 700,
-            fontSize: 19,
-            color: "#EAF1F7",
-            letterSpacing: "-0.02em",
-            margin: "0 0 4px",
-            lineHeight: 1.2,
-          }}
-        >
-          {offer.name}
+        <h3 style={{ ...bricolage, fontWeight: 700, fontSize: 19, color: "#EAF1F7", letterSpacing: "-0.02em", margin: "0 0 4px", lineHeight: 1.2 }}>
+          {listing.title}
         </h3>
         <p style={{ fontSize: 12.5, color: "#8C97A3", margin: 0 }}>
-          {offer.business} · {offer.location}
+          {listing.location || "Location TBD"}
         </p>
       </div>
 
-      {/* wants */}
       <p style={{ fontSize: 12.5, color: "#5C6672", margin: 0 }}>
-        <span style={{ color: "#8C97A3" }}>Wants: </span>{offer.wants}
+        <span style={{ color: "#8C97A3" }}>Wants: </span>
+        {(listing.wanted_promotion_type || []).join(", ") || listing.offering_details?.slice(0, 60) || "Promotion"}
       </p>
 
-      {/* footer: value + CTA */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: "auto" }}>
         <div style={{ lineHeight: 1 }}>
-          <span style={{ ...mono, fontSize: 20, fontWeight: 700, color: "#EAF1F7" }}>${val}</span>
-          <span style={{ ...mono, fontSize: 11, color: "#5C6672", marginLeft: 5 }}>value</span>
+          {listing.estimated_value ? (
+            <>
+              <span style={{ ...mono, fontSize: 20, fontWeight: 700, color: "#EAF1F7" }}>${val}</span>
+              <span style={{ ...mono, fontSize: 11, color: "#5C6672", marginLeft: 5 }}>value</span>
+            </>
+          ) : (
+            <span style={{ ...mono, fontSize: 13, color: "#5C6672" }}>Value TBD</span>
+          )}
         </div>
-        <button
-          style={{
-            ...mono,
-            fontSize: 11.5,
-            fontWeight: 600,
-            padding: "8px 14px",
-            borderRadius: 8,
-            background: "#2DD4FF",
-            color: "#06303B",
-            border: "none",
-            cursor: "pointer",
-            minHeight: 34,
-            transition: "background 0.18s",
-            whiteSpace: "nowrap",
-          }}
+        <Link
+          to={`/listing/${listing.id}`}
+          style={{ ...mono, fontSize: 11.5, fontWeight: 600, padding: "8px 14px", borderRadius: 8, background: "#2DD4FF", color: "#06303B", border: "none", cursor: "pointer", minHeight: 34, transition: "background 0.18s", whiteSpace: "nowrap", textDecoration: "none", display: "inline-flex", alignItems: "center" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#5CDEFF")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#2DD4FF")}
         >
           Propose trade
-        </button>
+        </Link>
       </div>
     </div>
   );
 }
 
-function OffersGrid({ rm }) {
+function OffersGrid({ rm, listings }) {
   const [ref, vis] = useScrollReveal(0.05);
 
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
       <div
         ref={ref}
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          gap: 12,
-          marginBottom: 20,
-          opacity: vis ? 1 : 0,
-          transform: vis ? "translateY(0)" : "translateY(14px)",
-          transition: rm ? "none" : "opacity 0.5s ease, transform 0.5s ease",
-        }}
+        style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 20, opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(14px)", transition: rm ? "none" : "opacity 0.5s ease, transform 0.5s ease" }}
       >
         <h2 style={{ ...bricolage, fontWeight: 700, fontSize: 22, color: "#EAF1F7", margin: 0, letterSpacing: "-0.025em" }}>
           Offers for you
@@ -742,31 +683,33 @@ function OffersGrid({ rm }) {
         <span style={{ ...mono, fontSize: 11, color: "#5C6672" }}>matched to your reach</span>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))",
-          gap: 14,
-        }}
-      >
-        {OFFERS.map((offer, i) => (
-          <OfferCard key={offer.id} offer={offer} delay={i * 60} rm={rm} />
+      {listings.length === 0 && (
+        <div style={{ background: "#121823", border: "1px solid #25303F", borderRadius: 16, padding: "40px 24px", textAlign: "center" }}>
+          <p style={{ color: "#5C6672", fontSize: 14 }}>No active listings yet — check back soon.</p>
+          <Link to="/" style={{ ...mono, fontSize: 12, color: "#2DD4FF", textDecoration: "none", marginTop: 10, display: "inline-block" }}>Browse marketplace →</Link>
+        </div>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: 14 }}>
+        {listings.map((listing, i) => (
+          <OfferCard key={listing.id} listing={listing} delay={i * 60} rm={rm} />
         ))}
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────────────── */
-/* active trades sidebar card                              */
-/* ─────────────────────────────────────────────────────── */
-const TRADES = [
-  { title: "Free dinner for 2", sub: "Lumen Bistro · due Jul 3", status: "IN PROGRESS", statusColor: "#FFB020" },
-  { title: "Wireless earbuds ×2", sub: "Aural Co. · your move", status: "AWAITING YOU", statusColor: "#2DD4FF" },
-  { title: "Coffee for a year", sub: "Meridian Roasters", status: "COMPLETED", statusColor: "#2EE6A6" },
-];
+const STATUS_DISPLAY = {
+  pending:     { label: "PENDING",     color: "#FFB020" },
+  accepted:    { label: "ACCEPTED",    color: "#2DD4FF" },
+  in_progress: { label: "IN PROGRESS", color: "#FFB020" },
+  delivered:   { label: "DELIVERED",   color: "#2DD4FF" },
+  completed:   { label: "COMPLETED",   color: "#2EE6A6" },
+  declined:    { label: "DECLINED",    color: "#FF4D6D" },
+  disputed:    { label: "DISPUTED",    color: "#FF4D6D" },
+};
 
-function ActiveTradesCard({ rm }) {
+function ActiveTradesCard({ rm, trades }) {
   const [ref, vis] = useScrollReveal(0.1);
 
   return (
@@ -784,40 +727,47 @@ function ActiveTradesCard({ rm }) {
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
         <h3 style={{ ...bricolage, fontWeight: 700, fontSize: 18, color: "#EAF1F7", margin: 0 }}>Active trades</h3>
-        <span style={{ ...mono, fontSize: 13, color: "#5C6672" }}>3</span>
+        <span style={{ ...mono, fontSize: 13, color: "#5C6672" }}>{trades.length}</span>
       </div>
 
+      {trades.length === 0 && (
+        <p style={{ fontSize: 13, color: "#5C6672", padding: "10px 0" }}>No active trades yet.</p>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column" }}>
-        {TRADES.map((trade, i) => (
-          <React.Fragment key={trade.title}>
-            <div style={{ padding: "14px 0", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: "#EAF1F7", marginBottom: 3, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>
-                  {trade.title}
+        {trades.slice(0, 4).map((trade, i) => {
+          const sd = STATUS_DISPLAY[trade.status] || { label: trade.status?.toUpperCase(), color: "#8C97A3" };
+          return (
+            <React.Fragment key={trade.id}>
+              <div style={{ padding: "14px 0", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600, color: "#EAF1F7", marginBottom: 3, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>
+                    {trade.listing_title || "Untitled"}
+                  </div>
+                  <div style={{ ...mono, fontSize: 10.5, color: "#5C6672" }}>{trade.platform}</div>
                 </div>
-                <div style={{ ...mono, fontSize: 10.5, color: "#5C6672" }}>{trade.sub}</div>
+                <span
+                  style={{
+                    ...mono,
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                    padding: "4px 9px",
+                    borderRadius: 999,
+                    border: `1px solid ${sd.color}55`,
+                    color: sd.color,
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                >
+                  {sd.label}
+                </span>
               </div>
-              <span
-                style={{
-                  ...mono,
-                  fontSize: 10.5,
-                  fontWeight: 600,
-                  padding: "4px 9px",
-                  borderRadius: 999,
-                  border: `1px solid ${trade.statusColor}55`,
-                  color: trade.statusColor,
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                }}
-              >
-                {trade.status}
-              </span>
-            </div>
-            {i < TRADES.length - 1 && (
-              <div style={{ height: 1, background: "#1B2330" }} />
-            )}
-          </React.Fragment>
-        ))}
+              {i < Math.min(trades.length, 4) - 1 && (
+                <div style={{ height: 1, background: "#1B2330" }} />
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
 
       <Link
@@ -969,6 +919,35 @@ function PageFooter() {
 /* ─────────────────────────────────────────────────────── */
 export default function Dashboard() {
   const rm = useReducedMotion();
+  const [user, setUser] = useState(null);
+  const [trades, setTrades] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [stats, setStats] = useState({ active: 0, completed: 0, valueTraded: 0, avgRating: 0 });
+
+  useEffect(() => {
+    (async () => {
+      const me = await base44.auth.me();
+      setUser(me);
+      const [allSent, allReceived, activeListings, reviews] = await Promise.all([
+        base44.entities.TradeProposal.filter({ proposer_id: me.id }, "-created_date"),
+        base44.entities.TradeProposal.filter({ listing_owner_id: me.id }, "-created_date"),
+        base44.entities.Listing.filter({ status: "active" }, "-created_date", 12),
+        base44.entities.Review.filter({ reviewee_id: me.id }),
+      ]);
+      const allTrades = [...allSent, ...allReceived];
+      const activeTrades = allTrades.filter(t => ["pending","accepted","in_progress","delivered"].includes(t.status));
+      const completed = allTrades.filter(t => t.status === "completed");
+      const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length : 0;
+      setTrades(activeTrades);
+      setListings(activeListings);
+      setStats({
+        active: activeTrades.length,
+        completed: completed.length,
+        valueTraded: completed.length * 120, // estimate based on completed
+        avgRating,
+      });
+    })();
+  }, []);
 
   return (
     <div
@@ -986,28 +965,24 @@ export default function Dashboard() {
 
       {/* all content sits above the whale layer */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        <TopBar />
+        <TopBar user={user} />
 
         <main style={{ maxWidth: 1280, margin: "0 auto", padding: "48px 24px 0" }}>
-          <Welcome rm={rm} />
+          <Welcome rm={rm} user={user} stats={stats} />
 
           {/* two-column layout */}
           <div
-            style={{
-              display: "flex",
-              gap: 28,
-              alignItems: "flex-start",
-            }}
+            style={{ display: "flex", gap: 28, alignItems: "flex-start" }}
             className="flex-col-mobile"
           >
-            <OffersGrid rm={rm} />
+            <OffersGrid rm={rm} listings={listings} />
 
             {/* sidebar */}
             <div
               style={{ width: 320, flexShrink: 0, display: "flex", flexDirection: "column", gap: 20 }}
               className="sidebar-col"
             >
-              <ActiveTradesCard rm={rm} />
+              <ActiveTradesCard rm={rm} trades={trades} />
               <TierProgressCard rm={rm} />
             </div>
           </div>
