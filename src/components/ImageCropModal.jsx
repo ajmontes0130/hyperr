@@ -116,20 +116,27 @@ export default function ImageCropModal({ open, onClose, imageSrc, aspect = 1, on
       ctx.clip();
     }
 
-    const baseScale = getBaseScale();
-    const totalScale = baseScale * zoom;
-    // Top-left of image in display coords (centered + offset)
-    const imgLeft = (PREVIEW - displayW()) / 2 + offset.x;
-    const imgTop = (PREVIEW - displayH()) / 2 + offset.y;
-    // Crop box in display coords
-    const cropLeft = (PREVIEW - CROP_SIZE) / 2;
-    const cropTop = (PREVIEW - CROP_SIZE) / 2;
-    // In image natural coords
-    const srcX = (cropLeft - imgLeft) / totalScale;
-    const srcY = (cropTop - imgTop) / totalScale;
-    const srcSize = CROP_SIZE / totalScale;
+    // Scale each axis independently to avoid stretching on non-square images
+    const dw = displayW();
+    const dh = displayH();
+    const scaleX = imgNatural.w / dw; // natural px per display px (x)
+    const scaleY = imgNatural.h / dh; // natural px per display px (y)
 
-    ctx.drawImage(imgRef.current, srcX, srcY, srcSize, srcSize, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    // Top-left of image in display coords
+    const imgLeft = (PREVIEW - dw) / 2 + offset.x;
+    const imgTop  = (PREVIEW - dh) / 2 + offset.y;
+
+    // Crop box top-left in display coords
+    const cropLeft = (PREVIEW - CROP_SIZE) / 2;
+    const cropTop  = (PREVIEW - CROP_SIZE) / 2;
+
+    // Map crop box into natural image coords
+    const srcX = (cropLeft - imgLeft) * scaleX;
+    const srcY = (cropTop  - imgTop)  * scaleY;
+    const srcW = CROP_SIZE * scaleX;
+    const srcH = CROP_SIZE * scaleY;
+
+    ctx.drawImage(imgRef.current, srcX, srcY, srcW, srcH, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     canvas.toBlob((blob) => {
       if (blob) onCrop(blob);
