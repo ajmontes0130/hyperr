@@ -70,7 +70,7 @@ export default function CreatorProfilePage() {
   return (
     <div>
       <MobileBackButton />
-      <Link to="/creators" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+      <Link to="/creators" className="hidden sm:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Creators
       </Link>
 
