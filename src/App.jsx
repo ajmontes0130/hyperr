@@ -35,6 +35,7 @@ import TermsOfService from '@/pages/TermsOfService';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Landing from '@/pages/Landing';
 import Dashboard from '@/pages/Dashboard';
+import Support from '@/pages/Support';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/support" element={<Support />} />
         </Route>
       </Route>
 

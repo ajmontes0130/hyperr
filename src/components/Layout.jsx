@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, Home } from "lucide-react";
+import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, Home, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -96,6 +96,9 @@ export default function Layout() {
                   {user.full_name || user.email}
                 </span>
               )}
+              <Link to="/support" className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-secondary" title="Support">
+                <HelpCircle className="w-4 h-4" />
+              </Link>
               <Button
                 variant="ghost"
                 size="sm"
@@ -134,7 +137,14 @@ export default function Layout() {
                 </Link>
               ))}
             </div>
-            <div className="pt-3 border-t mt-2">
+            <div className="pt-3 border-t mt-2 space-y-1">
+              <Link
+                to="/support"
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium select-none ${isActive("/support") ? "text-primary bg-secondary" : "text-muted-foreground hover:bg-secondary"}`}
+              >
+                <HelpCircle className="w-4 h-4 select-none" /> Support
+              </Link>
               <button
                 onClick={() => base44.auth.logout("/")}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full select-none"
