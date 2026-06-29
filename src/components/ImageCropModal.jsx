@@ -95,10 +95,12 @@ export default function ImageCropModal({ open, onClose, imageSrc, aspect = 1, on
   const handleZoom = (delta) => {
     setZoom((prev) => {
       const next = Math.min(4, Math.max(1, prev + delta));
+      const baseScale = getBaseScale();
+      const newW = imgNatural.w * baseScale * next;
+      const newH = imgNatural.h * baseScale * next;
+      setOffset((o) => clampOffset(o.x, o.y, newW, newH));
       return next;
     });
-    // re-clamp after zoom
-    setOffset((o) => clampOffset(o.x, o.y, displayW(), displayH()));
   };
 
   const handleCrop = () => {
@@ -174,7 +176,6 @@ export default function ImageCropModal({ open, onClose, imageSrc, aspect = 1, on
             )}
 
             {/* Overlay mask with crop hole */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(0,0,0,0.45)" }} />
             <div
               className="absolute pointer-events-none border-2 border-primary"
               style={{
