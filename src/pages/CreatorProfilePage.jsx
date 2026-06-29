@@ -78,7 +78,7 @@ export default function CreatorProfilePage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Profile card */}
-          <div className="bg-white rounded-2xl border p-6 text-center">
+          <div className="bg-card rounded-2xl border p-6 text-center">
             <div className="w-24 h-24 rounded-2xl mx-auto mb-4 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/20">
               {creator.avatar_url
                 ? <img src={creator.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -115,7 +115,7 @@ export default function CreatorProfilePage() {
 
           {/* Social reach */}
           {socials.length > 0 && (
-            <div className="bg-white rounded-2xl border p-6">
+            <div className="bg-card rounded-2xl border p-6">
               <h3 className="font-display font-semibold mb-4">Social Reach</h3>
               <div className="space-y-3">
                 {socials.map((s) => (
@@ -200,7 +200,7 @@ export default function CreatorProfilePage() {
         {/* Main */}
         <div className="lg:col-span-2 space-y-8">
           {creator.bio && (
-            <div className="bg-white rounded-2xl border p-6">
+            <div className="bg-card rounded-2xl border p-6">
               <h2 className="font-display font-semibold text-lg mb-3">About</h2>
               <p className="text-muted-foreground leading-relaxed">{creator.bio}</p>
             </div>
@@ -210,13 +210,13 @@ export default function CreatorProfilePage() {
           <div>
             <h2 className="font-display font-semibold text-xl mb-4">Collaboration Portfolio</h2>
             {portfolio.length === 0 ? (
-              <div className="bg-white rounded-2xl border p-10 text-center">
+              <div className="bg-card rounded-2xl border p-10 text-center">
                 <p className="text-muted-foreground text-sm">No portfolio items yet.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {portfolio.map((item) => (
-                  <div key={item.id} className="bg-white rounded-2xl border overflow-hidden group hover:shadow-md transition-all">
+                  <div key={item.id} className="bg-card rounded-2xl border overflow-hidden group hover:shadow-md transition-all">
                     <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
                       {item.thumbnail_url
                         ? <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -251,13 +251,13 @@ export default function CreatorProfilePage() {
           <div>
             <h2 className="font-display font-semibold text-xl mb-4">Reviews</h2>
             {reviews.length === 0 ? (
-              <div className="bg-white rounded-2xl border p-10 text-center">
+              <div className="bg-card rounded-2xl border p-10 text-center">
                 <p className="text-muted-foreground text-sm">No reviews yet.</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {reviews.map((r) => (
-                  <div key={r.id} className="bg-white rounded-2xl border p-5">
+                  <div key={r.id} className="bg-card rounded-2xl border p-5">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div>
                         <p className="font-semibold text-sm">{r.reviewer_name}</p>
