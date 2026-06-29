@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import HyperrLogo from "@/components/HyperrLogo";
 import { base44 } from "@/api/base44Client";
 import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, Home, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,9 +68,7 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center flex-shrink-0">
-              <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: 26, color: "#2DD4FF", letterSpacing: "-0.04em" }}>
-                hyperr
-              </span>
+              <HyperrLogo size="md" />
             </Link>
 
             {/* Desktop nav */}

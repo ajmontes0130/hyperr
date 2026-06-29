@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import HyperrLogo from "@/components/HyperrLogo";
 
 const links = [
   { label: "How it works", href: "#how-it-works" },
@@ -35,8 +36,8 @@ export default function LandingNav() {
     <nav style={navStyle}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", height: 64 }}>
         {/* Logo */}
-        <a href="#" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: 24, color: "#2DD4FF", textDecoration: "none", letterSpacing: "-0.04em", flexShrink: 0 }}>
-          hyperr
+        <a href="#" style={{ textDecoration: "none", flexShrink: 0, display: "flex" }}>
+          <HyperrLogo size="md" />
         </a>
 
         {/* Desktop center links */}

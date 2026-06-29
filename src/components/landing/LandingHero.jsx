@@ -132,7 +132,12 @@ function TradeCard({ reduced }) {
         transition: reduced ? "none" : "opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1)",
         zIndex: 2,
       }}>
-        ⇄
+        <svg viewBox="0 0 100 100" width="22" height="22" style={{ color: "#2DD4FF" }}>
+          <g fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M24 34 H58" /><path d="M50 24 L71 34 L50 44" />
+            <path d="M76 66 H42" /><path d="M50 56 L29 66 L50 76" />
+          </g>
+        </svg>
       </div>
 
       {/* Creator card */}
