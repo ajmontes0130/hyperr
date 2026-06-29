@@ -1,752 +1,499 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
 
-/* ─── reduced motion ──────────────────────────────────────────── */
-function useReducedMotion() {
-  const [rm, setRm] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setRm(mq.matches);
-    const h = (e) => setRm(e.matches);
-    mq.addEventListener("change", h);
-    return () => mq.removeEventListener("change", h);
-  }, []);
-  return rm;
-}
+const MARKUP = `
+  <!-- symbol defs -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="hy-H" viewBox="0 0 132 150"><g fill="currentColor"><rect x="0" y="0" width="28" height="150" rx="14"></rect><rect x="104" y="0" width="28" height="150" rx="14"></rect><rect x="0" y="61" width="132" height="28" rx="14"></rect></g></symbol>
+    <symbol id="hyperr-whale" viewBox="0 0 240 96"><path d="M16,56 C16,44 30,38 52,37 C104,34 150,34 188,40 C200,42 210,40 220,34 L236,22 C228,33 226,38 232,44 L236,68 C226,60 214,58 200,58 C150,62 104,64 56,60 C30,58 16,68 16,56 Z"></path><path d="M84,60 C92,74 110,80 122,75 C112,69 98,64 92,59 Z"></path></symbol>
+  </svg>
 
-/* ─── scroll reveal ───────────────────────────────────────────── */
-function useScrollReveal(threshold = 0.12) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (rm) { setVisible(true); return; }
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
+  <!-- FIXED DEEP PARALLAX LAYERS -->
+  <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;">
+    <div data-px data-sy="0.018" data-mx="-14" data-my="-10" style="position:absolute;inset:-10% -10% -10% -10%;background-image:linear-gradient(rgba(45,212,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,255,.05) 1px,transparent 1px);background-size:66px 66px;-webkit-mask-image:radial-gradient(120% 80% at 50% 18%,#000,transparent 72%);mask-image:radial-gradient(120% 80% at 50% 18%,#000,transparent 72%);"></div>
+    <div data-px data-sy="0.05" data-mx="-30" data-my="-22" style="position:absolute;left:50%;top:34%;width:min(900px,120vw);height:min(900px,120vw);transform:translate(-50%,-50%);">
+      <div data-glow style="position:absolute;inset:0;background:radial-gradient(circle,rgba(45,212,255,.18),rgba(45,212,255,0) 62%);filter:blur(10px);"></div>
+    </div>
+    <div data-px data-sy="0.09" data-mx="22" data-my="16" style="position:absolute;left:74%;top:64%;width:min(620px,90vw);height:min(620px,90vw);transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,77,109,.09),rgba(255,77,109,0) 64%);filter:blur(14px);"></div>
+    <div data-whales data-px data-sy="0.06" data-my="10" style="position:absolute;inset:0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 84%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 84%,transparent);">
+      <div data-whale data-speed="20" data-dir="-1" data-bob="5" data-phase="2.3" style="position:absolute;left:0;top:24%;width:230px;opacity:.06;filter:blur(5px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#173343;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="24" data-dir="1" data-bob="6" data-phase="0.2" style="position:absolute;left:0;top:15%;width:262px;opacity:.085;filter:blur(4px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#173343;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="33" data-dir="-1" data-bob="7" data-phase="1.1" style="position:absolute;left:0;top:58%;width:300px;opacity:.1;filter:blur(3px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1A3A4D;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="44" data-dir="1" data-bob="9" data-phase="0.6" style="position:absolute;left:0;top:42%;width:360px;opacity:.12;filter:blur(2px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1C404F;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="56" data-dir="1" data-bob="10" data-phase="1.7" style="position:absolute;left:0;top:78%;width:420px;opacity:.14;filter:blur(1.5px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1E4658;"><use href="#hyperr-whale"></use></svg></div>
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,14,20,.55),rgba(10,14,20,0) 22%,rgba(10,14,20,0) 70%,rgba(10,14,20,.8));"></div>
+  </div>
 
-/* ─── count up number ─────────────────────────────────────────── */
-function useCountUp(end, duration, active, rm) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    if (rm) { setVal(end); return; }
-    let startTs = null;
-    const raf = (ts) => {
-      if (!startTs) startTs = ts;
-      const p = Math.min((ts - startTs) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.floor(eased * end));
-      if (p < 1) requestAnimationFrame(raf);
-    };
-    requestAnimationFrame(raf);
-  }, [active, end, duration, rm]);
-  return val >= 1000 ? (val / 1000).toFixed(0) + "K" : String(val);
-}
+  <!-- FOREGROUND -->
+  <div style="position:relative;z-index:1;">
 
-/* ─── nav ─────────────────────────────────────────────────────── */
-function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
-  }, []);
-
-  const navLinks = [
-    { label: "How it works", href: "#how-it-works" },
-    { label: "For creators", href: "#for-creators" },
-    { label: "For businesses", href: "#for-businesses" },
-    { label: "Tiers", href: "#tiers" },
-  ];
-
-  return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={{
-        background: scrolled ? "rgba(10,14,20,0.9)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid #25303F" : "1px solid transparent",
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-6 flex items-center h-16">
-        <a
-          href="#"
-          className="shrink-0"
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 800,
-            fontSize: 24,
-            color: "#2DD4FF",
-            textDecoration: "none",
-            letterSpacing: "-0.04em",
-          }}
-        >
-          hyperr
-        </a>
-
-        {/* desktop links */}
-        <div className="hidden md:flex gap-8 mx-auto">
-          {navLinks.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="text-sm font-medium transition-colors"
-              style={{ color: "#8C97A3", textDecoration: "none" }}
-              onMouseEnter={(e) => (e.target.style.color = "#EAF1F7")}
-              onMouseLeave={(e) => (e.target.style.color = "#8C97A3")}
-            >
-              {l.label}
-            </a>
-          ))}
-        </div>
-
-        {/* desktop actions */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
-          <Link
-            to="/login"
-            className="text-sm font-medium px-4 py-2 rounded-lg border transition-all"
-            style={{ color: "#8C97A3", border: "1px solid #25303F", textDecoration: "none" }}
-            onMouseEnter={(e) => { e.target.style.borderColor = "#34404F"; e.target.style.color = "#EAF1F7"; }}
-            onMouseLeave={(e) => { e.target.style.borderColor = "#25303F"; e.target.style.color = "#8C97A3"; }}
-          >
-            Log in
-          </Link>
-          <Link
-            to="/register"
-            className="text-sm font-semibold px-4 py-2 rounded-lg transition-all"
-            style={{ background: "#2DD4FF", color: "#06303B", textDecoration: "none" }}
-            onMouseEnter={(e) => (e.target.style.background = "#5CDEFF")}
-            onMouseLeave={(e) => (e.target.style.background = "#2DD4FF")}
-          >
-            Sign up
-          </Link>
-        </div>
-
-        {/* mobile menu button */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden ml-auto p-2"
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#EAF1F7" }}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+    <!-- NAV -->
+    <nav data-nav style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px clamp(20px,5vw,64px);border-bottom:1px solid transparent;transition:background .25s ease,border-color .25s ease,backdrop-filter .25s ease;">
+      <a href="#top" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
+        <svg viewBox="0 0 132 150" style="height:24px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 7px rgba(45,212,255,.65)) drop-shadow(0 0 16px rgba(45,212,255,.32));"><use href="#hy-H"></use></svg>
+        <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
+      </a>
+      <div data-navlinks style="display:flex;align-items:center;gap:30px;">
+        <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
+        <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
+        <a href="#business" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For businesses</a>
+        <a href="#tiers" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">Tiers</a>
       </div>
-
-      {mobileOpen && (
-        <div style={{ background: "#121823", borderTop: "1px solid #25303F" }} className="md:hidden px-6 pb-6">
-          {navLinks.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              onClick={() => setMobileOpen(false)}
-              className="block text-base font-medium py-3"
-              style={{ color: "#8C97A3", textDecoration: "none", borderBottom: "1px solid #25303F" }}
-            >
-              {l.label}
-            </a>
-          ))}
-          <div className="flex gap-3 mt-5">
-            <Link to="/login" className="flex-1 text-center text-sm font-medium py-2.5 rounded-lg border" style={{ color: "#8C97A3", border: "1px solid #25303F", textDecoration: "none" }}>
-              Log in
-            </Link>
-            <Link to="/register" className="flex-1 text-center text-sm font-semibold py-2.5 rounded-lg" style={{ background: "#2DD4FF", color: "#06303B", textDecoration: "none" }}>
-              Sign up
-            </Link>
-          </div>
-        </div>
-      )}
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a href="/login" style="color:#EAF1F7;text-decoration:none;font-size:14.5px;font-weight:600;padding:9px 16px;border-radius:10px;border:1px solid #34404F;transition:background .15s ease,border-color .15s ease;" data-h="background:rgba(255,255,255,.05);">Log in</a>
+        <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:14.5px;font-weight:600;padding:10px 18px;border-radius:10px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 8px 22px rgba(45,212,255,.3);">Sign up</a>
+      </div>
     </nav>
-  );
-}
 
-/* ─── hero trade visual ───────────────────────────────────────── */
-function TradeVisual({ rm }) {
-  const [phase, setPhase] = useState(rm ? 4 : 0);
-
-  useEffect(() => {
-    if (rm) { setPhase(4); return; }
-    const t1 = setTimeout(() => setPhase(1), 200);
-    const t2 = setTimeout(() => setPhase(2), 600);
-    const t3 = setTimeout(() => setPhase(3), 900);
-    const t4 = setTimeout(() => setPhase(4), 1150);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [rm]);
-
-  const statVal = useCountUp(445, 500, phase >= 3, rm);
-  const statVal2 = useCountUp(512, 550, phase >= 3, rm);
-  const estVal = useCountUp(150, 600, phase >= 2, rm);
-
-  const slideLeft = {
-    opacity: phase >= 1 ? 1 : 0,
-    transform: phase >= 1 ? "translateX(0)" : "translateX(-36px)",
-    transition: rm ? "none" : "opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1)",
-  };
-  const slideRight = {
-    opacity: phase >= 1 ? 1 : 0,
-    transform: phase >= 1 ? "translateX(0)" : "translateX(36px)",
-    transition: rm ? "none" : "opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1)",
-  };
-  const swapStyle = {
-    opacity: phase >= 2 ? 1 : 0,
-    transform: phase >= 2 ? "scale(1) rotate(0deg)" : "scale(0.2) rotate(-90deg)",
-    transition: rm ? "none" : "opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-  };
-  const pillStyle = {
-    opacity: phase >= 4 ? 1 : 0,
-    transform: phase >= 4 ? "scale(1) translateY(0)" : "scale(0.85) translateY(4px)",
-    transition: rm ? "none" : "opacity 0.3s ease, transform 0.3s ease",
-  };
-
-  const monoFont = { fontFamily: "'JetBrains Mono', monospace" };
-
-  return (
-    <div style={{ position: "relative", padding: "32px 0 16px" }}>
-      {/* glow */}
-      {!rm && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: 999,
-            background: "radial-gradient(ellipse at center, rgba(45,212,255,0.06) 0%, transparent 70%)",
-            animation: "glowBreathe 4s ease-in-out infinite",
-            pointerEvents: "none",
-          }}
-        />
-      )}
-
-      {/* status pill */}
-      <div style={{ position: "absolute", top: 4, left: "50%", transform: `translateX(-50%) scale(${phase >= 4 ? 1 : 0.85})`, opacity: phase >= 4 ? 1 : 0, transition: pillStyle.transition, whiteSpace: "nowrap", zIndex: 10 }}>
-        <span style={{ ...monoFont, display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 14px", borderRadius: 999, fontSize: 11, fontWeight: 600, background: "rgba(46,230,166,0.1)", border: "1px solid rgba(46,230,166,0.35)", color: "#2EE6A6" }}>
-          ✓ Completed
-        </span>
+    <!-- HERO STAGE -->
+    <header id="top" style="position:relative;min-height:clamp(660px,94vh,940px);max-width:1280px;margin:0 auto;padding:clamp(120px,16vh,176px) clamp(20px,5vw,64px) clamp(40px,6vh,72px);display:flex;align-items:center;overflow:visible;">
+      <div data-px data-sy="0.14" data-mx="-46" data-my="-30" style="position:absolute;left:clamp(-40px,3vw,40px);top:46%;transform:translateY(-50%);pointer-events:none;z-index:0;">
+        <svg viewBox="0 0 132 150" style="height:min(112vh,940px);width:auto;color:#2DD4FF;opacity:.05;filter:blur(2px) drop-shadow(0 0 60px rgba(45,212,255,.35));"><use href="#hy-H"></use></svg>
       </div>
-
-      {/* cards row */}
-      <div style={{ display: "flex", alignItems: "center", gap: 14, paddingTop: 8 }}>
-        {/* business card */}
-        <div style={{ ...slideLeft, background: "#121823", border: "1px solid #25303F", borderRadius: 16, padding: "18px 18px", width: 168, flexShrink: 0 }}>
-          <div style={{ ...monoFont, fontSize: 9, fontWeight: 600, letterSpacing: "0.1em", color: "#2DD4FF", marginBottom: 10 }}>BUSINESS OFFER</div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#EAF1F7", marginBottom: 4, lineHeight: 1.35 }}>Free dinner for 2</div>
-          <div style={{ fontSize: 11, color: "#8C97A3", marginBottom: 10 }}>Lumen Bistro · Austin</div>
-          <div style={{ display: "inline-block", background: "rgba(45,212,255,0.07)", border: "1px solid rgba(45,212,255,0.2)", borderRadius: 8, padding: "5px 10px" }}>
-            <span style={{ ...monoFont, fontSize: 13, fontWeight: 600, color: "#2DD4FF" }}>
-              ${estVal} est.
-            </span>
+      <div data-floatwrap style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .9s ease .2s;">
+        <div data-px data-sy="-0.20" data-fade="0.0016" data-base-op="0.55" data-mx="32" data-my="22" style="position:absolute;left:6%;top:23%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2DD4FF;box-shadow:0 0 9px #2DD4FF;"></span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">$150 · free dinner</span>
+        </div>
+        <div data-px data-sy="-0.13" data-fade="0.0018" data-base-op="0.5" data-mx="-26" data-my="18" style="position:absolute;left:3%;top:62%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid rgba(255,194,71,.34);border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="color:#FFC247;font-size:12px;">◆</span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#FFC247;letter-spacing:.04em;">GOLD tier</span>
+        </div>
+        <div data-px data-sy="-0.28" data-fade="0.0017" data-base-op="0.55" data-mx="20" data-my="15" style="position:absolute;right:30%;top:15%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#8C97A3;">reach</span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">957K</span>
+        </div>
+        <div data-px data-sy="-0.22" data-fade="0.0015" data-base-op="0.5" data-mx="-22" data-my="24" style="position:absolute;right:5%;top:74%;display:inline-flex;align-items:center;gap:8px;background:rgba(6,48,59,.66);border:1px solid #2EE6A6;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2EE6A6;"></span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#2EE6A6;letter-spacing:.04em;">trade complete</span>
+        </div>
+        <div data-px data-sy="-0.16" data-fade="0.0019" data-base-op="0.42" data-mx="26" data-my="-14" style="position:absolute;left:40%;top:9%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.7);border:1px solid #25303F;border-radius:999px;padding:7px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <span style="font-family:JetBrains Mono,monospace;font-size:11px;color:#8C97A3;letter-spacing:.02em;">$270 · 3-mo pass</span>
+        </div>
+      </div>
+      <div style="position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,72px);width:100%;">
+        <div data-px data-sy="0.05" data-my="6" style="flex:1 1 440px;min-width:300px;">
+          <div data-hero="rise" data-hero-delay="0" style="display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border:1px solid #25303F;border-radius:999px;background:rgba(18,24,35,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2DD4FF;box-shadow:0 0 10px #2DD4FF;"></span>
+            <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;letter-spacing:.14em;color:#8C97A3;">THE BARTER MARKETPLACE</span>
+          </div>
+          <h1 data-hero="rise" data-hero-delay="90" style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:clamp(44px,6.4vw,80px);line-height:1.0;letter-spacing:-.04em;margin:22px 0 0;">Trade products for <span style="color:#2DD4FF;text-shadow:0 0 24px rgba(45,212,255,.45);">promotion.</span></h1>
+          <p data-hero="rise" data-hero-delay="180" style="color:#8C97A3;font-size:clamp(16px,1.5vw,19px);line-height:1.55;max-width:480px;margin:22px 0 0;">hyperr connects businesses and creators to swap real value — products, services, experiences — for content and reach. Cash optional.</p>
+          <div data-hero="rise" data-hero-delay="270" style="display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;">
+            <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,109,.32);">Join as a creator <span style="font-size:17px;">→</span></a>
+            <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,255,.32);">List your business</a>
           </div>
         </div>
-
-        {/* swap badge */}
-        <div style={{ ...swapStyle, width: 40, height: 40, borderRadius: "50%", background: "#1B2330", border: "1px solid #34404F", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, color: "#2DD4FF", flexShrink: 0, zIndex: 2 }}>
-          ⇄
-        </div>
-
-        {/* creator card */}
-        <div style={{ ...slideRight, background: "#121823", border: "1px solid #25303F", borderRadius: 16, padding: "18px 18px", width: 168, flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(45,212,255,0.12)", border: "2px solid rgba(45,212,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: 12, color: "#2DD4FF", flexShrink: 0 }}>
-              KT
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#EAF1F7", marginBottom: 1 }}>Kai Tanaka</div>
-              <div style={{ ...monoFont, fontSize: 9, fontWeight: 600, color: "#FFC247" }}>◆ GOLD</div>
+        <div style="flex:1 1 430px;min-width:300px;display:flex;justify-content:center;perspective:1200px;">
+          <div data-hero="right" data-hero-delay="120" style="position:relative;width:100%;max-width:540px;">
+            <div data-px data-sy="-0.06" data-mx="20" data-my="14" data-rx="5.5" data-ry="7" style="position:relative;transform-style:preserve-3d;will-change:transform;">
+              <div data-hero="pill" data-hero-delay="1000" style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);z-index:4;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:#06303B;color:#2EE6A6;border:1px solid #2EE6A6;padding:7px 15px;border-radius:999px;font-family:JetBrains Mono,monospace;font-size:11.5px;font-weight:600;letter-spacing:.08em;box-shadow:0 8px 24px rgba(46,230,166,.22);">
+                  <span style="width:7px;height:7px;border-radius:50%;background:#2EE6A6;"></span>COMPLETED
+                </div>
+              </div>
+              <div style="position:relative;z-index:2;display:flex;align-items:center;gap:0;">
+                <div data-hero="left" data-hero-delay="180" style="flex:1 1 0;min-width:0;background:#121823;border:1px solid #25303F;border-radius:16px;padding:18px;box-shadow:0 24px 56px rgba(0,0,0,.5);">
+                  <div style="font-family:JetBrains Mono,monospace;font-size:10.5px;letter-spacing:.1em;color:#2DD4FF;">BUSINESS OFFER</div>
+                  <div style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em;margin-top:11px;line-height:1.15;">Free dinner for 2</div>
+                  <div style="color:#8C97A3;font-size:12.5px;margin-top:5px;">Lumen Bistro · Austin</div>
+                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #25303F;display:flex;align-items:baseline;gap:7px;">
+                    <span data-count data-prefix="$" data-target="150" style="font-family:JetBrains Mono,monospace;font-size:22px;font-weight:600;color:#EAF1F7;">$150</span>
+                    <span style="color:#5C6672;font-size:11.5px;">est. value</span>
+                  </div>
+                </div>
+                <div data-hero="swap" data-hero-delay="520" style="flex:0 0 auto;margin:0 -16px;z-index:3;">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#1B2330;border:1px solid #34404F;display:flex;align-items:center;justify-content:center;font-size:22px;color:#2DD4FF;box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 18px rgba(45,212,255,.25);">⇄</div>
+                </div>
+                <div data-hero="right" data-hero-delay="240" style="flex:1 1 0;min-width:0;background:#121823;border:1px solid #25303F;border-radius:16px;padding:18px;box-shadow:0 24px 56px rgba(0,0,0,.5);">
+                  <div style="display:flex;align-items:center;gap:11px;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1B2330,#25303F);border:1px solid #34404F;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;font-size:13px;font-weight:600;color:#7FE9FF;flex:0 0 auto;">KT</div>
+                    <div style="min-width:0;">
+                      <div style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;letter-spacing:-.02em;">Kai Tanaka</div>
+                      <div style="font-family:JetBrains Mono,monospace;font-size:11px;color:#FFC247;letter-spacing:.04em;margin-top:1px;">◆ GOLD</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #25303F;display:flex;flex-direction:column;gap:9px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                      <span style="color:#8C97A3;font-size:12px;">Instagram</span>
+                      <span data-count data-suffix="K" data-target="445" style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:600;color:#EAF1F7;">445K</span>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                      <span style="color:#8C97A3;font-size:12px;">YouTube</span>
+                      <span data-count data-suffix="K" data-target="512" style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:600;color:#EAF1F7;">512K</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#8C97A3" }}>Instagram</span>
-              <span style={{ ...monoFont, fontSize: 11, fontWeight: 600, color: "#EAF1F7" }}>{statVal}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#8C97A3" }}>YouTube</span>
-              <span style={{ ...monoFont, fontSize: 11, fontWeight: 600, color: "#EAF1F7" }}>{statVal2}</span>
-            </div>
-          </div>
         </div>
+      </div>
+      <div data-px data-fade="0.004" data-base-op="1" style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;pointer-events:none;">
+        <span style="font-family:JetBrains Mono,monospace;font-size:10.5px;letter-spacing:.18em;color:#5C6672;">SCROLL</span>
+        <span data-bounce style="width:22px;height:34px;border:1.5px solid #34404F;border-radius:12px;display:flex;justify-content:center;padding-top:6px;"><span style="width:3px;height:7px;border-radius:2px;background:#2DD4FF;"></span></span>
+      </div>
+    </header>
+
+    <!-- THIN BAND -->
+    <div style="position:relative;border-top:1px solid #25303F;border-bottom:1px solid #25303F;background:rgba(12,17,26,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+      <div style="max-width:1280px;margin:0 auto;padding:18px clamp(20px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px;text-align:center;font-size:14.5px;">
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Products</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Services</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Experiences</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Exposure</span>
+        <span style="color:#5C6672;margin-left:6px;">— traded directly, no invoices.</span>
       </div>
     </div>
-  );
-}
 
-/* ─── hero ────────────────────────────────────────────────────── */
-function Hero() {
-  const rm = useReducedMotion();
-  const [vis, setVis] = useState(rm);
+    <!-- HOW IT WORKS -->
+    <section id="how" style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(72px,11vh,120px) clamp(20px,5vw,64px);">
+      <div data-reveal style="margin-bottom:48px;">
+        <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">HOW IT WORKS</div>
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 0;max-width:580px;line-height:1.05;">Three steps from sign-up to settled trade.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+        <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">01</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Build your profile</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Connect your socials and show what you offer. We verify the numbers so trust is built in.</p>
+        </div>
+        <div data-reveal data-reveal-delay="90" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">02</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Find your match</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Browse offers and creators. Filter by reach, niche, and the value on the table.</p>
+        </div>
+        <div data-reveal data-reveal-delay="180" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">03</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Trade and track</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Agree the terms, deliver, and track every trade end to end in one place.</p>
+        </div>
+      </div>
+    </section>
 
-  useEffect(() => {
-    if (rm) { setVis(true); return; }
-    const id = setTimeout(() => setVis(true), 60);
-    return () => clearTimeout(id);
-  }, [rm]);
-
-  const fadeUp = (delayMs) =>
-    rm
-      ? {}
-      : {
-          opacity: vis ? 1 : 0,
-          transform: vis ? "translateY(0)" : "translateY(18px)",
-          transition: `opacity 0.55s ease ${delayMs}ms, transform 0.55s ease ${delayMs}ms`,
-        };
-
-  return (
-    <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 64 }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 24px", width: "100%" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* copy side */}
-          <div>
-            <div style={{ ...fadeUp(0), display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-              <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#2DD4FF", boxShadow: "0 0 10px #2DD4FF, 0 0 20px rgba(45,212,255,0.35)", flexShrink: 0 }} />
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#2DD4FF" }}>
-                THE BARTER MARKETPLACE
-              </span>
-            </div>
-
-            <h1
-              style={{
-                ...fadeUp(80),
-                fontFamily: "'Bricolage Grotesque', sans-serif",
-                fontWeight: 800,
-                fontSize: "clamp(42px, 5.5vw, 72px)",
-                lineHeight: 1.04,
-                letterSpacing: "-0.04em",
-                color: "#EAF1F7",
-                marginBottom: 24,
-              }}
-            >
-              Trade products
-              <br />
-              for <span style={{ color: "#2DD4FF" }}>promotion.</span>
-            </h1>
-
-            <p
-              style={{
-                ...fadeUp(160),
-                fontSize: "clamp(15px, 1.4vw, 18px)",
-                color: "#8C97A3",
-                lineHeight: 1.65,
-                maxWidth: 480,
-                marginBottom: 36,
-              }}
-            >
-              hyperr connects businesses and creators to swap real value — products, services, experiences — for content and reach. Cash optional.
-            </p>
-
-            <div style={{ ...fadeUp(240), display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <Link
-                to="/register"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#FF4D6D", color: "#4B1320", textDecoration: "none", fontWeight: 600, fontSize: 15, padding: "13px 24px", borderRadius: 12, minHeight: 44, transition: "all 0.2s" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#FF6B85"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#FF4D6D"; e.currentTarget.style.transform = "translateY(0)"; }}
-              >
-                Join as a creator <ArrowRight size={15} />
-              </Link>
-              <Link
-                to="/register"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#2DD4FF", color: "#06303B", textDecoration: "none", fontWeight: 600, fontSize: 15, padding: "13px 24px", borderRadius: 12, minHeight: 44, transition: "all 0.2s" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#5CDEFF"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#2DD4FF"; e.currentTarget.style.transform = "translateY(0)"; }}
-              >
-                List your business <ArrowRight size={15} />
-              </Link>
-            </div>
+    <!-- DUAL VALUE PROPS -->
+    <section style="position:relative;max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,64px) clamp(40px,6vh,70px);">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;">
+        <div id="creators" data-reveal style="background:linear-gradient(165deg,rgba(255,77,109,.12),rgba(18,24,35,.66));border:1px solid rgba(255,77,109,.28);border-radius:20px;padding:clamp(26px,3.5vw,40px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.12em;color:#FF4D6D;">FOR CREATORS</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:14px 0 22px;line-height:1.08;">Earn from the content you'd make anyway.</h3>
+          <div style="display:flex;flex-direction:column;gap:15px;margin-bottom:30px;">
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Get paid in products you'd post about anyway.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Keep full creative control of every post.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Build a verified record that earns you tiers.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Cash deals optional — stack them on top.</span></div>
           </div>
+          <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 26px rgba(255,77,109,.3);">Join as a creator <span style="font-size:16px;">→</span></a>
+        </div>
+        <div id="business" data-reveal data-reveal-delay="90" style="background:linear-gradient(165deg,rgba(45,212,255,.12),rgba(18,24,35,.66));border:1px solid rgba(45,212,255,.28);border-radius:20px;padding:clamp(26px,3.5vw,40px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.12em;color:#2DD4FF;">FOR BUSINESSES</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:14px 0 22px;line-height:1.08;">Reach real audiences without ad spend.</h3>
+          <div style="display:flex;flex-direction:column;gap:15px;margin-bottom:30px;">
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Pay in what you already make — not cash.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Match with creators whose numbers are verified.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Put your product in front of the right niche.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Track results on every trade, start to finish.</span></div>
+          </div>
+          <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 26px rgba(45,212,255,.3);">List your business <span style="font-size:16px;">→</span></a>
+        </div>
+      </div>
+    </section>
 
-          {/* visual side */}
-          <div style={{ ...fadeUp(120), display: "flex", justifyContent: "center" }}>
-            <TradeVisual rm={rm} />
+    <!-- TIERS -->
+    <section id="tiers" style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(40px,6vh,70px) clamp(20px,5vw,64px) clamp(72px,11vh,120px);">
+      <div data-reveal style="text-align:center;margin-bottom:44px;">
+        <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">CREATOR TIERS</div>
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 10px;line-height:1.05;">Tiers are earned, not bought.</h2>
+        <p style="color:#8C97A3;font-size:15px;margin:0;">Your tier reflects verified reach and a real trade record — nothing you can pay for.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;">
+        <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(127,233,255,.16);">
+          <div style="width:18px;height:18px;background:#7FE9FF;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(127,233,255,.5);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#7FE9FF;letter-spacing:.06em;">DIAMOND</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Top-tier reach with a flawless trade record.</p>
+        </div>
+        <div data-reveal data-reveal-delay="70" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(201,214,227,.14);">
+          <div style="width:18px;height:18px;background:#C9D6E3;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(201,214,227,.4);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#C9D6E3;letter-spacing:.06em;">PLATINUM</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Proven creators with consistent results.</p>
+        </div>
+        <div data-reveal data-reveal-delay="140" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(255,194,71,.16);">
+          <div style="width:18px;height:18px;background:#FFC247;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(255,194,71,.45);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#FFC247;letter-spacing:.06em;">GOLD</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Established reach and reliable delivery.</p>
+        </div>
+        <div data-reveal data-reveal-delay="210" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(168,178,189,.14);">
+          <div style="width:18px;height:18px;background:#A8B2BD;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(168,178,189,.4);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#A8B2BD;letter-spacing:.06em;">SILVER</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Growing audience with a solid history.</p>
+        </div>
+        <div data-reveal data-reveal-delay="280" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(208,138,90,.16);">
+          <div style="width:18px;height:18px;background:#D08A5A;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(208,138,90,.45);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#D08A5A;letter-spacing:.06em;">BRONZE</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">New to hyperr, building a track record.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section style="position:relative;background:rgba(12,17,26,.72);border-top:1px solid #25303F;border-bottom:1px solid #25303F;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+      <div style="max-width:1280px;margin:0 auto;padding:clamp(72px,11vh,120px) clamp(20px,5vw,64px);">
+        <div data-reveal style="margin-bottom:44px;">
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">TRUST &amp; SAFETY</div>
+          <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 0;max-width:600px;line-height:1.05;">Every trade is verified, tracked, and backed.</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;">
+          <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:19px;color:#2DD4FF;margin-bottom:16px;">✓</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Verified socials</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Every follower count is checked against the platform itself.</p>
+          </div>
+          <div data-reveal data-reveal-delay="70" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">⇄</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Tracked trades</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Each deal is logged end to end, with timestamps you can both see.</p>
+          </div>
+          <div data-reveal data-reveal-delay="140" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">★</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Honest reviews</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Reviews only unlock after a completed trade. No fakes, no padding.</p>
+          </div>
+          <div data-reveal data-reveal-delay="210" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">⛨</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Dispute support</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">If a trade goes sideways, our team steps in to make it right.</p>
           </div>
         </div>
       </div>
     </section>
-  );
-}
 
-/* ─── band ────────────────────────────────────────────────────── */
-const BAND_NOUNS = ["Products", "Services", "Experiences", "Exposure"];
-function Band() {
-  const rm = useReducedMotion();
-  const nouns = BAND_NOUNS;
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    if (rm) return;
-    const id = setInterval(() => setActive((a) => (a + 1) % nouns.length), 1600);
-    return () => clearInterval(id);
-  }, [rm]);
-
-  return (
-    <div style={{ borderTop: "1px solid #25303F", borderBottom: "1px solid #25303F", background: "#0D1219", padding: "16px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 8, textAlign: "center" }}>
-        {nouns.map((n, i) => (
-          <React.Fragment key={n}>
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 13,
-                padding: "4px 10px",
-                borderRadius: 6,
-                color: active === i ? "#2DD4FF" : "#8C97A3",
-                background: active === i ? "rgba(45,212,255,0.08)" : "transparent",
-                fontWeight: active === i ? 600 : 400,
-                transition: rm ? "none" : "color 0.4s, background 0.4s",
-              }}
-            >
-              {n}
-            </span>
-            {i < nouns.length - 1 && <span style={{ color: "#25303F" }}>·</span>}
-          </React.Fragment>
-        ))}
-        <span style={{ fontSize: 13, color: "#5C6672", marginLeft: 4 }}>— traded directly, no invoices.</span>
+    <!-- FINAL CTA -->
+    <section style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(80px,12vh,130px) clamp(20px,5vw,64px);">
+      <div data-reveal style="position:relative;background:radial-gradient(circle at 50% 0%,rgba(45,212,255,.14),rgba(18,24,35,.66) 60%);border:1px solid #25303F;border-radius:24px;padding:clamp(44px,7vw,76px) clamp(24px,5vw,64px);text-align:center;overflow:hidden;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:clamp(34px,5vw,58px);letter-spacing:-.035em;margin:0;line-height:1.02;">Ready to start trading?</h2>
+        <p style="color:#8C97A3;font-size:clamp(15px,1.5vw,18px);margin:18px auto 0;max-width:440px;">Set up your profile in minutes. The first trade is closer than you think.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:13px;justify-content:center;margin-top:34px;">
+          <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,109,.3);">Join as a creator <span style="font-size:17px;">→</span></a>
+          <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,255,.3);">List your business</a>
+        </div>
       </div>
-    </div>
-  );
-}
+    </section>
 
-/* ─── how it works ────────────────────────────────────────────── */
-function HowItWorks() {
-  const [ref, vis] = useScrollReveal();
-  const steps = [
-    { num: "01", title: "Build your profile", body: "Connect your socials and show what you offer. We verify the numbers so trust is built in." },
-    { num: "02", title: "Find your match", body: "Browse offers and creators. Filter by reach, niche, and the value on the table." },
-    { num: "03", title: "Trade and track", body: "Agree the terms, deliver, and track every trade end to end in one place." },
-  ];
-
-  const reveal = (delay) => ({
-    opacity: vis ? 1 : 0,
-    transform: vis ? "translateY(0)" : "translateY(28px)",
-    transition: `opacity 0.55s ease ${delay}ms, transform 0.55s ease ${delay}ms`,
-  });
-
-  return (
-    <section id="how-it-works" ref={ref} style={{ padding: "96px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ ...reveal(0), textAlign: "center", marginBottom: 64 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#2DD4FF", textTransform: "uppercase", marginBottom: 14 }}>
-            How It Works
+    <!-- FOOTER -->
+    <footer style="position:relative;border-top:1px solid #25303F;background:rgba(12,17,26,.82);">
+      <div style="max-width:1280px;margin:0 auto;padding:clamp(48px,7vh,72px) clamp(20px,5vw,64px) 40px;display:grid;grid-template-columns:minmax(200px,1.4fr) repeat(auto-fit,minmax(130px,1fr));gap:36px;">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:9px;">
+            <svg viewBox="0 0 132 150" style="height:22px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 6px rgba(45,212,255,.55));"><use href="#hy-H"></use></svg>
+            <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
           </div>
-          <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-0.03em", color: "#EAF1F7" }}>
-            Simple. Direct. Trackable.
-          </h2>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.55;margin:14px 0 0;max-width:260px;">The barter marketplace where businesses and creators trade value for promotion.</p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {steps.map((s, i) => (
-            <div
-              key={s.num}
-              style={{ ...reveal(i * 100 + 200), background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "36px 32px", cursor: "default" }}
-              onMouseEnter={(e) => { if (vis) { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
-              onMouseLeave={(e) => { if (vis) { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
-            >
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 36, fontWeight: 600, color: "#2DD4FF", marginBottom: 20, lineHeight: 1 }}>
-                {s.num}
-              </div>
-              <h3 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700, fontSize: 20, color: "#EAF1F7", marginBottom: 12, letterSpacing: "-0.02em" }}>
-                {s.title}
-              </h3>
-              <p style={{ fontSize: 14, color: "#8C97A3", lineHeight: 1.65 }}>{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── dual value ──────────────────────────────────────────────── */
-function DualValue() {
-  const [ref, vis] = useScrollReveal();
-
-  const panels = [
-    {
-      id: "for-creators",
-      tag: "FOR CREATORS",
-      tagColor: "#FF4D6D",
-      border: "rgba(255,77,109,0.18)",
-      bg: "linear-gradient(145deg, rgba(255,77,109,0.06) 0%, #121823 55%)",
-      headline: "Earn from the content you'd make anyway.",
-      bullets: ["Get paid in products you'd post about anyway.", "Keep full creative control of every post.", "Build a verified record that earns you tiers.", "Cash deals optional — stack them on top."],
-      ctaText: "Join as a creator",
-      ctaBg: "#FF4D6D",
-      ctaBgHover: "#FF6B85",
-      ctaColor: "#4B1320",
-    },
-    {
-      id: "for-businesses",
-      tag: "FOR BUSINESSES",
-      tagColor: "#2DD4FF",
-      border: "rgba(45,212,255,0.16)",
-      bg: "linear-gradient(145deg, rgba(45,212,255,0.05) 0%, #121823 55%)",
-      headline: "Reach real audiences without ad spend.",
-      bullets: ["Pay in what you already make — not cash.", "Match with creators whose numbers are verified.", "Put your product in front of the right niche.", "Track results on every trade, start to finish."],
-      ctaText: "List your business",
-      ctaBg: "#2DD4FF",
-      ctaBgHover: "#5CDEFF",
-      ctaColor: "#06303B",
-    },
-  ];
-
-  return (
-    <section ref={ref} style={{ background: "#0D1219", padding: "96px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.5s ease, transform 0.5s ease", textAlign: "center", marginBottom: 56 }}>
-          <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-0.03em", color: "#EAF1F7" }}>
-            Built for both sides of the trade.
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {panels.map((p, i) => (
-            <div
-              key={p.id}
-              id={p.id}
-              style={{ background: p.bg, border: `1px solid ${p.border}`, borderRadius: 20, padding: "40px 36px", opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: `opacity 0.6s ease ${i * 120}ms, transform 0.6s ease ${i * 120}ms` }}
-            >
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 600, letterSpacing: "0.15em", color: p.tagColor, textTransform: "uppercase", marginBottom: 14 }}>
-                {p.tag}
-              </div>
-              <h3 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(20px,2.2vw,26px)", color: "#EAF1F7", letterSpacing: "-0.03em", marginBottom: 26, lineHeight: 1.2 }}>
-                {p.headline}
-              </h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 32px 0" }}>
-                {p.bullets.map((b) => (
-                  <li key={b} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 14 }}>
-                    <span style={{ color: p.tagColor, flexShrink: 0, marginTop: 1, fontSize: 15 }}>→</span>
-                    <span style={{ fontSize: 14, color: "#8C97A3", lineHeight: 1.6 }}>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/register"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, background: p.ctaBg, color: p.ctaColor, textDecoration: "none", fontWeight: 600, fontSize: 14, padding: "11px 22px", borderRadius: 10, minHeight: 44, transition: "all 0.2s" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = p.ctaBgHover; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = p.ctaBg; e.currentTarget.style.transform = "translateY(0)"; }}
-              >
-                {p.ctaText} <ArrowRight size={14} />
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── tiers ───────────────────────────────────────────────────── */
-function Tiers() {
-  const [ref, vis] = useScrollReveal();
-  const tiers = [
-    { name: "Diamond", color: "#7FE9FF", desc: "Top-tier reach with a flawless trade record." },
-    { name: "Platinum", color: "#C9D6E3", desc: "Proven creators with consistent results." },
-    { name: "Gold", color: "#FFC247", desc: "Established reach and reliable delivery." },
-    { name: "Silver", color: "#A8B2BD", desc: "Growing audience with a solid history." },
-    { name: "Bronze", color: "#D08A5A", desc: "New to hyperr, building a track record." },
-  ];
-
-  return (
-    <section id="tiers" ref={ref} style={{ padding: "96px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.5s ease, transform 0.5s ease", textAlign: "center", marginBottom: 56 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#2DD4FF", textTransform: "uppercase", marginBottom: 14 }}>
-            Creator Tiers
+        <div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">PRODUCT</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
+            <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
+            <a href="#business" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">For businesses</a>
+            <a href="#tiers" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Tiers</a>
           </div>
-          <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-0.03em", color: "#EAF1F7", marginBottom: 10 }}>
-            Tiers are earned, not bought.
-          </h2>
-          <p style={{ fontSize: 14, color: "#8C97A3" }}>Verified data only — no shortcuts.</p>
         </div>
-
-        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 }}>
-          {tiers.map((tier, i) => (
-            <div
-              key={tier.name}
-              style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(18px)", transition: `opacity 0.5s ease ${i * 70 + 150}ms, transform 0.5s ease ${i * 70 + 150}ms, border-color 0.2s, box-shadow 0.2s`, display: "flex", alignItems: "center", gap: 18, background: "#121823", border: "1px solid #25303F", borderRadius: 14, padding: "18px 22px", cursor: "default" }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = tier.color + "55"; e.currentTarget.style.boxShadow = `0 0 20px ${tier.color}18`; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.boxShadow = "none"; }}
-            >
-              <div style={{ width: 18, height: 18, background: tier.color, borderRadius: 3, transform: "rotate(45deg)", flexShrink: 0, boxShadow: `0 0 10px ${tier.color}66` }} />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, color: tier.color, minWidth: 72, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tier.name}</div>
-              <div style={{ width: 1, height: 24, background: "#25303F", flexShrink: 0 }} />
-              <div style={{ fontSize: 14, color: "#8C97A3", lineHeight: 1.5 }}>{tier.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── trust ───────────────────────────────────────────────────── */
-function Trust() {
-  const [ref, vis] = useScrollReveal();
-  const cards = [
-    { icon: "✓", color: "#2DD4FF", bg: "rgba(45,212,255,0.08)", title: "Verified socials", body: "Every follower count is checked against the platform itself." },
-    { icon: "↻", color: "#2EE6A6", bg: "rgba(46,230,166,0.08)", title: "Tracked trades", body: "Each deal is logged end to end, with timestamps you can both see." },
-    { icon: "★", color: "#FFC247", bg: "rgba(255,194,71,0.08)", title: "Honest reviews", body: "Reviews only unlock after a completed trade. No fakes, no padding." },
-    { icon: "⚑", color: "#FF4D6D", bg: "rgba(255,77,109,0.08)", title: "Dispute support", body: "If a trade goes sideways, our team steps in to make it right." },
-  ];
-
-  return (
-    <section ref={ref} style={{ background: "#0D1219", padding: "96px 24px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.5s ease, transform 0.5s ease", textAlign: "center", marginBottom: 56 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#2DD4FF", textTransform: "uppercase", marginBottom: 14 }}>
-            Trust &amp; Safety
+        <div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">COMPANY</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">About</a>
+            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Careers</a>
+            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Blog</a>
+            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Contact</a>
           </div>
-          <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-0.03em", color: "#EAF1F7" }}>
-            Trade with confidence.
-          </h2>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {cards.map((c, i) => (
-            <div
-              key={c.title}
-              style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: `opacity 0.5s ease ${i * 80 + 150}ms, transform 0.5s ease ${i * 80 + 150}ms`, background: "#121823", border: "1px solid #25303F", borderRadius: 18, padding: "28px 24px", cursor: "default" }}
-              onMouseEnter={(e) => { if (vis) { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
-              onMouseLeave={(e) => { if (vis) { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.transition = "border-color 0.2s, transform 0.2s"; } }}
-            >
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: c.color, marginBottom: 20 }}>
-                {c.icon}
-              </div>
-              <h3 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700, fontSize: 18, color: "#EAF1F7", marginBottom: 10, letterSpacing: "-0.02em" }}>
-                {c.title}
-              </h3>
-              <p style={{ fontSize: 14, color: "#8C97A3", lineHeight: 1.6 }}>{c.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── final cta ───────────────────────────────────────────────── */
-function FinalCTA() {
-  const [ref, vis] = useScrollReveal(0.2);
-  return (
-    <section ref={ref} style={{ padding: "96px 24px" }}>
-      <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(24px)", transition: "opacity 0.6s ease, transform 0.6s ease" }}>
-        <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "clamp(32px,5vw,60px)", letterSpacing: "-0.04em", color: "#EAF1F7", lineHeight: 1.06, marginBottom: 18 }}>
-          Ready to start trading?
-        </h2>
-        <p style={{ fontSize: 17, color: "#8C97A3", lineHeight: 1.65, marginBottom: 40 }}>
-          Set up your profile in minutes. The first trade is closer than you think.
-        </p>
-        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link
-            to="/register"
-            style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#FF4D6D", color: "#4B1320", textDecoration: "none", fontWeight: 600, fontSize: 16, padding: "14px 30px", borderRadius: 12, minHeight: 52, transition: "all 0.2s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#FF6B85"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#FF4D6D"; e.currentTarget.style.transform = "translateY(0)"; }}
-          >
-            Join as a creator <ArrowRight size={16} />
-          </Link>
-          <Link
-            to="/register"
-            style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#2DD4FF", color: "#06303B", textDecoration: "none", fontWeight: 600, fontSize: 16, padding: "14px 30px", borderRadius: 12, minHeight: 52, transition: "all 0.2s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#5CDEFF"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#2DD4FF"; e.currentTarget.style.transform = "translateY(0)"; }}
-          >
-            List your business <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── footer ──────────────────────────────────────────────────── */
-function Footer() {
-  const cols = [
-    {
-      heading: "Product",
-      links: [{ label: "Marketplace", href: "/" }, { label: "Creator Directory", href: "/creators" }, { label: "Explore", href: "/explore" }, { label: "How it works", href: "#how-it-works" }],
-    },
-    {
-      heading: "Company",
-      links: [{ label: "About", href: "#" }, { label: "Blog", href: "#" }, { label: "Careers", href: "#" }, { label: "Contact", href: "#" }],
-    },
-    {
-      heading: "Legal",
-      links: [{ label: "Terms of Service", href: "/terms" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Cookie Policy", href: "#" }],
-    },
-  ];
-
-  return (
-    <footer style={{ borderTop: "1px solid #25303F", background: "#0A0E14", padding: "64px 24px 40px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10" style={{ marginBottom: 56 }}>
-          <div className="col-span-2 md:col-span-1">
-            <div style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: 30, color: "#2DD4FF", letterSpacing: "-0.04em", marginBottom: 12 }}>
-              hyperr
-            </div>
-            <p style={{ fontSize: 13, color: "#5C6672", lineHeight: 1.7, maxWidth: 200 }}>
-              The barter marketplace where businesses and creators trade real value.
-            </p>
+        <div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">LEGAL</div>
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <a href="/terms" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Terms of Service</a>
+            <a href="/privacy" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Privacy Policy</a>
+            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Cookie Policy</a>
           </div>
-          {cols.map((col) => (
-            <div key={col.heading}>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 600, letterSpacing: "0.15em", color: "#5C6672", textTransform: "uppercase", marginBottom: 18 }}>
-                {col.heading}
-              </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    <a
-                      href={l.href}
-                      style={{ fontSize: 14, color: "#8C97A3", textDecoration: "none", transition: "color 0.2s" }}
-                      onMouseEnter={(e) => (e.target.style.color = "#EAF1F7")}
-                      onMouseLeave={(e) => (e.target.style.color = "#8C97A3")}
-                    >
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
-        <div style={{ borderTop: "1px solid #25303F", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: "#5C6672" }}>
-            © 2026 hyperr. All rights reserved.
-          </span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: "#25303F" }}>v1.0.0</span>
-        </div>
+      </div>
+      <div style="max-width:1280px;margin:0 auto;padding:20px clamp(20px,5vw,64px) 36px;border-top:1px solid #1B2330;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;">
+        <div style="color:#5C6672;font-size:13px;font-family:JetBrains Mono,monospace;">© 2026 hyperr. All rights reserved.</div>
+        <div style="color:#5C6672;font-size:13px;">Made for creators &amp; businesses.</div>
       </div>
     </footer>
-  );
-}
 
-/* ─── page root ───────────────────────────────────────────────── */
+  </div>
+`;
+
+const FONT_HREF = "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap";
+
+const BASE_CSS = `html,body{margin:0;padding:0;background:#0A0E14;}*{box-sizing:border-box;}::selection{background:#2DD4FF;color:#06303B;}:focus-visible{outline:2px solid #2DD4FF;outline-offset:3px;border-radius:6px;}::placeholder{color:#5C6672;}@media (max-width:840px){[data-navlinks]{display:none !important;}}@media (prefers-reduced-motion: reduce){*{animation:none !important;}}`;
+
+const rootStyle = {
+  position: "relative",
+  background: "#0A0E14",
+  color: "#EAF1F7",
+  fontFamily: "Inter, system-ui, sans-serif",
+  minHeight: "100vh",
+  overflowX: "hidden",
+  WebkitFontSmoothing: "antialiased",
+};
+
 export default function Landing() {
-  return (
-    <div style={{ minHeight: "100vh", background: "#0A0E14", color: "#EAF1F7", overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
-      <style>{`
-        @keyframes glowBreathe {
-          0%, 100% { opacity: 0.5; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.06); }
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!document.getElementById("hyperr-fonts")) {
+      const fl = document.createElement("link");
+      fl.id = "hyperr-fonts"; fl.rel = "stylesheet"; fl.href = FONT_HREF;
+      document.head.appendChild(fl);
+    }
+    if (!document.getElementById("hyperr-base-css")) {
+      const st = document.createElement("style");
+      st.id = "hyperr-base-css"; st.textContent = BASE_CSS;
+      document.head.appendChild(st);
+    }
+
+    // hover wiring
+    const hoverCleanup = [];
+    Array.prototype.slice.call(root.querySelectorAll("[data-h]")).forEach((el) => {
+      const hov = el.getAttribute("data-h");
+      let saved = "";
+      const enter = () => { saved = el.style.cssText; hov.split(";").forEach((d) => { const i = d.indexOf(":"); if (i > 0) el.style.setProperty(d.slice(0, i).trim(), d.slice(i + 1).trim()); }); };
+      const leave = () => { el.style.cssText = saved; };
+      el.addEventListener("mouseenter", enter); el.addEventListener("mouseleave", leave);
+      el.addEventListener("focus", enter, true); el.addEventListener("blur", leave, true);
+      hoverCleanup.push(() => { el.removeEventListener("mouseenter", enter); el.removeEventListener("mouseleave", leave); el.removeEventListener("focus", enter, true); el.removeEventListener("blur", leave, true); });
+    });
+
+    // nav scroll
+    const nav = root.querySelector("[data-nav]");
+    const onScrollNav = () => {
+      if (!nav) return;
+      const on = window.scrollY > 24;
+      nav.style.background = on ? "rgba(10,14,20,0.82)" : "rgba(10,14,20,0)";
+      nav.style.backdropFilter = on ? "blur(14px)" : "blur(0px)";
+      nav.style.webkitBackdropFilter = on ? "blur(14px)" : "blur(0px)";
+      nav.style.borderBottomColor = on ? "#25303F" : "transparent";
+    };
+    window.addEventListener("scroll", onScrollNav, { passive: true });
+    onScrollNav();
+
+    // count-up
+    const counts = Array.prototype.slice.call(root.querySelectorAll("[data-count]"));
+    const fmt = (el, v) => (el.getAttribute("data-prefix") || "") + Math.round(v).toLocaleString() + (el.getAttribute("data-suffix") || "");
+    const runCount = (el) => { const target = parseFloat(el.getAttribute("data-target")) || 0; const dur = 950, start = performance.now(); const tick = (now) => { const p = Math.min(1, (now - start) / dur); const e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(el, target * e); if (p < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); };
+    let ctTimer = null;
+    if (!reduce) { counts.forEach((el) => { el.textContent = fmt(el, 0); }); ctTimer = setTimeout(() => counts.forEach(runCount), 560); }
+
+    // scroll reveals
+    let io = null;
+    const reveals = Array.prototype.slice.call(root.querySelectorAll("[data-reveal]"));
+    if (!reduce && "IntersectionObserver" in window) {
+      reveals.forEach((el) => { el.style.opacity = "0"; el.style.transform = "translateY(26px)"; el.style.transition = "opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)"; el.style.willChange = "opacity, transform"; });
+      io = new IntersectionObserver((entries) => { entries.forEach((en) => { if (en.isIntersecting) { const el = en.target; const d = parseFloat(el.getAttribute("data-reveal-delay")) || 0; setTimeout(() => { el.style.opacity = "1"; el.style.transform = "none"; }, d); io.unobserve(el); } }); }, { threshold: 0.12, rootMargin: "0px 0px -7% 0px" });
+      reveals.forEach((el) => io.observe(el));
+    }
+
+    // hero entrance
+    let hio = null;
+    if (!reduce) {
+      const heroNodes = Array.prototype.slice.call(root.querySelectorAll("[data-hero]"));
+      const fromState = (t) => t === "left" ? "translateX(-40px) scale(.97)" : t === "right" ? "translateX(40px) scale(.97)" : t === "swap" ? "rotate(-200deg) scale(.3)" : t === "pill" ? "translateX(-50%) translateY(8px) scale(.7)" : "translateY(20px)";
+      const toState = (t) => t === "pill" ? "translateX(-50%)" : "none";
+      heroNodes.forEach((el) => {
+        const t = el.getAttribute("data-hero"); const delay = parseFloat(el.getAttribute("data-hero-delay")) || 0;
+        const spring = (t === "swap" || t === "pill"); const dur = spring ? 580 : 640; const ease = spring ? "cubic-bezier(.34,1.56,.64,1)" : "cubic-bezier(.16,1,.3,1)";
+        el.style.opacity = "0"; el.style.transform = fromState(t); el.style.willChange = "opacity, transform";
+        el.style.transition = "opacity " + dur + "ms " + ease + " " + delay + "ms, transform " + dur + "ms " + ease + " " + delay + "ms";
+      });
+      hio = new IntersectionObserver((entries) => { entries.forEach((en) => { if (en.isIntersecting) { const el = en.target; el.style.opacity = "1"; el.style.transform = toState(el.getAttribute("data-hero")); hio.unobserve(el); } }); }, { threshold: 0 });
+      heroNodes.forEach((el) => hio.observe(el));
+    }
+
+    // band cycle
+    let band = null;
+    const bandWords = Array.prototype.slice.call(root.querySelectorAll("[data-band]"));
+    if (!reduce && bandWords.length) {
+      bandWords.forEach((w) => { w.style.transition = "color .45s ease, text-shadow .45s ease"; });
+      let bi = 0;
+      band = setInterval(() => { bandWords.forEach((w, i) => { const on = (i === bi); w.style.color = on ? "#2DD4FF" : "#EAF1F7"; w.style.textShadow = on ? "0 0 14px rgba(45,212,255,.5)" : "none"; }); bi = (bi + 1) % bandWords.length; }, 950);
+    }
+
+    const bounce = root.querySelector("[data-bounce] > span");
+
+    // parallax engine
+    const pxEls = Array.prototype.slice.call(root.querySelectorAll("[data-px]")).map((el) => ({ el, sy: parseFloat(el.dataset.sy) || 0, mx: parseFloat(el.dataset.mx) || 0, my: parseFloat(el.dataset.my) || 0, rx: parseFloat(el.dataset.rx) || 0, ry: parseFloat(el.dataset.ry) || 0, fade: parseFloat(el.dataset.fade) || 0, baseOp: (el.dataset.baseOp != null) ? parseFloat(el.dataset.baseOp) : null }));
+    const floatWrap = root.querySelector("[data-floatwrap]");
+    const glow = root.querySelector("[data-glow]");
+    const whaleWrap = root.querySelector("[data-whales]");
+    const whales = Array.prototype.slice.call(root.querySelectorAll("[data-whale]")).map((el) => ({ el, dir: parseFloat(el.dataset.dir) || 1, speed: parseFloat(el.dataset.speed) || 30, bob: parseFloat(el.dataset.bob) || 6, phase: parseFloat(el.dataset.phase) || 0, x: 0, w: 0 }));
+    const layoutWhales = () => { const vw = whaleWrap ? whaleWrap.clientWidth : window.innerWidth; whales.forEach((wh, i) => { wh.w = wh.el.offsetWidth || 300; wh.x = -wh.w + ((i + 0.5) / whales.length) * (vw + wh.w); }); };
+    layoutWhales();
+    window.addEventListener("resize", layoutWhales);
+
+    let raf = null, onScroll = null, onMove = null;
+
+    if (reduce) {
+      if (floatWrap) floatWrap.style.opacity = "1";
+      pxEls.forEach((p) => { if (p.baseOp != null) p.el.style.opacity = String(p.baseOp); });
+      whales.forEach((wh) => { wh.el.style.transform = "translateX(" + wh.x.toFixed(0) + "px) scaleX(" + (-wh.dir) + ")"; });
+    } else {
+      if (floatWrap) floatWrap.style.transition = "none";
+      let tScroll = window.scrollY, cScroll = window.scrollY;
+      let tmx = 0, tmy = 0, cmx = 0, cmy = 0;
+      onScroll = () => { tScroll = window.scrollY; };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onMove = (e) => { tmx = (e.clientX / window.innerWidth - 0.5) * 2; tmy = (e.clientY / window.innerHeight - 0.5) * 2; };
+      window.addEventListener("pointermove", onMove, { passive: true });
+      const t0 = performance.now();
+      const frame = (now) => {
+        cScroll += (tScroll - cScroll) * 0.16; cmx += (tmx - cmx) * 0.07; cmy += (tmy - cmy) * 0.07;
+        const t = (now - t0) / 1000;
+        if (floatWrap) floatWrap.style.opacity = Math.max(0, Math.min(1, (t - 0.2) / 0.9)).toFixed(3);
+        for (let i = 0; i < pxEls.length; i++) {
+          const p = pxEls[i]; const ty = cScroll * p.sy + cmy * p.my; const tx = cmx * p.mx;
+          let tr = "translate3d(" + tx.toFixed(2) + "px," + ty.toFixed(2) + "px,0)";
+          if (p.rx || p.ry) tr += " rotateX(" + (-cmy * p.rx).toFixed(2) + "deg) rotateY(" + (cmx * p.ry).toFixed(2) + "deg)";
+          p.el.style.transform = tr;
+          if (p.fade || p.baseOp != null) { const base = (p.baseOp != null) ? p.baseOp : 1; const f = p.fade ? Math.max(0, 1 - cScroll * p.fade) : 1; p.el.style.opacity = (base * f).toFixed(3); }
         }
-      `}</style>
-      <Nav />
-      <Hero />
-      <Band />
-      <HowItWorks />
-      <DualValue />
-      <Tiers />
-      <Trust />
-      <FinalCTA />
-      <Footer />
-    </div>
-  );
+        if (glow) { const k = (Math.sin(t / 2.7 * Math.PI) + 1) / 2; glow.style.opacity = (0.55 + 0.35 * k).toFixed(3); }
+        if (bounce) bounce.style.transform = "translateY(" + (Math.sin(t * 2.4) * 3).toFixed(2) + "px)";
+        const vw = whaleWrap ? whaleWrap.clientWidth : window.innerWidth;
+        for (let i = 0; i < whales.length; i++) {
+          const wh = whales[i]; wh.x += wh.dir * wh.speed * 0.016;
+          if (wh.dir > 0 && wh.x > vw + 60) wh.x = -wh.w - 60;
+          if (wh.dir < 0 && wh.x < -wh.w - 60) wh.x = vw + 60;
+          const bobY = Math.sin(t * 0.5 + wh.phase) * wh.bob;
+          wh.el.style.transform = "translate(" + wh.x.toFixed(1) + "px," + bobY.toFixed(1) + "px) scaleX(" + (-wh.dir) + ")";
+        }
+        raf = requestAnimationFrame(frame);
+      };
+      raf = requestAnimationFrame(frame);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", onScrollNav);
+      if (onScroll) window.removeEventListener("scroll", onScroll);
+      if (onMove) window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("resize", layoutWhales);
+      if (io) io.disconnect();
+      if (hio) hio.disconnect();
+      if (ctTimer) clearTimeout(ctTimer);
+      if (band) clearInterval(band);
+      if (raf) cancelAnimationFrame(raf);
+      hoverCleanup.forEach((fn) => fn());
+    };
+  }, []);
+
+  return <div ref={rootRef} style={rootStyle} dangerouslySetInnerHTML={{ __html: MARKUP }} />;
 }
