@@ -64,7 +64,7 @@ export default function ListingDetail() {
         {/* Main */}
         <div className="lg:col-span-3 space-y-6">
           {/* Image gallery */}
-          <div className="bg-white rounded-2xl border overflow-hidden">
+          <div className="bg-card rounded-2xl border overflow-hidden">
             {images.length > 0 ? (
               <div>
                 <div className="relative">
@@ -108,7 +108,7 @@ export default function ListingDetail() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border p-6 sm:p-8">
+          <div className="bg-card rounded-2xl border p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Badge className="bg-primary/10 text-primary border-primary/20">{listing.offering_type}</Badge>
               <Badge variant="outline">{listing.category}</Badge>
@@ -154,7 +154,7 @@ export default function ListingDetail() {
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-6">
           {/* Promotion requirements */}
-          <div className="bg-white rounded-2xl border p-6">
+          <div className="bg-card rounded-2xl border p-6">
             <h3 className="font-display font-semibold text-lg mb-4">Looking For</h3>
             {listing.promotion_requirements?.length > 0 ? (
               <div className="space-y-3">
@@ -185,7 +185,7 @@ export default function ListingDetail() {
           </div>
 
           {profile && (
-            <div className="bg-white rounded-2xl border p-6">
+            <div className="bg-card rounded-2xl border p-6">
               <h3 className="font-display font-semibold text-lg mb-4">Posted By</h3>
               <div className="flex items-center gap-3 mb-3">
                 {profile.logo_url ? (

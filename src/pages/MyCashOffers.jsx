@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 const statusConfig = {
-  pending:   { label: "Pending",   color: "bg-amber-50 text-amber-700 border-amber-200",   icon: Clock },
-  accepted:  { label: "Accepted",  color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: CheckCircle },
-  declined:  { label: "Declined",  color: "bg-red-50 text-red-700 border-red-200",         icon: XCircle },
-  completed: { label: "Completed", color: "bg-blue-50 text-blue-700 border-blue-200",       icon: CheckCircle },
+  pending:   { label: "Pending",   color: "bg-amber-950/50 text-amber-400 border-amber-800",   icon: Clock },
+  accepted:  { label: "Accepted",  color: "bg-emerald-950/50 text-emerald-400 border-emerald-800", icon: CheckCircle },
+  declined:  { label: "Declined",  color: "bg-red-950/50 text-red-400 border-red-800",         icon: XCircle },
+  completed: { label: "Completed", color: "bg-blue-950/50 text-blue-400 border-blue-800",       icon: CheckCircle },
 };
 
 export default function MyCashOffers() {
@@ -51,7 +51,7 @@ export default function MyCashOffers() {
     const config = statusConfig[offer.status] || statusConfig.pending;
     const Icon = config.icon;
     return (
-      <div className="bg-white rounded-2xl border p-5 space-y-4">
+      <div className="bg-card rounded-2xl border p-5 space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -129,7 +129,7 @@ export default function MyCashOffers() {
         <TabsContent value="received">
           {received.length === 0
             ? (
-              <div className="text-center py-16 bg-white rounded-2xl border">
+              <div className="text-center py-16 bg-card rounded-2xl border">
                 <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="font-display font-semibold text-lg mb-1">No cash offers received</h3>
                 <p className="text-sm text-muted-foreground mb-5">Brands send cash offers here when they want to work with you.</p>
@@ -146,7 +146,7 @@ export default function MyCashOffers() {
         <TabsContent value="sent">
           {sent.length === 0
             ? (
-              <div className="text-center py-16 bg-white rounded-2xl border">
+              <div className="text-center py-16 bg-card rounded-2xl border">
                 <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="font-display font-semibold text-lg mb-1">No cash offers sent</h3>
                 <p className="text-sm text-muted-foreground mb-5">Find a creator you love and send them a paid collab offer.</p>

@@ -143,7 +143,7 @@ export default function CreateListing() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border overflow-hidden mb-4">
+        <div className="bg-card rounded-2xl border overflow-hidden mb-4">
           {form.image_urls.length > 0 ? (
             <div className="flex gap-2 p-2 overflow-x-auto">
               {form.image_urls.map((url, i) => (
@@ -157,7 +157,7 @@ export default function CreateListing() {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl border p-6 space-y-4 mb-4">
+        <div className="bg-card rounded-2xl border p-6 space-y-4 mb-4">
           <div className="flex flex-wrap gap-2">
             <Badge className="bg-primary/10 text-primary border-primary/20">{form.offering_type}</Badge>
             <Badge variant="outline">{form.category}</Badge>
@@ -182,7 +182,7 @@ export default function CreateListing() {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl border p-6 space-y-3 mb-6">
+        <div className="bg-card rounded-2xl border p-6 space-y-3 mb-6">
           <h3 className="font-display font-semibold">Looking For</h3>
           {form.promotion_requirements.map((r) => (
             <div key={r.type} className="flex items-start gap-3 p-3 rounded-xl bg-accent/50">
@@ -222,7 +222,7 @@ export default function CreateListing() {
 
       <form onSubmit={handlePreview} className="space-y-6">
         {/* What you're offering */}
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <h2 className="font-display font-semibold text-lg">What You're Offering</h2>
 
           <div className="space-y-2">
@@ -304,7 +304,7 @@ export default function CreateListing() {
         </div>
 
         {/* Promotion selection with qty/notes */}
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <div>
             <h2 className="font-display font-semibold text-lg">What You're Looking For *</h2>
             <p className="text-sm text-muted-foreground mt-1">Select the types of promotion you'd accept in exchange. Add quantity and requirements for each.</p>
@@ -321,7 +321,7 @@ export default function CreateListing() {
                   className={`px-3 py-2 rounded-xl border text-sm font-medium transition-all text-left ${
                     selected
                       ? "bg-primary text-white border-primary"
-                      : "bg-white text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                      : "bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
                   }`}
                 >
                   {type}
@@ -377,7 +377,7 @@ export default function CreateListing() {
         </div>
 
         {/* Targeting */}
-        <div className="bg-white rounded-2xl border p-6 space-y-4">
+        <div className="bg-card rounded-2xl border p-6 space-y-4">
           <div>
             <h2 className="font-display font-semibold text-lg">Targeting</h2>
             <p className="text-sm text-muted-foreground mt-1">Optionally restrict who can apply based on creator tier.</p>

@@ -127,7 +127,7 @@ export default function Profile() {
       <p className="text-muted-foreground mb-8">This is how other businesses will see you on BarterHub.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0">
               {form.logo_url ? (
@@ -177,7 +177,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <h2 className="font-display font-semibold text-lg">Social Accounts</h2>
           <div className="space-y-4">
             <div className="space-y-2">

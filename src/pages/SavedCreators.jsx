@@ -56,7 +56,7 @@ export default function SavedCreators() {
             const creator = creatorMap[saved.creator_profile_id];
             if (!creator) return null;
             return (
-              <div key={saved.id} className="bg-white rounded-2xl border p-5 hover:shadow-md transition-shadow">
+              <div key={saved.id} className="bg-card rounded-2xl border p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-3 mb-3">
                   {creator.avatar_url ? (
                     <img src={creator.avatar_url} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />

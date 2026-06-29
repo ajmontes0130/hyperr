@@ -162,7 +162,7 @@ export default function Messages() {
         <p className="text-muted-foreground text-sm">Chat with creators and businesses.</p>
       </div>
 
-      <div className="bg-white rounded-2xl border overflow-hidden flex h-[70vh] min-h-[480px]">
+      <div className="bg-card rounded-2xl border overflow-hidden flex h-[70vh] min-h-[480px]">
         {/* Thread list */}
         <div className="w-72 border-r flex-shrink-0 flex flex-col">
           <div className="p-3 border-b">

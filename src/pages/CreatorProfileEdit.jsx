@@ -194,7 +194,7 @@ export default function CreatorProfileEdit() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Identity */}
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <h2 className="font-display font-semibold text-lg">Identity</h2>
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/20 flex-shrink-0 flex items-center justify-center font-display font-bold text-2xl text-primary">
@@ -227,7 +227,7 @@ export default function CreatorProfileEdit() {
         </div>
 
         {/* Niche */}
-        <div className="bg-white rounded-2xl border p-6 space-y-4">
+        <div className="bg-card rounded-2xl border p-6 space-y-4">
           <h2 className="font-display font-semibold text-lg">Your Niche</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {niches.map((n) => (
@@ -240,7 +240,7 @@ export default function CreatorProfileEdit() {
         </div>
 
         {/* Social */}
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="font-display font-semibold text-lg">Social Media</h2>
             <LevelBadge level={previewLevel} size="md" />
@@ -281,7 +281,7 @@ export default function CreatorProfileEdit() {
         </div>
 
         {/* Rates */}
-        <div className="bg-white rounded-2xl border p-6 space-y-5">
+        <div className="bg-card rounded-2xl border p-6 space-y-5">
           <h2 className="font-display font-semibold text-lg">Rates & Preferences</h2>
           <div className="space-y-2">
             <Label>Base Rate (USD per collab)</Label>
@@ -351,7 +351,7 @@ export default function CreatorProfileEdit() {
           {/* Existing items */}
           <div className="space-y-3">
             {portfolio.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl border p-4 flex items-center gap-4">
+              <div key={item.id} className="bg-card rounded-2xl border p-4 flex items-center gap-4">
                 <div className="w-16 h-12 rounded-xl bg-muted overflow-hidden flex-shrink-0">
                   {item.thumbnail_url
                     ? <img src={item.thumbnail_url} alt="" className="w-full h-full object-cover" />
@@ -370,7 +370,7 @@ export default function CreatorProfileEdit() {
           </div>
 
           {/* Add new item */}
-          <div className="bg-white rounded-2xl border p-6 space-y-4">
+          <div className="bg-card rounded-2xl border p-6 space-y-4">
             <h3 className="font-display font-semibold">Add Portfolio Item</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">

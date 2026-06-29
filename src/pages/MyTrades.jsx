@@ -16,13 +16,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const statusConfig = {
-  pending:     { label: "Pending",     color: "bg-amber-50 text-amber-700 border-amber-200",   icon: Clock },
-  accepted:    { label: "Accepted",    color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: CheckCircle },
-  in_progress: { label: "In Progress", color: "bg-blue-50 text-blue-700 border-blue-200",      icon: Truck },
-  delivered:   { label: "Delivered",   color: "bg-purple-50 text-purple-700 border-purple-200", icon: PackageCheck },
-  completed:   { label: "Completed",   color: "bg-green-50 text-green-700 border-green-200",   icon: CheckCircle },
-  declined:    { label: "Declined",    color: "bg-red-50 text-red-700 border-red-200",         icon: XCircle },
-  disputed:    { label: "Disputed",    color: "bg-orange-50 text-orange-700 border-orange-200", icon: AlertTriangle },
+  pending:     { label: "Pending",     color: "bg-amber-950/50 text-amber-400 border-amber-800",   icon: Clock },
+  accepted:    { label: "Accepted",    color: "bg-emerald-950/50 text-emerald-400 border-emerald-800", icon: CheckCircle },
+  in_progress: { label: "In Progress", color: "bg-blue-950/50 text-blue-400 border-blue-800",      icon: Truck },
+  delivered:   { label: "Delivered",   color: "bg-purple-950/50 text-purple-400 border-purple-800", icon: PackageCheck },
+  completed:   { label: "Completed",   color: "bg-green-950/50 text-green-400 border-green-800",   icon: CheckCircle },
+  declined:    { label: "Declined",    color: "bg-red-950/50 text-red-400 border-red-800",         icon: XCircle },
+  disputed:    { label: "Disputed",    color: "bg-orange-950/50 text-orange-400 border-orange-800", icon: AlertTriangle },
 };
 
 const FLOW = ["pending", "accepted", "in_progress", "delivered", "completed"];
@@ -181,7 +181,7 @@ export default function MyTrades() {
     const isBusiness = type === "received"; // business received it
 
     return (
-      <div className="bg-white rounded-2xl border p-5 space-y-4">
+      <div className="bg-card rounded-2xl border p-5 space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
@@ -241,8 +241,8 @@ export default function MyTrades() {
 
         {/* Delivery info (when delivered) */}
         {proposal.status === "delivered" && (proposal.delivery_note || proposal.delivery_url) && (
-          <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 text-sm space-y-1">
-            <p className="font-medium text-purple-700 text-xs uppercase tracking-wider">Delivery Details</p>
+          <div className="bg-[#1a1230] border border-purple-900/40 rounded-xl p-3 text-sm space-y-1">
+            <p className="font-medium text-purple-400 text-xs uppercase tracking-wider">Delivery Details</p>
             {proposal.delivery_note && <p className="text-muted-foreground">{proposal.delivery_note}</p>}
             {proposal.delivery_url && (
               <a href={proposal.delivery_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">{proposal.delivery_url}</a>
@@ -252,8 +252,8 @@ export default function MyTrades() {
 
         {/* Dispute reason */}
         {proposal.status === "disputed" && proposal.dispute_reason && (
-          <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 text-sm">
-            <p className="font-medium text-orange-700 text-xs uppercase tracking-wider mb-1">Reported Issue</p>
+          <div className="bg-[#1f1208] border border-orange-900/40 rounded-xl p-3 text-sm">
+            <p className="font-medium text-orange-400 text-xs uppercase tracking-wider mb-1">Reported Issue</p>
             <p className="text-muted-foreground">{proposal.dispute_reason}</p>
           </div>
         )}
@@ -353,7 +353,7 @@ export default function MyTrades() {
 
         <TabsContent value="received">
           {received.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border">
+            <div className="text-center py-16 bg-card rounded-2xl border">
               <Handshake className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
               <h3 className="font-display font-semibold text-lg mb-1">No proposals received</h3>
               <p className="text-muted-foreground text-sm">When someone proposes a trade on your listing, it will appear here.</p>
@@ -367,7 +367,7 @@ export default function MyTrades() {
 
         <TabsContent value="sent">
           {sent.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border">
+            <div className="text-center py-16 bg-card rounded-2xl border">
               <Handshake className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
               <h3 className="font-display font-semibold text-lg mb-1">No proposals sent</h3>
               <p className="text-muted-foreground text-sm">Browse the marketplace and propose a trade to get started.</p>
