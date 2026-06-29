@@ -110,6 +110,9 @@
     },
     "total_collabs": {
       "type": "number"
+    },
+    "stripe_account_id": {
+      "type": "string"
     }
   },
   "required": [

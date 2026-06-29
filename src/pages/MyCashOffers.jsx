@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
+import EscrowPanel from "@/components/payments/EscrowPanel";
 import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Users, LayoutGrid } from "lucide-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -98,11 +99,7 @@ export default function MyCashOffers() {
           </div>
         )}
         {offer.status === "accepted" && (
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="rounded-lg" onClick={() => update(offer.id, "completed")}>
-              <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Mark Completed
-            </Button>
-          </div>
+          <EscrowPanel offer={offer} user={user} type={type} />
         )}
         {offer.status === "completed" && type === "sent" && (
           <Button size="sm" variant="ghost" className="rounded-lg text-muted-foreground" onClick={() => setReviewTarget({ revieweeId: offer.creator_user_id, title: `Cash Collab · ${offer.creator_name}` })}>
