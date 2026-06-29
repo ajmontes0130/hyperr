@@ -21,7 +21,6 @@ Deno.serve(async (req) => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        "payment_method_types[]": "card",
         mode: "payment",
         "line_items[0][price_data][currency]": (currency || "usd").toLowerCase(),
         "line_items[0][price_data][unit_amount]": String(Math.round((amount || 0) * 100)),
