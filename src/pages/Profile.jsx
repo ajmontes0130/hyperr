@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Upload, Save, Building2, Trash2 } from "lucide-react";
+import ImageCropModal from "@/components/ImageCropModal";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -26,6 +27,7 @@ export default function Profile() {
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null);
   const [profileId, setProfileId] = useState(null);
   const [form, setForm] = useState({
     business_name: "",
@@ -70,11 +72,17 @@ export default function Profile() {
     }
   };
 
-  const handleLogo = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const handleLogoSelect = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    e.target.value = "";
+    setCropSrc(URL.createObjectURL(file));
+  };
+
+  const handleCropDone = async (blob) => {
+    setCropSrc(null);
     setUploading(true);
     try {
+      const file = new File([blob], "logo.jpg", { type: "image/jpeg" });
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setForm((prev) => ({ ...prev, logo_url: file_url }));
     } catch {
@@ -140,7 +148,7 @@ export default function Profile() {
               <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed hover:border-primary/50 cursor-pointer transition-colors text-sm text-muted-foreground hover:text-foreground">
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                 {uploading ? "Uploading…" : "Upload logo"}
-                <input type="file" accept="image/*" className="hidden" onChange={handleLogo} />
+                <input type="file" accept="image/*" className="hidden" onChange={handleLogoSelect} />
               </label>
             </div>
           </div>
@@ -232,6 +240,13 @@ export default function Profile() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
+      <ImageCropModal
+        open={!!cropSrc}
+        imageSrc={cropSrc}
+        shape="square"
+        onClose={() => setCropSrc(null)}
+        onCrop={handleCropDone}
+      />
     </div>
   );
 }

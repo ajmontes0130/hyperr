@@ -14,6 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
 import { calcTotalReach, calcLevel } from "@/lib/creatorUtils";
 import { Loader2, Upload, Save, Plus, Trash2 } from "lucide-react";
+import ImageCropModal from "@/components/ImageCropModal";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -43,6 +44,8 @@ export default function CreatorProfileEdit() {
   const [addingItem, setAddingItem] = useState(false);
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null);
+  const [cropTarget, setCropTarget] = useState(null); // "avatar" | "thumb"
 
   useEffect(() => { loadData(); }, []);
 
@@ -90,24 +93,36 @@ export default function CreatorProfileEdit() {
     }));
   };
 
-  const handleAvatar = async (e) => {
+  const handleAvatarSelect = (e) => {
     const file = e.target.files[0]; if (!file) return;
-    setUploading(true);
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setForm((prev) => ({ ...prev, avatar_url: file_url }));
-    } catch { toast({ title: "Upload failed", variant: "destructive" }); }
-    finally { setUploading(false); }
+    e.target.value = "";
+    setCropSrc(URL.createObjectURL(file));
+    setCropTarget("avatar");
   };
 
-  const handleThumb = async (e) => {
+  const handleThumbSelect = (e) => {
     const file = e.target.files[0]; if (!file) return;
-    setUploadingThumb(true);
+    e.target.value = "";
+    setCropSrc(URL.createObjectURL(file));
+    setCropTarget("thumb");
+  };
+
+  const handleCropDone = async (blob) => {
+    setCropSrc(null);
+    const target = cropTarget;
+    setCropTarget(null);
+    if (target === "avatar") setUploading(true);
+    else setUploadingThumb(true);
     try {
+      const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setNewItem((prev) => ({ ...prev, thumbnail_url: file_url }));
+      if (target === "avatar") setForm((prev) => ({ ...prev, avatar_url: file_url }));
+      else setNewItem((prev) => ({ ...prev, thumbnail_url: file_url }));
     } catch { toast({ title: "Upload failed", variant: "destructive" }); }
-    finally { setUploadingThumb(false); }
+    finally {
+      if (target === "avatar") setUploading(false);
+      else setUploadingThumb(false);
+    }
   };
 
   const computedLevel = () => {
@@ -203,7 +218,7 @@ export default function CreatorProfileEdit() {
             <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed hover:border-primary/50 cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors">
               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
               {uploading ? "Uploading…" : "Upload photo"}
-              <input type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
+              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
             </label>
           </div>
           <div className="space-y-2">
@@ -419,7 +434,7 @@ export default function CreatorProfileEdit() {
                 <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed hover:border-primary/50 cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {uploadingThumb ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   {uploadingThumb ? "Uploading…" : "Upload thumbnail"}
-                  <input type="file" accept="image/*" className="hidden" onChange={handleThumb} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleThumbSelect} />
                 </label>
               </div>
             </div>
@@ -430,6 +445,14 @@ export default function CreatorProfileEdit() {
           </div>
         </div>
       )}
+
+      <ImageCropModal
+        open={!!cropSrc}
+        imageSrc={cropSrc}
+        shape={cropTarget === "avatar" ? "circle" : "square"}
+        onClose={() => { setCropSrc(null); setCropTarget(null); }}
+        onCrop={handleCropDone}
+      />
     </div>
   );
 }
