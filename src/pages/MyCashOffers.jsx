@@ -55,7 +55,6 @@ export default function MyCashOffers() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="w-4 h-4 text-primary" />
               <span className="font-display font-bold text-xl text-primary">${(offer.amount || 0).toLocaleString()}</span>
               <span className="text-sm text-muted-foreground">USD</span>
             </div>
