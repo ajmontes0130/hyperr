@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Electric Cyan — always-dark theme */
+    /* Electric Cyan — dark theme (default) */
     --background: 214 30% 6%;       /* #0A0E14 */
     --foreground: 204 50% 95%;      /* #EAF1F7 */
     --card: 216 26% 10%;            /* #121823 */
@@ -47,7 +47,38 @@
   }
 }
 
-/* No separate dark-mode block needed — theme is always dark */
+/* Light mode overrides — only when OS is in light mode */
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: 210 20% 96%;
+    --foreground: 214 30% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 214 30% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 214 30% 10%;
+    --primary: 192 80% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 16% 90%;
+    --secondary-foreground: 214 30% 10%;
+    --muted: 210 16% 90%;
+    --muted-foreground: 210 14% 42%;
+    --accent: 347 80% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 16% 82%;
+    --input: 210 16% 92%;
+    --ring: 192 80% 42%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 214 30% 10%;
+    --sidebar-primary: 192 80% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 16% 92%;
+    --sidebar-accent-foreground: 192 80% 42%;
+    --sidebar-border: 210 16% 82%;
+    --sidebar-ring: 192 80% 42%;
+  }
+}
 
 @layer base {
   * {
@@ -65,6 +96,13 @@
   button:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(45, 212, 255, 0.35);
+  }
+
+  /* Prevent accidental text selection on UI elements */
+  button, a, nav, [role="tab"], [role="button"], label,
+  .select-trigger, [data-radix-collection-item] {
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* Scrollbar */

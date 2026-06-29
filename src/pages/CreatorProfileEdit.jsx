@@ -6,9 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import MobileSelect from "@/components/MobileSelect";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
@@ -398,21 +396,21 @@ export default function CreatorProfileEdit() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Platform *</Label>
-                <Select value={newItem.platform} onValueChange={(v) => setNewItem({ ...newItem, platform: v })}>
-                  <SelectTrigger><SelectValue placeholder="Platform" /></SelectTrigger>
-                  <SelectContent>{platforms.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
-                </Select>
+                <MobileSelect
+                  value={newItem.platform}
+                  onValueChange={(v) => setNewItem({ ...newItem, platform: v })}
+                  placeholder="Platform"
+                  options={platforms.map((p) => ({ value: p, label: p }))}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Collab Type</Label>
-                <Select value={newItem.collab_type} onValueChange={(v) => setNewItem({ ...newItem, collab_type: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Barter">Barter</SelectItem>
-                    <SelectItem value="Paid">Paid</SelectItem>
-                    <SelectItem value="Gifted">Gifted</SelectItem>
-                  </SelectContent>
-                </Select>
+                <MobileSelect
+                  value={newItem.collab_type}
+                  onValueChange={(v) => setNewItem({ ...newItem, collab_type: v })}
+                  placeholder="Collab type"
+                  options={[{ value: "Barter", label: "Barter" }, { value: "Paid", label: "Paid" }, { value: "Gifted", label: "Gifted" }]}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Month & Year</Label>

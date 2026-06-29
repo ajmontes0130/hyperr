@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/MobileSelect";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Sparkles, Building2, ArrowRight, Upload } from "lucide-react";
 
@@ -257,10 +257,12 @@ export default function Onboarding() {
               </div>
               <div className="space-y-2">
                 <Label>Category *</Label>
-                <Select value={businessForm.category} onValueChange={(v) => setBusinessForm({ ...businessForm, category: v })}>
-                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
-                  <SelectContent>{businessCategories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-                </Select>
+                <MobileSelect
+                  value={businessForm.category}
+                  onValueChange={(v) => setBusinessForm({ ...businessForm, category: v })}
+                  placeholder="Select category"
+                  options={businessCategories.map((c) => ({ value: c, label: c }))}
+                />
               </div>
               <div className="space-y-2">
                 <Label>About Your Business</Label>

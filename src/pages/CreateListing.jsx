@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import MobileSelect from "@/components/MobileSelect";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Upload, X, Plus, ArrowLeft, Eye } from "lucide-react";
@@ -237,23 +235,21 @@ export default function CreateListing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Type *</Label>
-              <Select value={form.offering_type} onValueChange={(v) => setForm({ ...form, offering_type: v })}>
-                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Product">Product</SelectItem>
-                  <SelectItem value="Service">Service</SelectItem>
-                  <SelectItem value="Experience">Experience</SelectItem>
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.offering_type}
+                onValueChange={(v) => setForm({ ...form, offering_type: v })}
+                placeholder="Select type"
+                options={[{ value: "Product", label: "Product" }, { value: "Service", label: "Service" }, { value: "Experience", label: "Experience" }]}
+              />
             </div>
             <div className="space-y-2">
               <Label>Category *</Label>
-              <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
-                <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.category}
+                onValueChange={(v) => setForm({ ...form, category: v })}
+                placeholder="Select category"
+                options={categories.map((c) => ({ value: c, label: c }))}
+              />
             </div>
           </div>
 
@@ -388,16 +384,13 @@ export default function CreateListing() {
           </div>
           <div className="space-y-2">
             <Label>Minimum Creator Tier</Label>
-            <Select value={form.min_creator_tier} onValueChange={(v) => setForm({ ...form, min_creator_tier: v })}>
-              <SelectTrigger className="max-w-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {tierOptions.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t === "Any" ? "Any tier (open to all)" : `${t} and above`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <MobileSelect
+              value={form.min_creator_tier}
+              onValueChange={(v) => setForm({ ...form, min_creator_tier: v })}
+              placeholder="Minimum tier"
+              options={tierOptions.map((t) => ({ value: t, label: t === "Any" ? "Any tier (open to all)" : `${t} and above` }))}
+              triggerClassName="max-w-xs"
+            />
             <p className="text-xs text-muted-foreground">
               Tiers by reach: Bronze &lt;10K · Silver 10K–50K · Gold 50K–250K · Platinum 250K–1M · Diamond 1M+
             </p>

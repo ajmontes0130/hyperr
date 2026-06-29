@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Search, Compass, MessageCircle, User } from "lucide-react";
 
@@ -9,12 +9,26 @@ const tabs = [
   { label: "Profile", path: "/profile", icon: User },
 ];
 
+// Preserve scroll position per tab so returning to a tab restores where you were
+const scrollPositions = {};
+
 export default function MobileBottomNav() {
   const location = useLocation();
+  const prevPathRef = useRef(location.pathname);
 
   const handleTabClick = (path) => {
+    // Save current scroll position for the tab we're leaving
+    scrollPositions[prevPathRef.current] = window.scrollY;
+    prevPathRef.current = path;
+
     if (location.pathname === path) {
+      // Already on this tab — scroll to top
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // Restore saved scroll position for the destination tab (after paint)
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollPositions[path] || 0, behavior: "instant" });
+      });
     }
   };
 
