@@ -56,7 +56,7 @@ export default function ListingDetail() {
   return (
     <div>
       <MobileBackButton />
-      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+      <Link to="/marketplace" className="hidden sm:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Marketplace
       </Link>
 
