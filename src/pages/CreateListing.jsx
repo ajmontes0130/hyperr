@@ -83,8 +83,12 @@ export default function CreateListing() {
   };
 
   const validateForm = () => {
-    if (!form.title || !form.offering_type || !form.offering_details || !form.category || form.promotion_requirements.length === 0) {
+    if (!form.title.trim() || !form.offering_type || !form.offering_details.trim() || !form.category || form.promotion_requirements.length === 0) {
       toast({ title: "Please fill in all required fields and select at least one promotion type", variant: "destructive" });
+      return false;
+    }
+    if (form.estimated_value !== "" && (Number(form.estimated_value) < 0 || isNaN(Number(form.estimated_value)))) {
+      toast({ title: "Offering value must be a positive number", variant: "destructive" });
       return false;
     }
     return true;

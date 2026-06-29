@@ -175,7 +175,7 @@ function Welcome({ rm, user, stats }) {
         </div>
 
         <Link
-          to="/"
+          to="/marketplace"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -319,7 +319,7 @@ function OffersGrid({ rm, listings }) {
       {listings.length === 0 && (
         <div style={{ background: "#121823", border: "1px solid #25303F", borderRadius: 16, padding: "40px 24px", textAlign: "center" }}>
           <p style={{ color: "#5C6672", fontSize: 14 }}>No active listings yet — check back soon.</p>
-          <Link to="/" style={{ ...mono, fontSize: 12, color: "#2DD4FF", textDecoration: "none", marginTop: 10, display: "inline-block" }}>Browse marketplace →</Link>
+          <Link to="/marketplace" style={{ ...mono, fontSize: 12, color: "#2DD4FF", textDecoration: "none", marginTop: 10, display: "inline-block" }}>Browse marketplace →</Link>
         </div>
       )}
 
@@ -432,22 +432,46 @@ function ActiveTradesCard({ rm, trades }) {
 /* ─────────────────────────────────────────────────────── */
 /* tier progress card                                      */
 /* ─────────────────────────────────────────────────────── */
-function TierProgressCard({ rm }) {
+const TIER_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Diamond"];
+const TIER_THRESHOLDS = { Bronze: 0, Silver: 10000, Gold: 50000, Platinum: 250000, Diamond: 1000000 };
+const TIER_COLORS = { Bronze: "#D08B5A", Silver: "#A9B4C0", Gold: "#FFC247", Platinum: "#C9D6E3", Diamond: "#8FEFFF" };
+const TIER_NEXT = { Bronze: "Silver", Silver: "Gold", Gold: "Platinum", Platinum: "Diamond", Diamond: null };
+
+function TierProgressCard({ rm, stats, trades }) {
   const [ref, vis] = useScrollReveal(0.1);
   const [barWidth, setBarWidth] = useState(0);
 
+  // derive tier from completed trade count as a proxy (real app would use creator profile reach)
+  const completed = stats.completed;
+  let currentTier = "Bronze";
+  if (completed >= 50) currentTier = "Diamond";
+  else if (completed >= 20) currentTier = "Platinum";
+  else if (completed >= 10) currentTier = "Gold";
+  else if (completed >= 3) currentTier = "Silver";
+
+  const nextTier = TIER_NEXT[currentTier];
+  const tierThresholds = { Bronze: 3, Silver: 10, Gold: 20, Platinum: 50, Diamond: null };
+  const currentMin = { Bronze: 0, Silver: 3, Gold: 10, Platinum: 20, Diamond: 50 };
+  const pct = nextTier
+    ? Math.min(100, Math.round(((completed - currentMin[currentTier]) / (tierThresholds[currentTier] - currentMin[currentTier])) * 100))
+    : 100;
+
+  const color = TIER_COLORS[currentTier];
+
   useEffect(() => {
-    if (!vis || rm) { if (rm) setBarWidth(62); return; }
-    const id = setTimeout(() => setBarWidth(62), 100);
+    if (!vis || rm) { if (rm) setBarWidth(pct); return; }
+    const id = setTimeout(() => setBarWidth(pct), 100);
     return () => clearTimeout(id);
-  }, [vis, rm]);
+  }, [vis, rm, pct]);
+
+  const avgRating = stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "—";
 
   return (
     <div
       ref={ref}
       style={{
-        background: "linear-gradient(165deg, rgba(255,194,71,0.08) 0%, rgba(18,24,35,0.5) 100%)",
-        border: "1px solid rgba(255,194,71,0.22)",
+        background: `linear-gradient(165deg, ${color}14 0%, rgba(18,24,35,0.5) 100%)`,
+        border: `1px solid ${color}38`,
         borderRadius: 16,
         padding: "22px",
         opacity: vis ? 1 : 0,
@@ -455,61 +479,27 @@ function TierProgressCard({ rm }) {
         transition: rm ? "none" : "opacity 0.6s cubic-bezier(.16,1,.3,1) 80ms, transform 0.6s cubic-bezier(.16,1,.3,1) 80ms",
       }}
     >
-      {/* eyebrow */}
-      <div style={{ ...mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.15em", color: "#FFC247", textTransform: "uppercase", marginBottom: 14 }}>
+      <div style={{ ...mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.15em", color, textTransform: "uppercase", marginBottom: 14 }}>
         Your Tier
       </div>
-
-      {/* badge row */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <div
-          style={{
-            width: 22,
-            height: 22,
-            background: "#FFC247",
-            borderRadius: 4,
-            transform: "rotate(45deg)",
-            flexShrink: 0,
-            boxShadow: "0 0 14px rgba(255,194,71,0.55), 0 0 28px rgba(255,194,71,0.25)",
-          }}
-        />
-        <span style={{ ...bricolage, fontWeight: 800, fontSize: 30, color: "#FFC247", letterSpacing: "-0.03em", lineHeight: 1 }}>
-          Gold
+        <div style={{ width: 22, height: 22, background: color, borderRadius: 4, transform: "rotate(45deg)", flexShrink: 0, boxShadow: `0 0 14px ${color}8C, 0 0 28px ${color}40` }} />
+        <span style={{ ...bricolage, fontWeight: 800, fontSize: 30, color, letterSpacing: "-0.03em", lineHeight: 1 }}>
+          {currentTier}
         </span>
       </div>
-
-      {/* progress bar */}
       <div style={{ marginBottom: 8 }}>
         <div style={{ background: "#1B2330", borderRadius: 999, height: 6, overflow: "hidden" }}>
-          <div
-            style={{
-              height: "100%",
-              width: `${barWidth}%`,
-              background: "linear-gradient(90deg, #FFC247, #C9D6E3)",
-              borderRadius: 999,
-              transition: rm ? "none" : "width 1s cubic-bezier(.16,1,.3,1)",
-            }}
-          />
+          <div style={{ height: "100%", width: `${barWidth}%`, background: `linear-gradient(90deg, ${color}, ${color}99)`, borderRadius: 999, transition: rm ? "none" : "width 1s cubic-bezier(.16,1,.3,1)" }} />
         </div>
       </div>
-      <div style={{ ...mono, fontSize: 12, color: "#8C97A3", marginBottom: 18 }}>62% to Platinum</div>
-
-      {/* stats row */}
-      <div
-        style={{
-          ...mono,
-          fontSize: 11.5,
-          color: "#5C6672",
-          borderTop: "1px solid rgba(255,194,71,0.12)",
-          paddingTop: 14,
-          marginBottom: 10,
-        }}
-      >
-        <span style={{ color: "#EAF1F7" }}>12</span> done ·{" "}
-        <span style={{ color: "#EAF1F7" }}>100%</span> on-time ·{" "}
-        <span style={{ color: "#EAF1F7" }}>4.9</span> rating
+      <div style={{ ...mono, fontSize: 12, color: "#8C97A3", marginBottom: 18 }}>
+        {nextTier ? `${pct}% to ${nextTier}` : "Max tier reached 🎉"}
       </div>
-
+      <div style={{ ...mono, fontSize: 11.5, color: "#5C6672", borderTop: `1px solid ${color}1F`, paddingTop: 14, marginBottom: 10 }}>
+        <span style={{ color: "#EAF1F7" }}>{completed}</span> done ·{" "}
+        <span style={{ color: "#EAF1F7" }}>{avgRating}</span> avg rating
+      </div>
       <div style={{ fontSize: 11.5, color: "#5C6672", fontStyle: "italic" }}>
         Earned, not bought — verified data only.
       </div>
@@ -610,7 +600,7 @@ export default function Dashboard() {
               className="sidebar-col"
             >
               <ActiveTradesCard rm={rm} trades={trades} />
-              <TierProgressCard rm={rm} />
+              <TierProgressCard rm={rm} stats={stats} trades={trades} />
             </div>
           </div>
 

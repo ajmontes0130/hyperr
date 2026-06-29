@@ -53,7 +53,7 @@ export default function ProposalModal({ listing, open, onClose, user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.platform || !form.proposed_promotion || !form.message) return;
+    if (!form.platform || !form.proposed_promotion.trim() || !form.message.trim()) return;
 
     setLoading(true);
     try {
@@ -162,7 +162,7 @@ export default function ProposalModal({ listing, open, onClose, user }) {
               rows={3}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading || !form.platform || !form.proposed_promotion || !form.message}>
+          <Button type="submit" className="w-full" disabled={loading || !form.platform || !form.proposed_promotion.trim() || !form.message.trim()}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
             Send Proposal
           </Button>

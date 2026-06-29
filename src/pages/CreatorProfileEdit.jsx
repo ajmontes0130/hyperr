@@ -137,7 +137,7 @@ export default function CreatorProfileEdit() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.display_name) { toast({ title: "Display name is required", variant: "destructive" }); return; }
+    if (!form.display_name.trim()) { toast({ title: "Display name is required", variant: "destructive" }); return; }
     setSaving(true);
     try {
       const totalReach = calcTotalReach({

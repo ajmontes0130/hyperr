@@ -27,6 +27,7 @@ const valueRanges = [
 export default function Marketplace() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [promoType, setPromoType] = useState("All");
@@ -39,11 +40,13 @@ export default function Marketplace() {
 
   const loadListings = async () => {
     setLoading(true);
+    setError(false);
     try {
       const data = await base44.entities.Listing.filter({ status: "active" }, "-created_date");
       setListings(data);
     } catch (err) {
       console.error(err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -131,6 +134,11 @@ export default function Marketplace() {
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-muted-foreground mb-4">Something went wrong loading listings.</p>
+          <button onClick={loadListings} className="px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">Try again</button>
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">

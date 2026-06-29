@@ -116,7 +116,7 @@ export default function MyTrades() {
 
   const handleMarkInProgress = async (proposal) => {
     await updateStatus(proposal.id, "in_progress", proposal);
-    await sendStatusEmail(proposal, "in_progress");
+    // sendStatusEmail is already called inside updateStatus — no duplicate needed
   };
 
   const handleMarkDelivered = async () => {

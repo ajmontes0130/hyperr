@@ -94,7 +94,7 @@ export default function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.business_name || !form.category) {
+    if (!form.business_name.trim() || !form.category) {
       toast({ title: "Business name and category are required", variant: "destructive" });
       return;
     }
@@ -132,7 +132,7 @@ export default function Profile() {
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="font-display font-bold text-2xl sm:text-3xl mb-2">Business Profile</h1>
-      <p className="text-muted-foreground mb-8">This is how other businesses will see you on BarterHub.</p>
+      <p className="text-muted-foreground mb-8">This is how other businesses will see you on hyperr.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-card rounded-2xl border p-6 space-y-5">

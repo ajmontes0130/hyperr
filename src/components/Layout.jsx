@@ -10,7 +10,7 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 const creatorNav = [
   { label: "Home", path: "/", icon: Home },
   { label: "Explore", path: "/explore", icon: Compass },
-  { label: "Marketplace", path: "/", icon: Search },
+  { label: "Marketplace", path: "/marketplace", icon: Search },
   { label: "Saved", path: "/saved-creators", icon: Heart },
   { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Barter Trades", path: "/my-trades", icon: Handshake },

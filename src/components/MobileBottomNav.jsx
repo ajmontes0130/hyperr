@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Search, Compass, MessageCircle, User } from "lucide-react";
 
 const tabs = [
-  { label: "Market", path: "/", icon: Search },
+  { label: "Market", path: "/marketplace", icon: Search },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Profile", path: "/profile", icon: User },

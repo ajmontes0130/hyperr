@@ -25,7 +25,8 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.amount || !form.platform || !form.deliverables) return;
+    const amt = Number(form.amount);
+    if (!form.amount || isNaN(amt) || amt <= 0 || !form.platform || !form.deliverables.trim()) return;
     setLoading(true);
     try {
       const profiles = await base44.entities.BusinessProfile.filter({ created_by_id: user.id });
@@ -91,7 +92,7 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
             <Label>Message (optional)</Label>
             <Textarea placeholder="Tell them about your brand and what you're looking for…" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={2} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading || !form.amount || !form.platform || !form.deliverables}>
+          <Button type="submit" className="w-full" disabled={loading || !form.amount || Number(form.amount) <= 0 || !form.platform || !form.deliverables.trim()}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <DollarSign className="w-4 h-4 mr-2" />}
             Send Offer
           </Button>

@@ -38,6 +38,7 @@ export default function MyListings() {
   };
 
   const deleteListing = async (id) => {
+    if (!window.confirm("Delete this listing? This cannot be undone.")) return;
     await base44.entities.Listing.delete(id);
     toast({ title: "Listing deleted" });
     loadData();
@@ -89,7 +90,7 @@ export default function MyListings() {
                   </Badge>
                   <span className="text-xs text-muted-foreground">{listing.category}</span>
                   {listing.estimated_value > 0 && (
-                    <span className="text-xs text-muted-foreground">~${listing.estimated_value}</span>
+                    <span className="text-xs text-muted-foreground">~${Number(listing.estimated_value).toLocaleString()}</span>
                   )}
                 </div>
               </div>
