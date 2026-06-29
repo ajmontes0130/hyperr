@@ -162,9 +162,10 @@ export default function Messages() {
         <p className="text-muted-foreground text-sm">Chat with creators and businesses.</p>
       </div>
 
+      {/* Desktop: side-by-side | Mobile: show thread list OR chat */}
       <div className="bg-card rounded-2xl border overflow-hidden flex h-[70vh] min-h-[480px]">
-        {/* Thread list */}
-        <div className="w-72 border-r flex-shrink-0 flex flex-col">
+        {/* Thread list — hidden on mobile when a thread is open */}
+        <div className={`${activeThread ? "hidden sm:flex" : "flex"} w-full sm:w-72 border-r flex-shrink-0 flex-col`}>
           <div className="p-3 border-b">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Conversations</p>
           </div>
@@ -205,11 +206,18 @@ export default function Messages() {
           </div>
         </div>
 
-        {/* Chat area */}
+        {/* Chat area — full width on mobile */}
         {activeThread ? (
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 w-full">
             {/* Header */}
-            <div className="border-b px-4 py-3 flex items-center gap-3">
+            <div className="border-b px-3 py-3 flex items-center gap-3">
+              {/* Back button on mobile */}
+              <button
+                className="sm:hidden p-1 -ml-1 text-muted-foreground hover:text-foreground"
+                onClick={() => setActiveThread(null)}
+              >
+                ‹
+              </button>
               {activeThread.otherAvatar ? (
                 <img src={activeThread.otherAvatar} className="w-8 h-8 rounded-full object-cover" />
               ) : (
@@ -236,7 +244,7 @@ export default function Messages() {
                 const isMe = msg.sender_id === user?.id;
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm ${isMe ? "bg-primary text-white rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm"}`}>
+                    <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${isMe ? "bg-primary text-white rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm"}`}>
                       {msg.content}
                       <p className={`text-xs mt-1 ${isMe ? "text-white/60" : "text-muted-foreground"}`}>
                         {new Date(msg.created_date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -263,7 +271,7 @@ export default function Messages() {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+          <div className="hidden sm:flex flex-1 flex-col items-center justify-center text-center p-8">
             <MessageCircle className="w-12 h-12 text-muted-foreground/30 mb-4" />
             <p className="text-muted-foreground">Select a conversation or message a creator.</p>
           </div>
