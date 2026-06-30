@@ -26,6 +26,12 @@
     "logo_url": {
       "type": "string"
     },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "website": {
       "type": "string"
     },

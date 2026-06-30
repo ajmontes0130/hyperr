@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Upload, Save, Building2, Trash2 } from "lucide-react";
+import { Loader2, Upload, Save, Building2, Trash2, Plus, X } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -27,6 +27,7 @@ export default function Profile() {
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [cropSrc, setCropSrc] = useState(null);
   const [profileId, setProfileId] = useState(null);
   const [form, setForm] = useState({
@@ -34,6 +35,7 @@ export default function Profile() {
     description: "",
     category: "",
     logo_url: "",
+    photo_urls: [],
     website: "",
     location: "",
     instagram_handle: "",
@@ -58,6 +60,7 @@ export default function Profile() {
           description: p.description || "",
           category: p.category || "",
           logo_url: p.logo_url || "",
+          photo_urls: p.photo_urls || [],
           website: p.website || "",
           location: p.location || "",
           instagram_handle: p.instagram_handle || "",
@@ -70,6 +73,27 @@ export default function Profile() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    const remaining = 5 - form.photo_urls.length;
+    if (remaining <= 0) return;
+    const toUpload = files.slice(0, remaining);
+    setUploadingPhotos(true);
+    try {
+      const uploads = await Promise.all(toUpload.map((file) => base44.integrations.Core.UploadFile({ file })));
+      setForm((prev) => ({ ...prev, photo_urls: [...prev.photo_urls, ...uploads.map((u) => u.file_url)] }));
+    } catch {
+      toast({ title: "Upload failed", variant: "destructive" });
+    } finally {
+      setUploadingPhotos(false);
+    }
+  };
+
+  const removePhoto = (idx) => {
+    setForm((prev) => ({ ...prev, photo_urls: prev.photo_urls.filter((_, i) => i !== idx) }));
   };
 
   const handleLogoSelect = (e) => {
@@ -183,6 +207,35 @@ export default function Profile() {
               <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="City, State" />
             </div>
           </div>
+        </div>
+
+        <div className="bg-card rounded-2xl border p-6 space-y-4">
+          <div>
+            <h2 className="font-display font-semibold text-lg">Business Photos</h2>
+            <p className="text-sm text-muted-foreground mt-1">Add up to 5 photos showcasing your business — products, space, menu, etc.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {form.photo_urls.map((url, i) => (
+              <div key={i} className="relative group">
+                <img src={url} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removePhoto(i)}
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {form.photo_urls.length < 5 && (
+              <label className="w-24 h-24 rounded-xl border-2 border-dashed border-border hover:border-primary/50 cursor-pointer transition-colors flex flex-col items-center justify-center text-muted-foreground hover:text-foreground">
+                {uploadingPhotos ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                <span className="text-xs mt-1">{uploadingPhotos ? "Uploading" : "Add photo"}</span>
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoUpload} disabled={uploadingPhotos} />
+              </label>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">{form.photo_urls.length}/5 photos added</p>
         </div>
 
         <div className="bg-card rounded-2xl border p-6 space-y-5">
