@@ -284,6 +284,19 @@ const MARKUP = `
       </div>
     </section>
 
+    <!-- NEWSLETTER SIGNUP -->
+    <section style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(64px,10vh,96px) clamp(20px,5vw,64px);">
+      <div data-reveal style="background:linear-gradient(165deg,rgba(45,212,255,.08),rgba(18,24,35,.72));border:1px solid rgba(45,212,255,.24);border-radius:20px;padding:clamp(40px,5vw,60px) clamp(24px,5vw,48px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-align:center;">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3.5vw,36px);letter-spacing:-.02em;margin:0 0 12px;color:#EAF1F7;">Stay in the loop</h2>
+        <p style="color:#8C97A3;font-size:clamp(14px,1.2vw,16px);margin:0 0 24px;max-width:520px;margin-left:auto;margin-right:auto;">Get updates on new creators, features, and trades from hyperr. No spam, just the good stuff.</p>
+        <form data-newsletter-form style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:480px;margin:0 auto;">
+          <input type="email" name="email" placeholder="Enter your email" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid rgba(45,212,255,.3);border-radius:11px;background:rgba(12,17,26,.8);color:#EAF1F7;font-size:14px;font-family:inherit;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,box-shadow .2s ease;" data-h="border-color:rgba(45,212,255,.6);box-shadow:0 0 0 3px rgba(45,212,255,.15);" />
+          <button type="submit" style="padding:14px 26px;background:#2DD4FF;border:none;border-radius:11px;color:#06303B;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;white-space:nowrap;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,212,255,.24);">Subscribe</button>
+        </form>
+        <p style="color:#5C6672;font-size:12px;margin:16px 0 0;">We respect your inbox. Unsubscribe anytime.</p>
+      </div>
+    </section>
+
     <!-- FOOTER -->
     <footer style="position:relative;border-top:1px solid #25303F;background:rgba(12,17,26,.82);">
       <div style="max-width:1280px;margin:0 auto;padding:clamp(48px,7vh,72px) clamp(20px,5vw,64px) 40px;display:grid;grid-template-columns:minmax(200px,1.4fr) repeat(auto-fit,minmax(130px,1fr));gap:36px;">
@@ -430,6 +443,31 @@ export default function Landing() {
     }
 
     const bounce = root.querySelector("[data-bounce] > span");
+
+    // newsletter signup
+    const form = root.querySelector("[data-newsletter-form]");
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = form.querySelector('input[type="email"]');
+        const email = input?.value?.trim();
+        if (!email) return;
+        try {
+          const { base44 } = await import("@/api/base44Client");
+          await base44.entities.Newsletter.create({ email });
+          input.value = "";
+          const btn = form.querySelector("button");
+          const orig = btn.textContent;
+          btn.textContent = "✓ Thanks for subscribing!";
+          setTimeout(() => { btn.textContent = orig; }, 3000);
+        } catch (err) {
+          console.error("Newsletter signup failed:", err);
+          const btn = form.querySelector("button");
+          btn.textContent = "Error — try again";
+          setTimeout(() => { btn.textContent = "Subscribe"; }, 2000);
+        }
+      });
+    }
 
     // parallax engine
     const pxEls = Array.prototype.slice.call(root.querySelectorAll("[data-px]")).map((el) => ({ el, sy: parseFloat(el.dataset.sy) || 0, mx: parseFloat(el.dataset.mx) || 0, my: parseFloat(el.dataset.my) || 0, rx: parseFloat(el.dataset.rx) || 0, ry: parseFloat(el.dataset.ry) || 0, fade: parseFloat(el.dataset.fade) || 0, baseOp: (el.dataset.baseOp != null) ? parseFloat(el.dataset.baseOp) : null }));
