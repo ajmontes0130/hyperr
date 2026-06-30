@@ -50,6 +50,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: transfer.error?.message || "Transfer failed" }, { status: 400 });
     }
 
+    // Notify platform owner via email
+    const adminEmail = Deno.env.get("ADMIN_EMAIL");
+    if (adminEmail) {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: adminEmail,
+        subject: `💸 Payment Released — ${payment.creator_name}`,
+        body: `A payment has been released to a creator.\n\nCreator: ${payment.creator_name}\nBusiness: ${payment.business_name}\nAmount: $${payment.amount} ${payment.currency?.toUpperCase() || "USD"}\nPlatform: ${payment.platform}\nTransfer ID: ${transfer.id}\nPayment ID: ${payment_id}`,
+      });
+    }
+
     return Response.json({ transfer_id: transfer.id });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
