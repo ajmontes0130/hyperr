@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Loader2, Package, Trash2, Pause, Play } from "lucide-react";
+import { PlusCircle, Loader2, Package, Trash2, Pause, Play, Pencil } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import EditListingModal from "@/components/listings/EditListingModal";
 
 export default function MyListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [editingListing, setEditingListing] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -95,6 +97,9 @@ export default function MyListings() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="rounded-lg" onClick={() => setEditingListing(listing)}>
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
                 <Button variant="outline" size="sm" className="rounded-lg" onClick={() => toggleStatus(listing)}>
                   {listing.status === "active" ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                 </Button>
@@ -106,6 +111,12 @@ export default function MyListings() {
           ))}
         </div>
       )}
+      <EditListingModal
+        listing={editingListing}
+        open={!!editingListing}
+        onClose={() => setEditingListing(null)}
+        onSaved={loadData}
+      />
     </div>
   );
 }
