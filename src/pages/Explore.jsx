@@ -91,6 +91,8 @@ export default function Explore() {
   const creator = creators[index];
   const filtersActive = filterNiche !== "All" || filterAudience !== "all" || filterLocation.trim();
 
+  const clearFilters = () => { setFilterNiche("All"); setFilterAudience("all"); setFilterLocation(""); };
+
   const go = (dir) => {
     setAnimDir(dir);
     setTimeout(() => {
@@ -127,17 +129,7 @@ export default function Explore() {
     return <div className="flex justify-center py-32"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
-  if (!creator) {
-    return (
-      <div className="flex flex-col items-center justify-center py-32 text-center">
-        <Users className="w-12 h-12 text-muted-foreground/40 mb-4" />
-        <h3 className="font-display font-semibold text-lg mb-1">No creators yet</h3>
-        <p className="text-muted-foreground text-sm">Check back soon!</p>
-      </div>
-    );
-  }
-
-  const platforms = Object.entries(platformLabels).filter(([key]) => creator[key]);
+  const creatorPlatforms = creator ? Object.entries(platformLabels).filter(([key]) => creator[key]) : [];
 
   return (
     <div>
@@ -149,7 +141,7 @@ export default function Explore() {
       </div>
 
       <div className="max-w-xl mx-auto">
-        {/* Filter bar */}
+        {/* Filter bar — always visible */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <button
@@ -161,7 +153,7 @@ export default function Explore() {
             </button>
             {filtersActive && (
               <button
-                onClick={() => { setFilterNiche("All"); setFilterAudience("all"); setFilterLocation(""); }}
+                onClick={clearFilters}
                 className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
               >
                 <X className="w-3 h-3" /> Clear filters
@@ -201,105 +193,126 @@ export default function Explore() {
           )}
         </div>
 
-        {/* Card */}
-        <div
-          className={`bg-card rounded-3xl border shadow-lg shadow-black/30 overflow-hidden transition-all duration-200 ${
-            animDir === -1 ? "-translate-x-4 opacity-0" : animDir === 1 ? "translate-x-4 opacity-0" : "translate-x-0 opacity-100"
-          }`}
-        >
-          {/* Hero image / avatar */}
-          <div className="relative h-56 bg-gradient-to-br from-[#0E2A33] via-[#121823] to-[#1B2330] flex items-center justify-center">
-            {creator.avatar_url ? (
-              <img src={creator.avatar_url} alt={creator.display_name} className="w-28 h-28 rounded-full object-cover ring-4 ring-border shadow-lg" />
-            ) : (
-              <div className="w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-border shadow-lg">
-                <Users className="w-12 h-12 text-primary/40" />
-              </div>
-            )}
-            <div className="absolute top-4 right-4">
-              <LevelBadge level={creator.creator_level} />
-            </div>
-          </div>
-
-          {/* Body */}
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-1">
-              <h2 className="font-display font-bold text-2xl">{creator.display_name}</h2>
-              {creator.avg_rating && (
-                <div className="flex items-center gap-1 text-sm text-amber-500 font-semibold">
-                  <Star className="w-4 h-4 fill-amber-400" />
-                  {creator.avg_rating.toFixed(1)}
-                </div>
-              )}
-            </div>
-
-            {creator.location && (
-              <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
-                <MapPin className="w-3.5 h-3.5" /> {creator.location}
-              </div>
-            )}
-
-            {creator.bio && (
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{creator.bio}</p>
-            )}
-
-            {/* Niches */}
-            {creator.niche?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {creator.niche.map((n) => (
-                  <Badge key={n} variant="secondary" className="text-xs rounded-full">{n}</Badge>
-                ))}
-              </div>
-            )}
-
-            {/* Platform stats */}
-            {platforms.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-4">
-                {platforms.map(([key, label]) => (
-                  <span key={key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${platformColors[key]}`}>
-                    {label} · {formatNum(creator[key])}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Base rate */}
-            {creator.base_rate && (
-              <p className="text-sm font-semibold text-primary mb-5">
-                Starting from ${creator.base_rate.toLocaleString()}
-              </p>
-            )}
-
-            {/* Action buttons */}
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className={`flex-1 rounded-xl gap-2 ${saved.has(creator.id) ? "border-[#FF4D6D]/40 text-[#FF4D6D] bg-[#2E121A] hover:bg-[#3a1525]" : ""}`}
-                onClick={toggleSave}
+        {/* Empty state — inline so filters stay visible */}
+        {!creator && (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <Users className="w-12 h-12 text-muted-foreground/40 mb-4" />
+            <h3 className="font-display font-semibold text-lg mb-1">
+              {filtersActive ? "No creators match your filters" : "No creators yet"}
+            </h3>
+            <p className="text-muted-foreground text-sm mb-4">
+              {filtersActive ? "Try adjusting or clearing your filters." : "Check back soon!"}
+            </p>
+            {filtersActive && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-primary hover:underline flex items-center gap-1"
               >
-                <Heart className={`w-4 h-4 ${saved.has(creator.id) ? "fill-rose-500" : ""}`} />
-                {saved.has(creator.id) ? "Saved" : "Save"}
+                <X className="w-3.5 h-3.5" /> Clear all filters
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Creator card */}
+        {creator && (
+          <>
+            <div
+              className={`bg-card rounded-3xl border shadow-lg shadow-black/30 overflow-hidden transition-all duration-200 ${
+                animDir === -1 ? "-translate-x-4 opacity-0" : animDir === 1 ? "translate-x-4 opacity-0" : "translate-x-0 opacity-100"
+              }`}
+            >
+              {/* Hero image / avatar */}
+              <div className="relative h-56 bg-gradient-to-br from-[#0E2A33] via-[#121823] to-[#1B2330] flex items-center justify-center">
+                {creator.avatar_url ? (
+                  <img src={creator.avatar_url} alt={creator.display_name} className="w-28 h-28 rounded-full object-cover ring-4 ring-border shadow-lg" />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-border shadow-lg">
+                    <Users className="w-12 h-12 text-primary/40" />
+                  </div>
+                )}
+                <div className="absolute top-4 right-4">
+                  <LevelBadge level={creator.creator_level} />
+                </div>
+              </div>
+
+              {/* Body */}
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-1">
+                  <h2 className="font-display font-bold text-2xl">{creator.display_name}</h2>
+                  {creator.avg_rating && (
+                    <div className="flex items-center gap-1 text-sm text-amber-500 font-semibold">
+                      <Star className="w-4 h-4 fill-amber-400" />
+                      {creator.avg_rating.toFixed(1)}
+                    </div>
+                  )}
+                </div>
+
+                {creator.location && (
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
+                    <MapPin className="w-3.5 h-3.5" /> {creator.location}
+                  </div>
+                )}
+
+                {creator.bio && (
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{creator.bio}</p>
+                )}
+
+                {creator.niche?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {creator.niche.map((n) => (
+                      <Badge key={n} variant="secondary" className="text-xs rounded-full">{n}</Badge>
+                    ))}
+                  </div>
+                )}
+
+                {creatorPlatforms.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {creatorPlatforms.map(([key, label]) => (
+                      <span key={key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${platformColors[key]}`}>
+                        {label} · {formatNum(creator[key])}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {creator.base_rate && (
+                  <p className="text-sm font-semibold text-primary mb-5">
+                    Starting from ${creator.base_rate.toLocaleString()}
+                  </p>
+                )}
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className={`flex-1 rounded-xl gap-2 ${saved.has(creator.id) ? "border-[#FF4D6D]/40 text-[#FF4D6D] bg-[#2E121A] hover:bg-[#3a1525]" : ""}`}
+                    onClick={toggleSave}
+                  >
+                    <Heart className={`w-4 h-4 ${saved.has(creator.id) ? "fill-rose-500" : ""}`} />
+                    {saved.has(creator.id) ? "Saved" : "Save"}
+                  </Button>
+                  <Button className="flex-1 rounded-xl gap-2" onClick={openMessage}>
+                    <MessageCircle className="w-4 h-4" /> Message
+                  </Button>
+                  <Button variant="ghost" className="rounded-xl px-4" onClick={() => navigate(`/creator/${creator.id}`)}>
+                    View
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between mt-6">
+              <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(-1)} disabled={index === 0}>
+                <ChevronLeft className="w-4 h-4" /> Previous
               </Button>
-              <Button className="flex-1 rounded-xl gap-2" onClick={openMessage}>
-                <MessageCircle className="w-4 h-4" /> Message
-              </Button>
-              <Button variant="ghost" className="rounded-xl px-4" onClick={() => navigate(`/creator/${creator.id}`)}>
-                View
+              <span className="text-sm text-muted-foreground">{index + 1} of {creators.length}</span>
+              <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(1)} disabled={index === creators.length - 1}>
+                Next <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
-          <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(-1)} disabled={index === 0}>
-            <ChevronLeft className="w-4 h-4" /> Previous
-          </Button>
-          <span className="text-sm text-muted-foreground">{index + 1} of {creators.length}</span>
-          <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(1)} disabled={index === creators.length - 1}>
-            Next <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
+          </>
+        )}
 
         {/* Saved quick strip */}
         {saved.size > 0 && (
@@ -308,7 +321,7 @@ export default function Explore() {
               Your Saved Creators ({saved.size})
             </p>
             <div className="flex gap-2 flex-wrap">
-              {creators.filter((c) => saved.has(c.id)).map((c) => (
+              {allCreators.filter((c) => saved.has(c.id)).map((c) => (
                 <button
                   key={c.id}
                   onClick={() => navigate(`/creator/${c.id}`)}
