@@ -65,7 +65,7 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
             {suggestedRange && <span className="ml-2 text-xs text-muted-foreground">· Suggested rate: {suggestedRange}</span>}
           </p>
         </DialogHeader>
-        <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }} className="space-y-5 mt-2">
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(e); }} className="space-y-5 mt-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Offer Amount (USD) *</Label>
@@ -93,10 +93,9 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
             <Textarea placeholder="Tell them about your brand and what you're looking for…" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={2} />
           </div>
           <Button
-            type="button"
+            type="submit"
             className="w-full"
             disabled={loading || !form.amount || Number(form.amount) <= 0 || !form.platform || !form.deliverables.trim()}
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }}
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <DollarSign className="w-4 h-4 mr-2" />}
             Send Offer
