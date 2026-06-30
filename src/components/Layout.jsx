@@ -21,8 +21,8 @@ const creatorNav = [
 const businessNav = [
   { label: "Home", path: "/", icon: Home },
   { label: "Creators", path: "/creators", icon: Users },
+  { label: "Post Listing", path: "/create-listing", icon: PlusCircle, highlight: true },
   { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
-  { label: "Post Listing", path: "/create-listing", icon: PlusCircle },
   { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Barter Trades", path: "/my-trades", icon: Handshake },
   { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
@@ -78,7 +78,9 @@ export default function Layout() {
                   key={item.path}
                   to={item.path}
                   className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
-                    isActive(item.path)
+                    item.highlight && !isActive(item.path)
+                      ? "text-primary-foreground bg-primary hover:bg-primary/90 mx-1"
+                      : isActive(item.path)
                       ? "text-primary border-b-2 border-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
