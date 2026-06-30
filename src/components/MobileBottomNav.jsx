@@ -1,10 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Compass, MessageCircle, User } from "lucide-react";
+import { Search, Compass, MessageCircle, User, LayoutGrid, PlusCircle } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
-const tabs = [
+const creatorTabs = [
   { label: "Market", path: "/marketplace", icon: Search },
   { label: "Explore", path: "/explore", icon: Compass },
+  { label: "Messages", path: "/messages", icon: MessageCircle },
+  { label: "Profile", path: "/profile", icon: User },
+];
+
+const businessTabs = [
+  { label: "Creators", path: "/creators", icon: Search },
+  { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
+  { label: "Post", path: "/create-listing", icon: PlusCircle },
   { label: "Messages", path: "/messages", icon: MessageCircle },
   { label: "Profile", path: "/profile", icon: User },
 ];
@@ -15,17 +24,21 @@ const scrollPositions = {};
 export default function MobileBottomNav() {
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
+  const [accountType, setAccountType] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then((me) => setAccountType(me?.account_type || null)).catch(() => {});
+  }, []);
+
+  const tabs = accountType === "business" ? businessTabs : creatorTabs;
 
   const handleTabClick = (path) => {
-    // Save current scroll position for the tab we're leaving
     scrollPositions[prevPathRef.current] = window.scrollY;
     prevPathRef.current = path;
 
     if (location.pathname === path) {
-      // Already on this tab — scroll to top
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      // Restore saved scroll position for the destination tab (after paint)
       requestAnimationFrame(() => {
         window.scrollTo({ top: scrollPositions[path] || 0, behavior: "instant" });
       });
