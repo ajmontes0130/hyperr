@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
 import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star, MessageCircle, Truck, AlertTriangle, PackageCheck, Plus } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
+import DirectBarterModal from "@/components/trades/DirectBarterModal";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from "@/components/ui/dialog";
@@ -33,6 +34,7 @@ export default function MyTrades() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [reviewTarget, setReviewTarget] = useState(null);
+  const [showDirectBarter, setShowDirectBarter] = useState(false);
   const [disputeTarget, setDisputeTarget] = useState(null);
   const [disputeReason, setDisputeReason] = useState("");
   const [deliveryTarget, setDeliveryTarget] = useState(null);
@@ -340,8 +342,8 @@ export default function MyTrades() {
     <div>
       <div className="flex items-center justify-between mb-2">
         <h1 className="font-display font-bold text-2xl sm:text-3xl">My Trades</h1>
-        <Button asChild size="sm" className="rounded-xl gap-1.5">
-          <Link to="/marketplace"><Plus className="w-4 h-4" /> New Trade</Link>
+        <Button size="sm" className="rounded-xl gap-1.5" onClick={() => setShowDirectBarter(true)}>
+          <Plus className="w-4 h-4" /> New Trade
         </Button>
       </div>
       <p className="text-muted-foreground mb-8">Manage incoming proposals and track your deals through to completion.</p>
@@ -445,6 +447,12 @@ export default function MyTrades() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <DirectBarterModal
+        open={showDirectBarter}
+        onClose={() => { setShowDirectBarter(false); loadData(); }}
+        user={user}
+      />
 
       {/* Review modal — only fires when status === completed */}
       {reviewTarget && user && (
