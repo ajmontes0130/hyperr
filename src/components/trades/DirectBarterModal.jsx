@@ -19,7 +19,7 @@ const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter
 
 export default function DirectBarterModal({ open, onClose, user }) {
   const { toast } = useToast();
-  const [step, setStep] = useState("search"); // "search" | "propose"
+  const [step, setStep] = useState("search"); // "search" | "listing" | "propose"
   const [search, setSearch] = useState("");
   const [creators, setCreators] = useState([]);
   const [loadingCreators, setLoadingCreators] = useState(false);
@@ -56,9 +56,13 @@ export default function DirectBarterModal({ open, onClose, user }) {
 
   const selectCreator = async (creator) => {
     setSelectedCreator(creator);
-    // Load their active listings
     const listings = await base44.entities.Listing.filter({ created_by_id: creator.created_by_id, status: "active" }).catch(() => []);
     setCreatorListings(listings);
+    setStep("listing");
+  };
+
+  const selectListing = (listing) => {
+    setForm((f) => ({ ...f, listing_id: listing ? listing.id : "" }));
     setStep("propose");
   };
 
@@ -170,11 +174,51 @@ export default function DirectBarterModal({ open, onClose, user }) {
               )}
             </div>
           </>
-        ) : (
+        ) : step === "listing" ? (
           <>
             <DialogHeader>
               <button
                 onClick={() => setStep("search")}
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-1 w-fit"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+              <DialogTitle className="font-display text-xl">Select a Listing</DialogTitle>
+              <DialogDescription>
+                Choose one of <span className="font-medium text-foreground">{selectedCreator?.display_name}</span>'s active listings, or propose without one.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-3 space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+              {creatorListings.length === 0 ? (
+                <div className="text-center py-6 text-sm text-muted-foreground">No active listings found.</div>
+              ) : (
+                creatorListings.map((listing) => (
+                  <button
+                    key={listing.id}
+                    className="w-full text-left p-3 rounded-xl border border-transparent hover:bg-secondary hover:border-border transition-all"
+                    onClick={() => selectListing(listing)}
+                  >
+                    <p className="font-medium text-sm">{listing.title}</p>
+                    {listing.category && <p className="text-xs text-muted-foreground mt-0.5">{listing.category}</p>}
+                    {listing.estimated_value && (
+                      <p className="text-xs text-muted-foreground">Est. value: ${listing.estimated_value}</p>
+                    )}
+                  </button>
+                ))
+              )}
+              <button
+                className="w-full text-center p-3 rounded-xl border border-dashed border-border hover:bg-secondary transition-all text-sm text-muted-foreground"
+                onClick={() => selectListing(null)}
+              >
+                Propose without a listing
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <button
+                onClick={() => setStep("listing")}
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-1 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" /> Back
@@ -186,20 +230,6 @@ export default function DirectBarterModal({ open, onClose, user }) {
             </DialogHeader>
 
             <div className="space-y-4 mt-2">
-              {creatorListings.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Their Listing (optional)</Label>
-                  <Select value={form.listing_id} onValueChange={(v) => setForm({ ...form, listing_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Select a listing (optional)" /></SelectTrigger>
-                    <SelectContent>
-                      {creatorListings.map((l) => (
-                        <SelectItem key={l.id} value={l.id}>{l.title}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
               <div className="space-y-2">
                 <Label>Your Platform</Label>
                 <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v })}>
