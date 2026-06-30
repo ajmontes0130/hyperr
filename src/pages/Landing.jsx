@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import HyperrLogo from "@/components/HyperrLogo";
 
 const MARKUP = `
   <!-- symbol defs -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="hy-H" viewBox="0 0 132 150"><g fill="currentColor"><rect x="0" y="0" width="28" height="150" rx="14"></rect><rect x="104" y="0" width="28" height="150" rx="14"></rect><rect x="0" y="61" width="132" height="28" rx="14"></rect></g></symbol>
+    <symbol id="hyperr-swap" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M24 34 H58" /><path d="M50 24 L71 34 L50 44" /><path d="M76 66 H42" /><path d="M50 56 L29 66 L50 76" /></g></symbol>
     <symbol id="hyperr-whale" viewBox="0 0 240 96"><path d="M16,56 C16,44 30,38 52,37 C104,34 150,34 188,40 C200,42 210,40 220,34 L236,22 C228,33 226,38 232,44 L236,68 C226,60 214,58 200,58 C150,62 104,64 56,60 C30,58 16,68 16,56 Z"></path><path d="M84,60 C92,74 110,80 122,75 C112,69 98,64 92,59 Z"></path></symbol>
   </svg>
 
@@ -31,9 +32,9 @@ const MARKUP = `
     <!-- NAV -->
     <nav data-nav style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px clamp(20px,5vw,64px);border-bottom:1px solid transparent;transition:background .25s ease,border-color .25s ease,backdrop-filter .25s ease;">
       <a href="#top" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
-        <svg viewBox="0 0 132 150" style="height:24px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 7px rgba(45,212,255,.65)) drop-shadow(0 0 16px rgba(45,212,255,.32));"><use href="#hy-H"></use></svg>
-        <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
-      </a>
+         <svg viewBox="0 0 100 100" style="height:24px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 7px rgba(45,212,255,.65)) drop-shadow(0 0 16px rgba(45,212,255,.32));"><use href="#hyperr-swap"></use></svg>
+         <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
+       </a>
       <div data-navlinks style="display:flex;align-items:center;gap:30px;">
         <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
         <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
@@ -49,7 +50,7 @@ const MARKUP = `
     <!-- HERO STAGE -->
     <header id="top" style="position:relative;min-height:clamp(660px,94vh,940px);max-width:1280px;margin:0 auto;padding:clamp(120px,16vh,176px) clamp(20px,5vw,64px) clamp(40px,6vh,72px);display:flex;align-items:center;overflow:visible;">
       <div data-px data-sy="0.14" data-mx="-46" data-my="-30" style="position:absolute;left:clamp(-40px,3vw,40px);top:46%;transform:translateY(-50%);pointer-events:none;z-index:0;">
-        <svg viewBox="0 0 132 150" style="height:min(112vh,940px);width:auto;color:#2DD4FF;opacity:.05;filter:blur(2px) drop-shadow(0 0 60px rgba(45,212,255,.35));"><use href="#hy-H"></use></svg>
+        <svg viewBox="0 0 100 100" style="height:min(112vh,940px);width:auto;color:#2DD4FF;opacity:.05;filter:blur(2px) drop-shadow(0 0 60px rgba(45,212,255,.35));"><use href="#hyperr-swap"></use></svg>
       </div>
       <div data-floatwrap style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .9s ease .2s;">
         <div data-px data-sy="-0.20" data-fade="0.0016" data-base-op="0.55" data-mx="32" data-my="22" style="position:absolute;left:6%;top:23%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
@@ -288,9 +289,9 @@ const MARKUP = `
       <div style="max-width:1280px;margin:0 auto;padding:clamp(48px,7vh,72px) clamp(20px,5vw,64px) 40px;display:grid;grid-template-columns:minmax(200px,1.4fr) repeat(auto-fit,minmax(130px,1fr));gap:36px;">
         <div>
           <div style="display:inline-flex;align-items:center;gap:9px;">
-            <svg viewBox="0 0 132 150" style="height:22px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 6px rgba(45,212,255,.55));"><use href="#hy-H"></use></svg>
-            <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
-          </div>
+             <svg viewBox="0 0 100 100" style="height:22px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 6px rgba(45,212,255,.55));"><use href="#hyperr-swap"></use></svg>
+             <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
+           </div>
           <p style="color:#8C97A3;font-size:13.5px;line-height:1.55;margin:14px 0 0;max-width:260px;">The barter marketplace where businesses and creators trade value for promotion.</p>
         </div>
         <div>
