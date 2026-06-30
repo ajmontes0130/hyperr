@@ -24,7 +24,7 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
   const suggestedRange = levelConfig[creator?.creator_level || "Bronze"]?.range;
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const amt = Number(form.amount);
     if (!form.amount || isNaN(amt) || amt <= 0 || !form.platform || !form.deliverables.trim()) return;
     setLoading(true);
@@ -65,7 +65,7 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
             {suggestedRange && <span className="ml-2 text-xs text-muted-foreground">· Suggested rate: {suggestedRange}</span>}
           </p>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-5 mt-2">
+        <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }} className="space-y-5 mt-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Offer Amount (USD) *</Label>
@@ -92,7 +92,12 @@ export default function CashOfferModal({ open, onClose, creator, user }) {
             <Label>Message (optional)</Label>
             <Textarea placeholder="Tell them about your brand and what you're looking for…" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={2} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading || !form.amount || Number(form.amount) <= 0 || !form.platform || !form.deliverables.trim()}>
+          <Button
+            type="button"
+            className="w-full"
+            disabled={loading || !form.amount || Number(form.amount) <= 0 || !form.platform || !form.deliverables.trim()}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }}
+          >
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <DollarSign className="w-4 h-4 mr-2" />}
             Send Offer
           </Button>
