@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
 import HyperrLogo from "@/components/HyperrLogo";
 
 const MARKUP = `
@@ -452,19 +453,18 @@ export default function Landing() {
         const input = form.querySelector('input[type="email"]');
         const email = input?.value?.trim();
         if (!email) return;
+        const btn = form.querySelector("button");
+        btn.disabled = true;
         try {
-          const { base44 } = await import("@/api/base44Client");
           await base44.entities.Newsletter.create({ email });
           input.value = "";
-          const btn = form.querySelector("button");
           const orig = btn.textContent;
           btn.textContent = "✓ Thanks for subscribing!";
-          setTimeout(() => { btn.textContent = orig; }, 3000);
+          setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
         } catch (err) {
           console.error("Newsletter signup failed:", err);
-          const btn = form.querySelector("button");
           btn.textContent = "Error — try again";
-          setTimeout(() => { btn.textContent = "Subscribe"; }, 2000);
+          setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; }, 2000);
         }
       });
     }
