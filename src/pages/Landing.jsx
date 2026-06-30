@@ -322,7 +322,6 @@ const MARKUP = `
           <div style="display:flex;flex-direction:column;gap:11px;">
             <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">About</a>
             <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Careers</a>
-            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Blog</a>
             <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Contact</a>
           </div>
         </div>
