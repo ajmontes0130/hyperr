@@ -110,7 +110,7 @@ export default function DirectBarterModal({ open, onClose, user }) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
         {step === "search" ? (
           <>
             <DialogHeader>
