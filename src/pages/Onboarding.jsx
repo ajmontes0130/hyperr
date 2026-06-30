@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import MobileSelect from "@/components/MobileSelect";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Sparkles, Building2, ArrowRight, Upload } from "lucide-react";
+import { Loader2, Sparkles, Building2, ArrowRight, Upload, UserCircle, ShoppingBag, MessageSquare, CheckCircle } from "lucide-react";
 
 const businessCategories = ["Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 const creatorNiches = ["Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
@@ -15,7 +15,7 @@ const creatorNiches = ["Food & Dining", "Travel", "Fashion & Style", "Beauty & S
 export default function Onboarding() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1 = pick type, 2 = fill profile
+  const [step, setStep] = useState(1); // 1 = pick type, 2 = explainer, 3 = fill profile
   const [accountType, setAccountType] = useState(null); // "creator" | "business"
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -48,6 +48,20 @@ export default function Onboarding() {
     setAccountType(type);
     setStep(2);
   };
+
+  const creatorSteps = [
+    { icon: UserCircle, title: "Build your profile", desc: "Add your bio, niches, and social handles so brands can discover you." },
+    { icon: ShoppingBag, title: "Browse the Marketplace", desc: "Find brand listings offering products, services, or experiences in exchange for content." },
+    { icon: MessageSquare, title: "Send a trade proposal", desc: "Pick a listing and send a proposal with your promotion offer. The brand reviews and accepts." },
+    { icon: CheckCircle, title: "Create & get rewarded", desc: "Deliver the content, mark it done, and get your reward confirmed." },
+  ];
+
+  const businessSteps = [
+    { icon: UserCircle, title: "Set up your business profile", desc: "Add your business name, category, and a short description to build trust." },
+    { icon: ShoppingBag, title: "Post a listing", desc: "Create a listing offering your product, service, or experience in exchange for creator promotion." },
+    { icon: MessageSquare, title: "Review proposals", desc: "Creators will send you trade proposals — review, accept, and connect with your favorites." },
+    { icon: CheckCircle, title: "Confirm & grow", desc: "Once the content is delivered, confirm completion and watch your brand grow." },
+  ];
 
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
@@ -136,6 +150,47 @@ export default function Onboarding() {
     }
   };
 
+  if (step === 2) {
+    const steps = accountType === "creator" ? creatorSteps : businessSteps;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="w-full max-w-lg">
+          <div className="text-center mb-8">
+            <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png" alt="Hyper" className="h-12 w-auto mx-auto" />
+            <h1 className="font-display font-bold text-2xl mt-4 mb-2">
+              Here's how Hyperr works for {accountType === "creator" ? "creators" : "businesses"}
+            </h1>
+            <p className="text-muted-foreground text-sm">Follow these steps to land your first trade.</p>
+          </div>
+
+          <div className="space-y-4 mb-8">
+            {steps.map((s, i) => (
+              <div key={i} className="flex items-start gap-4 bg-card border rounded-xl p-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <s.icon className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-bold text-primary">Step {i + 1}</span>
+                  </div>
+                  <p className="font-medium text-sm">{s.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+            <Button className="flex-1 h-11" onClick={() => setStep(3)}>
+              Set up my profile <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (step === 1) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
@@ -180,6 +235,7 @@ export default function Onboarding() {
     );
   }
 
+  // step === 3: profile form
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-xl mx-auto">
@@ -287,7 +343,7 @@ export default function Onboarding() {
         </div>
 
         <div className="flex gap-3 mt-5">
-          <Button variant="outline" className="flex-1" onClick={() => setStep(1)} disabled={saving}>
+          <Button variant="outline" className="flex-1" onClick={() => setStep(2)} disabled={saving}>
             Back
           </Button>
           <Button className="flex-1 h-11" onClick={handleSubmit} disabled={saving}>
