@@ -13,6 +13,7 @@ import LevelBadge from "@/components/creator/LevelBadge";
 import { calcTotalReach, calcLevel } from "@/lib/creatorUtils";
 import { Loader2, Upload, Save, Plus, Trash2 } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
+import SocialVerifyButton from "@/components/creator/SocialVerifyButton";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -44,6 +45,7 @@ export default function CreatorProfileEdit() {
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [cropSrc, setCropSrc] = useState(null);
   const [cropTarget, setCropTarget] = useState(null); // "avatar" | "thumb"
+  const [syncing, setSyncing] = useState(null); // "instagram" | "tiktok" | null
 
   useEffect(() => { loadData(); }, []);
 
@@ -131,6 +133,42 @@ export default function CreatorProfileEdit() {
       twitter_followers: Number(form.twitter_followers) || 0,
     });
     return calcLevel(reach);
+  };
+
+  const syncInstagramData = async () => {
+    setSyncing('instagram');
+    try {
+      const res = await base44.functions.invoke('fetchInstagramStats', {});
+      setForm((prev) => ({
+        ...prev,
+        instagram_handle: res.data.handle,
+        instagram_followers: res.data.followers,
+        instagram_verified: true,
+      }));
+      toast({ title: 'Instagram synced!' });
+    } catch {
+      toast({ title: 'Failed to sync Instagram', variant: 'destructive' });
+    } finally {
+      setSyncing(null);
+    }
+  };
+
+  const syncTikTokData = async () => {
+    setSyncing('tiktok');
+    try {
+      const res = await base44.functions.invoke('fetchTikTokStats', {});
+      setForm((prev) => ({
+        ...prev,
+        tiktok_handle: res.data.handle,
+        tiktok_followers: res.data.followers,
+        tiktok_verified: true,
+      }));
+      toast({ title: 'TikTok synced!' });
+    } catch {
+      toast({ title: 'Failed to sync TikTok', variant: 'destructive' });
+    } finally {
+      setSyncing(null);
+    }
   };
 
   const handleSave = async (e) => {
@@ -261,24 +299,24 @@ export default function CreatorProfileEdit() {
           <p className="text-xs text-muted-foreground -mt-3">Your level is calculated from your total follower count across all platforms.</p>
 
           {[
-            { label: "Instagram", handleKey: "instagram_handle", followerKey: "instagram_followers", verifiedKey: "instagram_verified", placeholder: "@handle" },
-            { label: "TikTok", handleKey: "tiktok_handle", followerKey: "tiktok_followers", verifiedKey: "tiktok_verified", placeholder: "@handle" },
-            { label: "YouTube", handleKey: "youtube_handle", followerKey: "youtube_subscribers", verifiedKey: "youtube_verified", placeholder: "@channel", followerLabel: "Subscribers" },
-            { label: "Twitter / X", handleKey: "twitter_handle", followerKey: "twitter_followers", verifiedKey: "twitter_verified", placeholder: "@handle" },
+           { label: "Instagram", handleKey: "instagram_handle", followerKey: "instagram_followers", verifiedKey: "instagram_verified", placeholder: "@handle", connectorId: "6a433bbd75c6d3c50aecbe4d", syncFn: syncInstagramData },
+           { label: "TikTok", handleKey: "tiktok_handle", followerKey: "tiktok_followers", verifiedKey: "tiktok_verified", placeholder: "@handle", connectorId: "6a433ba7d62fef0d62bb0256", syncFn: syncTikTokData },
+           { label: "YouTube", handleKey: "youtube_handle", followerKey: "youtube_subscribers", verifiedKey: "youtube_verified", placeholder: "@channel", followerLabel: "Subscribers" },
+           { label: "Twitter / X", handleKey: "twitter_handle", followerKey: "twitter_followers", verifiedKey: "twitter_verified", placeholder: "@handle" },
           ].map((s) => (
-            <div key={s.label} className="space-y-2 pb-3 border-b last:border-0">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold">{s.label}</Label>
-                {form[s.verifiedKey]
-                  ? <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">✓ Verified</span>
-                  : <button
-                      type="button"
-                      onClick={() => alert("Social API verification coming soon. Connect your account to get a verified badge.")}
-                      className="text-xs text-primary font-medium hover:underline"
-                    >
-                      Connect to verify →
-                    </button>
-                }
+           <div key={s.label} className="space-y-2 pb-3 border-b last:border-0">
+             <div className="flex items-center justify-between">
+               <Label className="text-xs font-semibold">{s.label}</Label>
+               {s.connectorId ? (
+                 <SocialVerifyButton
+                   platform={s.label}
+                   connectorId={s.connectorId}
+                   isVerified={form[s.verifiedKey]}
+                   onVerified={s.syncFn}
+                 />
+               ) : (
+                 <span className="text-xs text-muted-foreground">Coming soon</span>
+               )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Input value={form[s.handleKey]} onChange={(e) => setForm({ ...form, [s.handleKey]: e.target.value })} placeholder={s.placeholder} />
