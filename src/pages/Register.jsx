@@ -25,6 +25,7 @@ function getPasswordStrength(pw) {
 }
 
 export default function Register() {
+  const [accountType, setAccountType] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -134,6 +135,35 @@ export default function Register() {
         </>
       }
     >
+      {/* Account type selector */}
+      <div className="mb-6">
+        <p className="text-sm font-medium text-muted-foreground mb-3 text-center">I'm joining as a…</p>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setAccountType("creator")}
+            className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
+              accountType === "creator"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/50"
+            }`}
+          >
+            🎨 Creator
+          </button>
+          <button
+            type="button"
+            onClick={() => setAccountType("business")}
+            className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
+              accountType === "business"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/50"
+            }`}
+          >
+            🏢 Business
+          </button>
+        </div>
+      </div>
+
       <Button variant="outline" className="w-full h-12 text-sm font-medium mb-6" onClick={handleGoogle}>
         <GoogleIcon className="w-5 h-5 mr-2" />
         Continue with Google
