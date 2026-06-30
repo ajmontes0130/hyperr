@@ -58,10 +58,7 @@ const MARKUP = `
           <span style="width:7px;height:7px;border-radius:50%;background:#2DD4FF;box-shadow:0 0 9px #2DD4FF;"></span>
           <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">$150 · free dinner</span>
         </div>
-        <div data-px data-sy="-0.13" data-fade="0.0018" data-base-op="0.5" data-mx="-26" data-my="18" style="position:absolute;left:3%;top:62%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid rgba(255,194,71,.34);border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
-          <span style="color:#FFC247;font-size:12px;">◆</span>
-          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#FFC247;letter-spacing:.04em;">GOLD tier</span>
-        </div>
+
         <div data-px data-sy="-0.28" data-fade="0.0017" data-base-op="0.55" data-mx="20" data-my="15" style="position:absolute;right:30%;top:15%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
           <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#8C97A3;">reach</span>
           <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">957K</span>
