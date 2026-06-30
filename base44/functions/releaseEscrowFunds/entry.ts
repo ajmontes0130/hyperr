@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      // Creator receives the original agreed amount (3% fee was collected on top from the business)
       body: new URLSearchParams({
         amount: String(Math.round((payment.amount || 0) * 100)),
         currency: (payment.currency || "usd").toLowerCase(),

@@ -14,6 +14,10 @@ Deno.serve(async (req) => {
     const { payment_id, amount, currency, description } = await req.json();
     const origin = req.headers.get("origin") || "https://app.base44.com";
 
+    // 3% service fee charged to the business; creator receives the original amount
+    const serviceFeeRate = 0.03;
+    const totalAmount = Math.round((amount || 0) * (1 + serviceFeeRate) * 100); // in cents
+
     const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
       headers: {
@@ -23,8 +27,9 @@ Deno.serve(async (req) => {
       body: new URLSearchParams({
         mode: "payment",
         "line_items[0][price_data][currency]": (currency || "usd").toLowerCase(),
-        "line_items[0][price_data][unit_amount]": String(Math.round((amount || 0) * 100)),
+        "line_items[0][price_data][unit_amount]": String(totalAmount),
         "line_items[0][price_data][product_data][name]": description || "Escrow Payment",
+        "line_items[0][price_data][product_data][description]": `Includes 3% platform service fee`,
         "line_items[0][quantity]": "1",
         "metadata[payment_id]": payment_id,
         success_url: `${origin}/cash-offers?payment_funded=true`,
