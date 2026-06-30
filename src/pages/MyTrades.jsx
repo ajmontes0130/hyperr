@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
-import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star, MessageCircle, Truck, AlertTriangle, PackageCheck } from "lucide-react";
+import { Loader2, Handshake, CheckCircle, XCircle, Clock, ArrowRight, Star, MessageCircle, Truck, AlertTriangle, PackageCheck, Plus } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
@@ -338,7 +338,12 @@ export default function MyTrades() {
   return (
     <PullToRefresh onRefresh={loadData}>
     <div>
-      <h1 className="font-display font-bold text-2xl sm:text-3xl mb-2">My Trades</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="font-display font-bold text-2xl sm:text-3xl">My Trades</h1>
+        <Button asChild size="sm" className="rounded-xl gap-1.5">
+          <Link to="/marketplace"><Plus className="w-4 h-4" /> New Trade</Link>
+        </Button>
+      </div>
       <p className="text-muted-foreground mb-8">Manage incoming proposals and track your deals through to completion.</p>
 
       <Tabs defaultValue="received">

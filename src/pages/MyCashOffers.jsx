@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import ReviewModal from "@/components/creator/ReviewModal";
 import EscrowPanel from "@/components/payments/EscrowPanel";
-import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Users, LayoutGrid } from "lucide-react";
+import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Users, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
@@ -114,7 +114,12 @@ export default function MyCashOffers() {
 
   return (
     <div>
-      <h1 className="font-display font-bold text-2xl sm:text-3xl mb-2">Cash Offers</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="font-display font-bold text-2xl sm:text-3xl">Cash Offers</h1>
+        <Button asChild size="sm" className="rounded-xl gap-1.5">
+          <Link to="/creators"><Plus className="w-4 h-4" /> New Offer</Link>
+        </Button>
+      </div>
       <p className="text-muted-foreground mb-8">Manage your paid collaboration offers.</p>
 
       <Tabs defaultValue="received">
