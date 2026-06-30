@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Loader2, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const levels = ["All", "Bronze", "Silver", "Gold", "Platinum", "Diamond"];
@@ -26,10 +27,50 @@ export default function CreatorDirectory() {
   const [niche, setNiche] = useState("All");
   const [level, setLevel] = useState("All");
   const [reach, setReach] = useState("all");
+  const [user, setUser] = useState(null);
+  const [savedIds, setSavedIds] = useState(new Set());
+  const [savedRecords, setSavedRecords] = useState([]);
+  const { toast } = useToast();
 
   useEffect(() => {
-    base44.entities.CreatorProfile.list("-total_reach").then(setCreators).finally(() => setLoading(false));
+    const init = async () => {
+      const [allCreators, me] = await Promise.all([
+        base44.entities.CreatorProfile.list("-total_reach"),
+        base44.auth.me().catch(() => null),
+      ]);
+      setCreators(allCreators);
+      if (me) {
+        setUser(me);
+        const saved = await base44.entities.SavedCreator.filter({ user_id: me.id }).catch(() => []);
+        setSavedRecords(saved);
+        setSavedIds(new Set(saved.map((s) => s.creator_profile_id)));
+      }
+      setLoading(false);
+    };
+    init();
   }, []);
+
+  const handleToggleSave = async (creator) => {
+    if (!user) return;
+    if (savedIds.has(creator.id)) {
+      const record = savedRecords.find((s) => s.creator_profile_id === creator.id);
+      if (record) await base44.entities.SavedCreator.delete(record.id);
+      setSavedIds((prev) => { const n = new Set(prev); n.delete(creator.id); return n; });
+      setSavedRecords((prev) => prev.filter((s) => s.creator_profile_id !== creator.id));
+      toast({ title: "Removed from saved" });
+    } else {
+      const record = await base44.entities.SavedCreator.create({
+        user_id: user.id,
+        creator_profile_id: creator.id,
+        creator_name: creator.display_name,
+        creator_avatar: creator.avatar_url,
+        creator_level: creator.creator_level,
+      });
+      setSavedIds((prev) => new Set([...prev, creator.id]));
+      setSavedRecords((prev) => [...prev, record]);
+      toast({ title: "Creator saved!" });
+    }
+  };
 
   const filtered = creators.filter((c) => {
     const matchSearch = !search || c.display_name?.toLowerCase().includes(search.toLowerCase()) || c.bio?.toLowerCase().includes(search.toLowerCase());
@@ -109,7 +150,7 @@ export default function CreatorDirectory() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((c) => <CreatorCard key={c.id} creator={c} />)}
+          {filtered.map((c) => <CreatorCard key={c.id} creator={c} isSaved={savedIds.has(c.id)} onToggleSave={handleToggleSave} />)}
         </div>
       )}
     </div>

@@ -8,7 +8,8 @@ import CashOfferModal from "@/components/creator/CashOfferModal";
 import ReviewModal from "@/components/creator/ReviewModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, Globe, DollarSign, Loader2, ExternalLink, Handshake, ShieldCheck, ShieldAlert } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { ArrowLeft, MapPin, Globe, DollarSign, Loader2, ExternalLink, Handshake, ShieldCheck, ShieldAlert, Bookmark, BookmarkCheck } from "lucide-react";
 import { formatFollowers, levelConfig } from "@/lib/creatorUtils";
 import moment from "moment";
 
@@ -21,6 +22,7 @@ const platformColors = {
 
 export default function CreatorProfilePage() {
   const { id } = useParams();
+  const { toast } = useToast();
   const [creator, setCreator] = useState(null);
   const [portfolio, setPortfolio] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -28,6 +30,8 @@ export default function CreatorProfilePage() {
   const [loading, setLoading] = useState(true);
   const [cashOfferOpen, setCashOfferOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savedRecordId, setSavedRecordId] = useState(null);
 
   useEffect(() => { loadData(); }, [id]);
 
@@ -40,16 +44,39 @@ export default function CreatorProfilePage() {
       ]);
       setCreator(creatorData);
       setUser(me);
-      const [port, revs] = await Promise.all([
+      const [port, revs, saved] = await Promise.all([
         base44.entities.CollabPortfolio.filter({ creator_profile_id: id }, "-created_date"),
         base44.entities.Review.filter({ reviewee_id: creatorData.created_by_id }, "-created_date"),
+        base44.entities.SavedCreator.filter({ user_id: me.id, creator_profile_id: id }).catch(() => []),
       ]);
       setPortfolio(port);
       setReviews(revs);
+      if (saved.length > 0) { setIsSaved(true); setSavedRecordId(saved[0].id); }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleSave = async () => {
+    if (!user || !creator) return;
+    if (isSaved && savedRecordId) {
+      await base44.entities.SavedCreator.delete(savedRecordId);
+      setIsSaved(false);
+      setSavedRecordId(null);
+      toast({ title: "Removed from saved" });
+    } else {
+      const record = await base44.entities.SavedCreator.create({
+        user_id: user.id,
+        creator_profile_id: creator.id,
+        creator_name: creator.display_name,
+        creator_avatar: creator.avatar_url,
+        creator_level: creator.creator_level,
+      });
+      setIsSaved(true);
+      setSavedRecordId(record.id);
+      toast({ title: "Creator saved!" });
     }
   };
 
@@ -185,6 +212,12 @@ export default function CreatorProfilePage() {
                   </Button>
                 </Link>
               )}
+              <Button variant="outline" className="w-full rounded-xl h-11" onClick={handleToggleSave}>
+                {isSaved
+                  ? <><BookmarkCheck className="w-4 h-4 mr-2 text-primary" /> Saved</>
+                  : <><Bookmark className="w-4 h-4 mr-2" /> Save Creator</>
+                }
+              </Button>
               <Button variant="ghost" className="w-full rounded-xl h-11 text-muted-foreground" onClick={() => setReviewOpen(true)}>
                 Leave a Review
               </Button>

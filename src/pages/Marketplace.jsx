@@ -24,8 +24,6 @@ const valueRanges = [
   { label: "$500+", value: "500-999999" },
 ];
 
-import { Button } from "@/components/ui/button";
-
 export default function Marketplace() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,13 +74,13 @@ export default function Marketplace() {
           Trade Your Offerings for{" "}
           <span className="text-primary">Promotion</span>
         </h1>
-        <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-5">
+        <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-6">
           Connect with creators and businesses. Offer products and services in exchange for content and exposure.
         </p>
         <Link to="/create-listing">
-          <Button className="gap-2">
+          <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors">
             <PlusCircle className="w-4 h-4" /> Post a Listing
-          </Button>
+          </button>
         </Link>
       </div>
 
