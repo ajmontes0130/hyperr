@@ -132,7 +132,7 @@ export default function Onboarding() {
           setSaving(false);
           return;
         }
-        await base44.entities.BusinessProfile.create({
+        const bp = await base44.entities.BusinessProfile.create({
           business_name: businessForm.business_name,
           description: businessForm.description,
           category: businessForm.category,
@@ -140,6 +140,20 @@ export default function Onboarding() {
           website: businessForm.website,
           instagram_handle: businessForm.instagram_handle,
           logo_url: businessForm.logo_url,
+        });
+        // Auto-create a default listing to put business on the Marketplace
+        await base44.entities.Listing.create({
+          title: `${businessForm.business_name} - Open to Collaborations`,
+          description: businessForm.description || `${businessForm.business_name} is looking for creator partnerships.`,
+          offering_type: "Service",
+          offering_details: "Brand collaboration and partnership opportunities",
+          wanted_promotion_type: ["Instagram Post", "TikTok Video", "YouTube Video"],
+          promotion_requirements: [{ type: "Social Media Post", quantity: 1, note: "Content featuring our brand" }],
+          category: businessForm.category,
+          location: businessForm.location,
+          image_url: businessForm.logo_url,
+          status: "active",
+          business_profile_id: bp.id,
         });
       }
       window.location.href = "/";
