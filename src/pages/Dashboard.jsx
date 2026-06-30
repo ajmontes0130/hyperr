@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Heart, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import AppTutorial from "@/components/AppTutorial";
 
 /* ─────────────────────────────────────────────────────── */
 /* hooks                                                    */
@@ -546,11 +547,20 @@ export default function Dashboard() {
   const [trades, setTrades] = useState([]);
   const [listings, setListings] = useState([]);
   const [stats, setStats] = useState({ active: 0, completed: 0, valueTraded: 0, avgRating: 0 });
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [accountType, setAccountType] = useState(null);
 
   useEffect(() => {
     (async () => {
       const me = await base44.auth.me();
       setUser(me);
+      const type = me?.account_type || "creator";
+      setAccountType(type);
+      const key = `hyperr_tutorial_seen_${me?.id}`;
+      if (!localStorage.getItem(key)) {
+        setShowTutorial(true);
+        localStorage.setItem(key, "1");
+      }
       const [allSent, allReceived, activeListings, reviews] = await Promise.all([
         base44.entities.TradeProposal.filter({ proposer_id: me.id }, "-created_date"),
         base44.entities.TradeProposal.filter({ listing_owner_id: me.id }, "-created_date"),
@@ -607,6 +617,10 @@ export default function Dashboard() {
           <PageFooter />
         </main>
       </div>
+
+      {showTutorial && (
+        <AppTutorial accountType={accountType} onClose={() => setShowTutorial(false)} />
+      )}
 
       <style>{`
         @media (max-width: 900px) {
