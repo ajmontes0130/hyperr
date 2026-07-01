@@ -5,6 +5,7 @@ import { Loader2, Users, SlidersHorizontal, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CreatorFeedCard from "@/components/explore/CreatorFeedCard";
+import { calcLevel } from "@/lib/creatorUtils";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const audienceBands = [
@@ -52,12 +53,29 @@ export default function Explore() {
   };
 
   const creators = useMemo(() => {
-    return allCreators.filter((c) => {
-      const matchNiche = filterNiche === "All" || (c.niche && c.niche.includes(filterNiche));
-      const matchAudience = audienceMatch(c.total_reach || 0, filterAudience);
-      const matchLocation = !filterLocation.trim() || (c.location || "").toLowerCase().includes(filterLocation.toLowerCase());
-      return matchNiche && matchAudience && matchLocation;
+    // Dedupe by owner — a creator should only appear once, with the tier
+    // that matches their actual verified reach.
+    const byOwner = new Map();
+    allCreators.forEach((c) => {
+      const key = c.created_by_id || c.id;
+      const existing = byOwner.get(key);
+      if (!existing) {
+        byOwner.set(key, { ...c, creator_level: calcLevel(c.total_reach || 0) });
+      } else {
+        // Keep the one with the higher total_collabs (more complete record)
+        if ((c.total_collabs || 0) > (existing.total_collabs || 0)) {
+          byOwner.set(key, { ...c, creator_level: calcLevel(c.total_reach || 0) });
+        }
+      }
     });
+    return Array.from(byOwner.values())
+      .sort((a, b) => (b.total_reach || 0) - (a.total_reach || 0))
+      .filter((c) => {
+        const matchNiche = filterNiche === "All" || (c.niche && c.niche.includes(filterNiche));
+        const matchAudience = audienceMatch(c.total_reach || 0, filterAudience);
+        const matchLocation = !filterLocation.trim() || (c.location || "").toLowerCase().includes(filterLocation.toLowerCase());
+        return matchNiche && matchAudience && matchLocation;
+      });
   }, [allCreators, filterNiche, filterAudience, filterLocation]);
 
   const filtersActive = filterNiche !== "All" || filterAudience !== "all" || filterLocation.trim();
