@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import { Heart, ChevronLeft, ChevronRight, Loader2, MessageCircle, Star, MapPin, Users, SlidersHorizontal, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Loader2, Users, SlidersHorizontal, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import LevelBadge from "@/components/creator/LevelBadge";
+import CreatorFeedCard from "@/components/explore/CreatorFeedCard";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const audienceBands = [
@@ -18,34 +16,11 @@ const audienceBands = [
   { label: "Mega (1M+)", value: "mega" },
 ];
 
-const platformColors = {
-  instagram_followers: "bg-[#2E121A] text-[#FF4D6D]",
-  tiktok_followers: "bg-secondary text-foreground",
-  youtube_subscribers: "bg-[#2E1313] text-[#EF4444]",
-  twitter_followers: "bg-[#0E2A33] text-[#2DD4FF]",
-};
-
-const platformLabels = {
-  instagram_followers: "Instagram",
-  tiktok_followers: "TikTok",
-  youtube_subscribers: "YouTube",
-  twitter_followers: "Twitter/X",
-};
-
-const formatNum = (n) => {
-  if (!n) return null;
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-  if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-  return n.toString();
-};
-
 export default function Explore() {
   const [allCreators, setAllCreators] = useState([]);
-  const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(new Set());
   const [user, setUser] = useState(null);
-  const [animDir, setAnimDir] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filterNiche, setFilterNiche] = useState("All");
   const [filterAudience, setFilterAudience] = useState("all");
@@ -85,23 +60,10 @@ export default function Explore() {
     });
   }, [allCreators, filterNiche, filterAudience, filterLocation]);
 
-  // Reset index when filters change
-  useEffect(() => { setIndex(0); }, [filterNiche, filterAudience, filterLocation]);
-
-  const creator = creators[index];
   const filtersActive = filterNiche !== "All" || filterAudience !== "all" || filterLocation.trim();
-
   const clearFilters = () => { setFilterNiche("All"); setFilterAudience("all"); setFilterLocation(""); };
 
-  const go = (dir) => {
-    setAnimDir(dir);
-    setTimeout(() => {
-      setIndex((i) => Math.max(0, Math.min(creators.length - 1, i + dir)));
-      setAnimDir(null);
-    }, 200);
-  };
-
-  const toggleSave = async () => {
+  const toggleSave = async (creator) => {
     if (!user || !creator) return;
     if (saved.has(creator.id)) {
       const existing = await base44.entities.SavedCreator.filter({ user_id: user.id, creator_profile_id: creator.id });
@@ -121,7 +83,7 @@ export default function Explore() {
     }
   };
 
-  const openMessage = () => {
+  const openMessage = (creator) => {
     navigate(`/messages?with=${creator.created_by_id || creator.id}&name=${encodeURIComponent(creator.display_name)}&avatar=${encodeURIComponent(creator.avatar_url || "")}`);
   };
 
@@ -129,20 +91,18 @@ export default function Explore() {
     return <div className="flex justify-center py-32"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
-  const creatorPlatforms = creator ? Object.entries(platformLabels).filter(([key]) => creator[key]) : [];
-
   return (
     <div>
       <div className="text-center mb-8">
         <h1 className="font-display font-bold text-3xl sm:text-4xl tracking-tight mb-2">
           Explore <span className="text-primary">Creators</span>
         </h1>
-        <p className="text-muted-foreground">Browse through creators and save the ones you love.</p>
+        <p className="text-muted-foreground">Scroll through creators and save the ones you love.</p>
       </div>
 
       <div className="max-w-xl mx-auto">
-        {/* Filter bar — always visible */}
-        <div className="mb-5">
+        {/* Filter bar */}
+        <div className="mb-5 sticky top-0 z-10 bg-background/80 backdrop-blur-md py-3 -mx-4 px-4">
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -193,8 +153,8 @@ export default function Explore() {
           )}
         </div>
 
-        {/* Empty state — inline so filters stay visible */}
-        {!creator && (
+        {/* Empty state */}
+        {creators.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Users className="w-12 h-12 text-muted-foreground/40 mb-4" />
             <h3 className="font-display font-semibold text-lg mb-1">
@@ -214,109 +174,22 @@ export default function Explore() {
           </div>
         )}
 
-        {/* Creator card */}
-        {creator && (
-          <>
-            <div
-              className={`bg-card rounded-3xl border shadow-lg shadow-black/30 overflow-hidden transition-all duration-200 ${
-                animDir === -1 ? "-translate-x-4 opacity-0" : animDir === 1 ? "translate-x-4 opacity-0" : "translate-x-0 opacity-100"
-              }`}
-            >
-              {/* Hero image / avatar */}
-              <div className="relative h-56 bg-gradient-to-br from-[#0E2A33] via-[#121823] to-[#1B2330] flex items-center justify-center">
-                {creator.avatar_url ? (
-                  <img src={creator.avatar_url} alt={creator.display_name} className="w-28 h-28 rounded-full object-cover ring-4 ring-border shadow-lg" />
-                ) : (
-                  <div className="w-28 h-28 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-border shadow-lg">
-                    <Users className="w-12 h-12 text-primary/40" />
-                  </div>
-                )}
-                <div className="absolute top-4 right-4">
-                  <LevelBadge level={creator.creator_level} />
-                </div>
-              </div>
-
-              {/* Body */}
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-1">
-                  <h2 className="font-display font-bold text-2xl">{creator.display_name}</h2>
-                  {creator.avg_rating && (
-                    <div className="flex items-center gap-1 text-sm text-amber-500 font-semibold">
-                      <Star className="w-4 h-4 fill-amber-400" />
-                      {creator.avg_rating.toFixed(1)}
-                    </div>
-                  )}
-                </div>
-
-                {creator.location && (
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
-                    <MapPin className="w-3.5 h-3.5" /> {creator.location}
-                  </div>
-                )}
-
-                {creator.bio && (
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{creator.bio}</p>
-                )}
-
-                {creator.niche?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {creator.niche.map((n) => (
-                      <Badge key={n} variant="secondary" className="text-xs rounded-full">{n}</Badge>
-                    ))}
-                  </div>
-                )}
-
-                {creatorPlatforms.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {creatorPlatforms.map(([key, label]) => (
-                      <span key={key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${platformColors[key]}`}>
-                        {label} · {formatNum(creator[key])}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {creator.base_rate && (
-                  <p className="text-sm font-semibold text-primary mb-5">
-                    Starting from ${creator.base_rate.toLocaleString()}
-                  </p>
-                )}
-
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    className={`flex-1 rounded-xl gap-2 ${saved.has(creator.id) ? "border-[#FF4D6D]/40 text-[#FF4D6D] bg-[#2E121A] hover:bg-[#3a1525]" : ""}`}
-                    onClick={toggleSave}
-                  >
-                    <Heart className={`w-4 h-4 ${saved.has(creator.id) ? "fill-rose-500" : ""}`} />
-                    {saved.has(creator.id) ? "Saved" : "Save"}
-                  </Button>
-                  <Button className="flex-1 rounded-xl gap-2" onClick={openMessage}>
-                    <MessageCircle className="w-4 h-4" /> Message
-                  </Button>
-                  <Button variant="ghost" className="rounded-xl px-4" onClick={() => navigate(`/creator/${creator.id}`)}>
-                    View
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-6">
-              <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(-1)} disabled={index === 0}>
-                <ChevronLeft className="w-4 h-4" /> Previous
-              </Button>
-              <span className="text-sm text-muted-foreground">{index + 1} of {creators.length}</span>
-              <Button variant="outline" className="rounded-xl gap-2" onClick={() => go(1)} disabled={index === creators.length - 1}>
-                Next <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-          </>
-        )}
+        {/* Scrollable feed */}
+        <div className="flex flex-col gap-5 snap-y snap-mandatory pb-8">
+          {creators.map((creator) => (
+            <CreatorFeedCard
+              key={creator.id}
+              creator={creator}
+              saved={saved}
+              onToggleSave={toggleSave}
+              onMessage={openMessage}
+            />
+          ))}
+        </div>
 
         {/* Saved quick strip */}
         {saved.size > 0 && (
-          <div className="mt-8 bg-card rounded-2xl border p-4">
+          <div className="mt-4 bg-card rounded-2xl border p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Your Saved Creators ({saved.size})
             </p>
