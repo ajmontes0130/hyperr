@@ -9,6 +9,7 @@ const typeStyles = {
   Cash: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
   Barter: "bg-primary/10 text-primary border-primary/30",
   Experience: "bg-accent/10 text-accent border-accent/30",
+  Other: "bg-violet-500/10 text-violet-400 border-violet-500/30",
 };
 
 const statusStyles = {

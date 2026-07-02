@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2, FileText, DollarSign } from "lucide-react";
 
 const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter/X", "Newsletter", "Event", "Other"];
-const offerTypes = ["Cash", "Barter", "Experience"];
+const offerTypes = ["Cash", "Barter", "Experience", "Other"];
 
 export default function OfferModal({ open, onClose, thread, user }) {
   const { toast } = useToast();
@@ -115,8 +115,12 @@ export default function OfferModal({ open, onClose, thread, user }) {
             </div>
           ) : (
             <div className="space-y-2">
-              <Label>What are you offering? *</Label>
-              <Input placeholder={form.offer_type === "Barter" ? "e.g. 3 months of free product" : "e.g. VIP event access for 2"} value={form.compensation_details} onChange={(e) => setForm({ ...form, compensation_details: e.target.value })} />
+              <Label>{form.offer_type === "Other" ? "Describe the offer *" : "What are you offering? *"}</Label>
+              <Input
+                placeholder={form.offer_type === "Other" ? "e.g. Revenue share, affiliate code, cross-promo…" : form.offer_type === "Barter" ? "e.g. 3 months of free product" : "e.g. VIP event access for 2"}
+                value={form.compensation_details}
+                onChange={(e) => setForm({ ...form, compensation_details: e.target.value })}
+              />
             </div>
           )}
 

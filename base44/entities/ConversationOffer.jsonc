@@ -28,7 +28,8 @@
       "enum": [
         "Cash",
         "Barter",
-        "Experience"
+        "Experience",
+        "Other"
       ],
       "default": "Cash"
     },
