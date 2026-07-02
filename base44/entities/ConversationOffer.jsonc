@@ -1,0 +1,82 @@
+{
+  "name": "ConversationOffer",
+  "type": "object",
+  "properties": {
+    "thread_id": {
+      "type": "string"
+    },
+    "sender_id": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sender_avatar": {
+      "type": "string"
+    },
+    "recipient_id": {
+      "type": "string"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "offer_type": {
+      "type": "string",
+      "enum": [
+        "Cash",
+        "Barter",
+        "Experience"
+      ],
+      "default": "Cash"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "compensation_details": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "TikTok",
+        "YouTube",
+        "Blog",
+        "Podcast",
+        "Twitter/X",
+        "Newsletter",
+        "Event",
+        "Other"
+      ]
+    },
+    "deliverables": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "contract_terms": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "thread_id",
+    "sender_id",
+    "recipient_id",
+    "title",
+    "deliverables"
+  ]
+}

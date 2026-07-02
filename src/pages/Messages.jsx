@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useLocation } from "react-router-dom";
-import { Send, Loader2, MessageCircle, Users } from "lucide-react";
+import { Send, Loader2, MessageCircle, Users, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import OfferModal from "@/components/messages/OfferModal";
+import OfferBubble from "@/components/messages/OfferBubble";
 
 function makeThreadId(a, b) {
   return [a, b].sort().join("_");
@@ -25,6 +27,8 @@ export default function Messages() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [allProfiles, setAllProfiles] = useState({});
+  const [offers, setOffers] = useState([]);
+  const [showOfferModal, setShowOfferModal] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -113,8 +117,42 @@ export default function Messages() {
     const merged = [...sent, ...recv].sort((a, b) => a.created_date?.localeCompare(b.created_date));
     setMessages(merged);
 
+    // Load offers for this thread
+    try {
+      const threadOffers = await base44.entities.ConversationOffer.filter({ thread_id: thread.threadId });
+      setOffers(threadOffers.sort((a, b) => a.created_date?.localeCompare(b.created_date)));
+    } catch (e) {
+      setOffers([]);
+    }
+
     // Mark received as read
     recv.filter((m) => !m.read).forEach((m) => base44.entities.Message.update(m.id, { read: true }));
+  };
+
+  // Merge messages + offers into one timeline sorted by date
+  const timeline = useMemo(() => {
+    const items = [
+      ...messages.map((m) => ({ kind: "message", id: m.id, date: m.created_date, data: m })),
+      ...offers.map((o) => ({ kind: "offer", id: o.id, date: o.created_date, data: o })),
+    ];
+    return items.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  }, [messages, offers]);
+
+  // Refresh offers when a new one is sent from the modal
+  useEffect(() => {
+    const handler = () => {
+      if (activeThread) {
+        base44.entities.ConversationOffer.filter({ thread_id: activeThread.threadId })
+          .then((o) => setOffers(o.sort((a, b) => a.created_date?.localeCompare(b.created_date))))
+          .catch(() => {});
+      }
+    };
+    window.addEventListener("offer-sent", handler);
+    return () => window.removeEventListener("offer-sent", handler);
+  }, [activeThread]);
+
+  const handleOfferUpdate = (updated) => {
+    setOffers((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
   };
 
   useEffect(() => {
@@ -235,12 +273,25 @@ export default function Messages() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {messages.length === 0 && (
+              {timeline.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground text-sm">
                   Send a message to start the conversation.
                 </div>
               )}
-              {messages.map((msg) => {
+              {timeline.map((item) => {
+                if (item.kind === "offer") {
+                  const offer = item.data;
+                  const isMine = offer.sender_id === user?.id;
+                  return (
+                    <OfferBubble
+                      key={`offer-${offer.id}`}
+                      offer={offer}
+                      isMine={isMine}
+                      onUpdate={handleOfferUpdate}
+                    />
+                  );
+                }
+                const msg = item.data;
                 const isMe = msg.sender_id === user?.id;
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
@@ -257,18 +308,33 @@ export default function Messages() {
             </div>
 
             {/* Input */}
-            <div className="border-t p-3 flex gap-2">
-              <Input
-                placeholder="Type a message…"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 rounded-xl"
-              />
-              <Button onClick={send} disabled={sending || !draft.trim()} className="rounded-xl px-4">
-                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              </Button>
+            <div className="border-t p-3 space-y-2">
+              <button
+                onClick={() => setShowOfferModal(true)}
+                className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+              >
+                <FileText className="w-3.5 h-3.5" /> Send an offer / contract
+              </button>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Type a message…"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="flex-1 rounded-xl"
+                />
+                <Button onClick={send} disabled={sending || !draft.trim()} className="rounded-xl px-4">
+                  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
+
+            <OfferModal
+              open={showOfferModal}
+              onClose={() => setShowOfferModal(false)}
+              thread={activeThread}
+              user={user}
+            />
           </div>
         ) : (
           <div className="hidden sm:flex flex-1 flex-col items-center justify-center text-center p-8">
