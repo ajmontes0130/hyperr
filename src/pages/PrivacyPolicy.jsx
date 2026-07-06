@@ -45,6 +45,11 @@ export default function PrivacyPolicy() {
               <h2 className="font-semibold text-base mb-2">7. Cookies</h2>
               <p className="text-muted-foreground">We use cookies for authentication and analytics. You can control cookies through your browser settings, though this may affect platform functionality.</p>
             </section>
+            <section>
+              <h2 className="font-semibold text-base mb-2">8. Session Recording</h2>
+              <p className="text-muted-foreground">We may use session recording technology to record and replay user interactions on our website for the purpose of improving usability, diagnosing technical issues, and enhancing our services. Session recordings capture mouse movements, clicks, scrolls, and page content as you interact with the platform, but are not linked to your identity unless combined with account data you provide.</p>
+              <p className="text-muted-foreground mt-2">If you are a resident of the European Economic Area (GDPR) or California (CCPA), you have the right to opt out of session recording. To exercise this right, please contact us before using the platform, and we will disable recording for your session. You may also block recording scripts via browser extensions or "Do Not Track" signals, which we respect.</p>
+            </section>
           </div>
         </div>
       </div>
