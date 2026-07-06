@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useSEO } from '@/hooks/useSEO';
 import HyperrLogo from '@/components/HyperrLogo';
+import { Button } from '@/components/ui/button';
+import { Home, Search, HelpCircle, ArrowLeft } from 'lucide-react';
 
-export default function PageNotFound({}) {
+export default function PageNotFound() {
     const location = useLocation();
     const pageName = location.pathname.substring(1);
 
@@ -22,60 +22,62 @@ export default function PageNotFound({}) {
             try {
                 const user = await base44.auth.me();
                 return { user, isAuthenticated: true };
-            } catch (error) {
+            } catch {
                 return { user: null, isAuthenticated: false };
             }
         }
     });
-    
+
+    const isAdmin = isFetched && authData.isAuthenticated && authData.user?.role === 'admin';
+
     return (
         <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-            <div className="max-w-md w-full">
-                <div className="text-center space-y-6">
-                    <div className="flex justify-center mb-2">
-                        <HyperrLogo size="md" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <h1 className="text-7xl font-light text-muted-foreground">404</h1>
-                        <div className="h-0.5 w-16 bg-border mx-auto"></div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                        <h2 className="text-2xl font-medium text-foreground">
-                            Page Not Found
-                        </h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            The page <span className="font-medium text-foreground">"{pageName}"</span> could not be found.
+            <div className="max-w-md w-full text-center space-y-8">
+                <Link to="/" className="inline-block">
+                    <HyperrLogo size="md" />
+                </Link>
+
+                <div className="space-y-3">
+                    <h1 className="font-display font-bold text-8xl text-primary leading-none">404</h1>
+                    <h2 className="font-display font-semibold text-2xl text-foreground">Page Not Found</h2>
+                    <p className="text-muted-foreground leading-relaxed">
+                        The page <span className="font-medium text-foreground">/{pageName}</span> doesn't exist or may have been moved.
+                    </p>
+                </div>
+
+                {isAdmin && (
+                    <div className="p-4 bg-secondary rounded-lg border border-border text-left">
+                        <p className="text-sm font-medium text-foreground">Admin Note</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+                            This route has no matching page. If a new page was expected here, create it and add the route.
                         </p>
                     </div>
-                    
-                    {isFetched && authData.isAuthenticated && authData.user?.role === 'admin' && (
-                        <div className="mt-8 p-4 bg-secondary rounded-lg border border-border">
-                            <div className="flex items-start space-x-3">
-                                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center mt-0.5">
-                                    <div className="w-2 h-2 rounded-full bg-accent"></div>
-                                </div>
-                                <div className="text-left space-y-1">
-                                    <p className="text-sm font-medium text-foreground">Admin Note</p>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        This could mean that the AI hasn't implemented this page yet. Ask it to implement it in the chat.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    
-                    <div className="pt-6">
-                        <Link 
-                            to="/" 
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary border border-border rounded-lg hover:bg-secondary transition-colors duration-200"
-                        >
-                            Go Home
+                )}
+
+                <div className="space-y-3">
+                    <Link to="/">
+                        <Button size="lg" className="w-full rounded-xl">
+                            <Home className="w-4 h-4 mr-2" /> Go Home
+                        </Button>
+                    </Link>
+                    <div className="flex gap-3">
+                        <Link to="/marketplace" className="flex-1">
+                            <Button variant="outline" className="w-full rounded-xl">
+                                <Search className="w-4 h-4 mr-2" /> Marketplace
+                            </Button>
+                        </Link>
+                        <Link to="/support" className="flex-1">
+                            <Button variant="outline" className="w-full rounded-xl">
+                                <HelpCircle className="w-4 h-4 mr-2" /> Support
+                            </Button>
                         </Link>
                     </div>
                 </div>
+
+                <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Back to hyperr
+                </Link>
             </div>
         </div>
-    )
+    );
 }
