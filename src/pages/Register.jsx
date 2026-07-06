@@ -146,28 +146,30 @@ export default function Register() {
           <button
             type="button"
             onClick={() => setAccountType("creator")}
-            className={`relative p-3 rounded-lg border text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+            aria-pressed={accountType === "creator"}
+            className={`relative p-4 rounded-lg border-2 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
               accountType === "creator"
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50"
+                ? "border-accent bg-accent text-accent-foreground shadow-lg shadow-accent/20"
+                : "border-border text-muted-foreground hover:border-accent/50 hover:bg-muted/50"
             }`}
           >
             <Palette className="w-4 h-4" />
             Creator
-            {accountType === "creator" && <Check className="w-3.5 h-3.5 absolute top-1.5 right-1.5" />}
+            {accountType === "creator" && <Check className="w-4 h-4 absolute top-2 right-2" />}
           </button>
           <button
             type="button"
             onClick={() => setAccountType("business")}
-            className={`relative p-3 rounded-lg border text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+            aria-pressed={accountType === "business"}
+            className={`relative p-4 rounded-lg border-2 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
               accountType === "business"
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50"
+                ? "border-accent bg-accent text-accent-foreground shadow-lg shadow-accent/20"
+                : "border-border text-muted-foreground hover:border-accent/50 hover:bg-muted/50"
             }`}
           >
             <Building2 className="w-4 h-4" />
             Business
-            {accountType === "business" && <Check className="w-3.5 h-3.5 absolute top-1.5 right-1.5" />}
+            {accountType === "business" && <Check className="w-4 h-4 absolute top-2 right-2" />}
           </button>
         </div>
       </div>
