@@ -22,15 +22,23 @@ function useReducedMotion() {
 
 function useScrollReveal(threshold = 0.1) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (rm) { setVisible(true); return; }
+    const el = ref.current;
+    if (!el) return;
+    // Above-the-fold: stay visible immediately — no scroll gate.
+    const rect = el.getBoundingClientRect();
+    const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inViewport) { setVisible(true); return; }
+    // Below the fold: hide, then reveal on scroll into view.
+    setVisible(false);
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
       { threshold }
     );
-    if (ref.current) obs.observe(ref.current);
+    obs.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
   return [ref, visible];
@@ -75,7 +83,7 @@ function buildStats(stats) {
 }
 
 function StatCard({ stat, active, rm }) {
-  const raw = useCountUp(stat.isRating ? Math.round(stat.value * 10) : stat.value, 900, active, rm);
+  const raw = useCountUp(stat.isRating ? Math.round(stat.value * 10) : stat.value, 300, active, rm);
   let display;
   if (stat.isValue) {
     if (raw >= 1000) display = "$" + (raw / 1000).toFixed(1) + "K";
@@ -141,7 +149,7 @@ function Welcome({ rm, user, stats }) {
           style={{
             opacity: vis ? 1 : 0,
             transform: vis ? "translateY(0)" : "translateY(18px)",
-            transition: rm ? "none" : "opacity 0.55s cubic-bezier(.16,1,.3,1), transform 0.55s cubic-bezier(.16,1,.3,1)",
+            transition: rm ? "none" : "opacity 0.3s cubic-bezier(.16,1,.3,1), transform 0.3s cubic-bezier(.16,1,.3,1)",
           }}
         >
           <div
@@ -192,7 +200,7 @@ function Welcome({ rm, user, stats }) {
             flexShrink: 0,
             opacity: vis ? 1 : 0,
             transform: vis ? "translateY(0)" : "translateY(14px)",
-            transition: rm ? "none" : "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
+            transition: rm ? "none" : "opacity 0.3s ease 80ms, transform 0.3s ease 80ms",
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = "#5CDEFF"; e.currentTarget.style.transform = "translateY(-2px)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "#2DD4FF"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -209,7 +217,7 @@ function Welcome({ rm, user, stats }) {
           gap: 14,
           opacity: vis ? 1 : 0,
           transform: vis ? "translateY(0)" : "translateY(22px)",
-          transition: rm ? "none" : "opacity 0.6s cubic-bezier(.16,1,.3,1) 120ms, transform 0.6s cubic-bezier(.16,1,.3,1) 120ms",
+          transition: rm ? "none" : "opacity 0.3s cubic-bezier(.16,1,.3,1) 60ms, transform 0.3s cubic-bezier(.16,1,.3,1) 60ms",
         }}
       >
         {buildStats(stats).map((s) => (
@@ -241,7 +249,7 @@ function OfferCard({ listing, delay, rm }) {
         transform: vis ? "translateY(0)" : "translateY(22px)",
         transition: rm
           ? "none"
-          : `opacity 0.6s cubic-bezier(.16,1,.3,1) ${delay}ms, transform 0.6s cubic-bezier(.16,1,.3,1) ${delay}ms, border-color 0.18s`,
+          : `opacity 0.3s cubic-bezier(.16,1,.3,1) ${delay}ms, transform 0.3s cubic-bezier(.16,1,.3,1) ${delay}ms, border-color 0.18s`,
       }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#34404F"; e.currentTarget.style.transform = "translateY(-4px)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#25303F"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -305,7 +313,7 @@ function OffersGrid({ rm, listings }) {
     <div style={{ flex: 1, minWidth: 0 }}>
       <div
         ref={ref}
-        style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 20, opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(14px)", transition: rm ? "none" : "opacity 0.5s ease, transform 0.5s ease" }}
+        style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 20, opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(14px)", transition: rm ? "none" : "opacity 0.3s ease, transform 0.3s ease" }}
       >
         <h2 style={{ ...bricolage, fontWeight: 700, fontSize: 22, color: "#EAF1F7", margin: 0, letterSpacing: "-0.025em" }}>
           Offers for you
@@ -352,7 +360,7 @@ function ActiveTradesCard({ rm, trades }) {
         padding: "22px",
         opacity: vis ? 1 : 0,
         transform: vis ? "translateY(0)" : "translateY(22px)",
-        transition: rm ? "none" : "opacity 0.6s cubic-bezier(.16,1,.3,1), transform 0.6s cubic-bezier(.16,1,.3,1)",
+        transition: rm ? "none" : "opacity 0.3s cubic-bezier(.16,1,.3,1), transform 0.3s cubic-bezier(.16,1,.3,1)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
@@ -473,7 +481,7 @@ function TierProgressCard({ rm, stats, trades }) {
         padding: "22px",
         opacity: vis ? 1 : 0,
         transform: vis ? "translateY(0)" : "translateY(22px)",
-        transition: rm ? "none" : "opacity 0.6s cubic-bezier(.16,1,.3,1) 80ms, transform 0.6s cubic-bezier(.16,1,.3,1) 80ms",
+        transition: rm ? "none" : "opacity 0.3s cubic-bezier(.16,1,.3,1) 40ms, transform 0.3s cubic-bezier(.16,1,.3,1) 40ms",
       }}
     >
       <div style={{ ...mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.15em", color, textTransform: "uppercase", marginBottom: 14 }}>
@@ -487,7 +495,7 @@ function TierProgressCard({ rm, stats, trades }) {
       </div>
       <div style={{ marginBottom: 8 }}>
         <div style={{ background: "#1B2330", borderRadius: 999, height: 6, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${barWidth}%`, background: `linear-gradient(90deg, ${color}, ${color}99)`, borderRadius: 999, transition: rm ? "none" : "width 1s cubic-bezier(.16,1,.3,1)" }} />
+          <div style={{ height: "100%", width: `${barWidth}%`, background: `linear-gradient(90deg, ${color}, ${color}99)`, borderRadius: 999, transition: rm ? "none" : "width 0.3s cubic-bezier(.16,1,.3,1)" }} />
         </div>
       </div>
       <div style={{ ...mono, fontSize: 12, color: "#8C97A3", marginBottom: 18 }}>
