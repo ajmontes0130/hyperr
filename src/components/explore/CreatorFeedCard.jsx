@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Star, MapPin, Users } from "lucide-react";
+import { Heart, MessageCircle, Star, MapPin, Users, ShieldCheck, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import LevelBadge from "@/components/creator/LevelBadge";
@@ -13,10 +13,10 @@ const platformColors = {
 };
 
 const platformLabels = {
-  instagram_followers: "Instagram",
-  tiktok_followers: "TikTok",
-  youtube_subscribers: "YouTube",
-  twitter_followers: "Twitter/X",
+  instagram_followers: { label: "Instagram", verifiedKey: "instagram_verified" },
+  tiktok_followers: { label: "TikTok", verifiedKey: "tiktok_verified" },
+  youtube_subscribers: { label: "YouTube", verifiedKey: "youtube_verified" },
+  twitter_followers: { label: "Twitter/X", verifiedKey: "twitter_verified" },
 };
 
 const formatNum = (n) => {
@@ -78,11 +78,18 @@ export default function CreatorFeedCard({ creator, saved, onToggleSave, onMessag
 
         {platforms.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {platforms.map(([key, label]) => (
-              <span key={key} className={`text-xs px-2.5 py-1 rounded-full font-medium ${platformColors[key]}`}>
-                {label} · {formatNum(creator[key])}
-              </span>
-            ))}
+            {platforms.map(([key, info]) => {
+              const isVerified = creator[info.verifiedKey];
+              return (
+                <span key={key} className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium ${platformColors[key]}`}>
+                  {info.label} · {formatNum(creator[key])}
+                  {isVerified
+                    ? <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                    : <ShieldAlert className="w-3 h-3 text-amber-500" />
+                  }
+                </span>
+              );
+            })}
           </div>
         )}
 

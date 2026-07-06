@@ -18,13 +18,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Send, ChevronDown, FileText } from "lucide-react";
+import { Loader2, Send, ChevronDown, FileText, ShieldCheck, ShieldAlert } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { calcVerifiedReach, calcTotalReach, formatFollowers } from "@/lib/creatorUtils";
 
 const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter/X", "Newsletter", "Event", "Other"];
 
@@ -32,6 +33,7 @@ export default function ProposalModal({ listing, open, onClose, user }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [templates, setTemplates] = useState([]);
+  const [creatorProfile, setCreatorProfile] = useState(null);
   const [form, setForm] = useState({
     message: "",
     proposed_promotion: "",
@@ -44,6 +46,26 @@ export default function ProposalModal({ listing, open, onClose, user }) {
       base44.entities.ProposalTemplate.filter({ created_by_id: user.id }, "-created_date")
         .then(setTemplates)
         .catch(() => {});
+      // Fetch the proposer's creator profile to auto-fill audience size
+      base44.entities.CreatorProfile.filter({ created_by_id: user.id })
+        .then((profiles) => {
+          if (profiles.length > 0) {
+            const p = profiles[0];
+            setCreatorProfile(p);
+            const verifiedReach = calcVerifiedReach(p);
+            const totalReach = calcTotalReach(p);
+            // Auto-fill from verified reach; if none verified, use total with unverified tag
+            const reachStr = verifiedReach > 0
+              ? `${formatFollowers(verifiedReach)} (verified)`
+              : totalReach > 0
+                ? `${formatFollowers(totalReach)} (unverified)`
+                : "";
+            setForm((prev) => ({ ...prev, audience_size: reachStr }));
+          }
+        })
+        .catch(() => {});
+    } else {
+      setCreatorProfile(null);
     }
   }, [open, user]);
 
@@ -146,12 +168,31 @@ export default function ProposalModal({ listing, open, onClose, user }) {
             />
           </div>
           <div className="space-y-2">
-            <Label>Audience Size (optional)</Label>
+            <div className="flex items-center justify-between">
+              <Label>Audience Size</Label>
+              {creatorProfile && (() => {
+                const verifiedReach = calcVerifiedReach(creatorProfile);
+                const totalReach = calcTotalReach(creatorProfile);
+                if (verifiedReach > 0) {
+                  return <span className="flex items-center gap-1 text-xs text-emerald-500 font-medium"><ShieldCheck className="w-3 h-3" /> Auto-filled from verified profile</span>;
+                }
+                if (totalReach > 0) {
+                  return <span className="flex items-center gap-1 text-xs text-amber-500 font-medium"><ShieldAlert className="w-3 h-3" /> Self-reported (unverified)</span>;
+                }
+                return null;
+              })()}
+            </div>
             <Input
-              placeholder="e.g. 25K followers"
+              placeholder={creatorProfile ? "Auto-filled from your profile" : "e.g. 25K followers"}
               value={form.audience_size}
               onChange={(e) => setForm({ ...form, audience_size: e.target.value })}
             />
+            {creatorProfile && (
+              <p className="text-xs text-muted-foreground">
+                {creatorProfile.display_name}'s reach is auto-filled from their creator profile.
+                {calcVerifiedReach(creatorProfile) === 0 && " Verify your social accounts to show verified reach."}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Message to the business</Label>

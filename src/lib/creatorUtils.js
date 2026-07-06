@@ -7,6 +7,17 @@ export function calcTotalReach(profile) {
   );
 }
 
+// Only counts followers from platforms that have been verified via OAuth sync.
+// Tier assignment must use this, not calcTotalReach.
+export function calcVerifiedReach(profile) {
+  return (
+    (profile.instagram_verified ? (profile.instagram_followers || 0) : 0) +
+    (profile.tiktok_verified ? (profile.tiktok_followers || 0) : 0) +
+    (profile.youtube_verified ? (profile.youtube_subscribers || 0) : 0) +
+    (profile.twitter_verified ? (profile.twitter_followers || 0) : 0)
+  );
+}
+
 export function calcLevel(totalReach) {
   if (totalReach >= 1_000_000) return "Diamond";
   if (totalReach >= 250_000)  return "Platinum";

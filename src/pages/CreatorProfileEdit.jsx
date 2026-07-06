@@ -10,7 +10,7 @@ import MobileSelect from "@/components/MobileSelect";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
-import { calcTotalReach, calcLevel } from "@/lib/creatorUtils";
+import { calcTotalReach, calcVerifiedReach, calcLevel } from "@/lib/creatorUtils";
 import { Loader2, Upload, Save, Plus, Trash2 } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
 import SocialVerifyButton from "@/components/creator/SocialVerifyButton";
@@ -126,13 +126,17 @@ export default function CreatorProfileEdit() {
   };
 
   const computedLevel = () => {
-    const reach = calcTotalReach({
+    const verifiedReach = calcVerifiedReach({
+      instagram_verified: form.instagram_verified,
       instagram_followers: Number(form.instagram_followers) || 0,
+      tiktok_verified: form.tiktok_verified,
       tiktok_followers: Number(form.tiktok_followers) || 0,
+      youtube_verified: form.youtube_verified,
       youtube_subscribers: Number(form.youtube_subscribers) || 0,
+      twitter_verified: form.twitter_verified,
       twitter_followers: Number(form.twitter_followers) || 0,
     });
-    return calcLevel(reach);
+    return calcLevel(verifiedReach);
   };
 
   const syncInstagramData = async () => {
@@ -182,7 +186,17 @@ export default function CreatorProfileEdit() {
         youtube_subscribers: Number(form.youtube_subscribers) || 0,
         twitter_followers: Number(form.twitter_followers) || 0,
       });
-      const level = calcLevel(totalReach);
+      const verifiedReach = calcVerifiedReach({
+        instagram_verified: form.instagram_verified,
+        instagram_followers: Number(form.instagram_followers) || 0,
+        tiktok_verified: form.tiktok_verified,
+        tiktok_followers: Number(form.tiktok_followers) || 0,
+        youtube_verified: form.youtube_verified,
+        youtube_subscribers: Number(form.youtube_subscribers) || 0,
+        twitter_verified: form.twitter_verified,
+        twitter_followers: Number(form.twitter_followers) || 0,
+      });
+      const level = calcLevel(verifiedReach);
       const payload = {
         ...form,
         instagram_followers: Number(form.instagram_followers) || 0,
@@ -296,7 +310,7 @@ export default function CreatorProfileEdit() {
             <h2 className="font-display font-semibold text-lg">Social Media</h2>
             <LevelBadge level={previewLevel} size="md" />
           </div>
-          <p className="text-xs text-muted-foreground -mt-3">Your level is calculated from your total follower count across all platforms.</p>
+          <p className="text-xs text-muted-foreground -mt-3">Your tier is based on <span className="font-semibold text-foreground">verified</span> followers only. Manually entered counts are marked as Unverified and don't affect your tier.</p>
 
           {[
            { label: "Instagram", handleKey: "instagram_handle", followerKey: "instagram_followers", verifiedKey: "instagram_verified", placeholder: "@handle", connectorId: "6a433bbd75c6d3c50aecbe4d", syncFn: syncInstagramData },
