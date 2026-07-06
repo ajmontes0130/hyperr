@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus, Mail, Lock, Loader2, Eye, EyeOff, MapPin } from "lucide-react";
+import { UserPlus, Mail, Lock, Loader2, Eye, EyeOff, MapPin, Palette, Building2, Check } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
@@ -145,24 +145,28 @@ export default function Register() {
           <button
             type="button"
             onClick={() => setAccountType("creator")}
-            className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
+            className={`relative p-3 rounded-lg border text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               accountType === "creator"
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-muted-foreground hover:border-primary/50"
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50"
             }`}
           >
-            🎨 Creator
+            <Palette className="w-4 h-4" />
+            Creator
+            {accountType === "creator" && <Check className="w-3.5 h-3.5 absolute top-1.5 right-1.5" />}
           </button>
           <button
             type="button"
             onClick={() => setAccountType("business")}
-            className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
+            className={`relative p-3 rounded-lg border text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               accountType === "business"
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-muted-foreground hover:border-primary/50"
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border text-muted-foreground hover:border-primary/50 hover:bg-muted/50"
             }`}
           >
-            🏢 Business
+            <Building2 className="w-4 h-4" />
+            Business
+            {accountType === "business" && <Check className="w-3.5 h-3.5 absolute top-1.5 right-1.5" />}
           </button>
         </div>
       </div>
@@ -292,6 +296,7 @@ export default function Register() {
           <input
             type="checkbox"
             id="terms"
+            required
             checked={agreedToTerms}
             onChange={(e) => setAgreedToTerms(e.target.checked)}
             className="mt-0.5 w-4 h-4 rounded border-border accent-primary cursor-pointer flex-shrink-0"
