@@ -10,7 +10,7 @@ const typeColors = {
   Experience: "bg-[#2E2410] text-[#FBBF3D] border-[#FBBF3D]/30",
 };
 
-export default function ListingCard({ listing }) {
+export default function ListingCard({ listing, poster }) {
   return (
     <Link
       to={`/listing/${listing.id}`}
@@ -63,6 +63,17 @@ export default function ListingCard({ listing }) {
             )}
           </div>
         )}
+
+        <div className="flex items-center gap-2 mb-3">
+          {poster?.avatar ? (
+            <img src={poster.avatar} alt="" className="w-6 h-6 rounded-full object-cover flex-shrink-0" />
+          ) : (
+            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
+              {poster?.name?.charAt(0) || "H"}
+            </div>
+          )}
+          <span className="text-xs text-muted-foreground truncate">{poster?.name || "hyperr Member"}</span>
+        </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-border/50">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

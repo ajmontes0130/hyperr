@@ -39,6 +39,7 @@ export default function Marketplace() {
   const [offeringType, setOfferingType] = useState("All");
   const [valueRange, setValueRange] = useState("all");
   const [user, setUser] = useState(null);
+  const [profileMap, setProfileMap] = useState({});
 
   useEffect(() => {
     loadListings();
@@ -51,6 +52,11 @@ export default function Marketplace() {
     try {
       const data = await base44.entities.Listing.filter({ status: "active" }, "-created_date");
       setListings(data);
+      const profileIds = [...new Set(data.map((l) => l.business_profile_id).filter(Boolean))];
+      const profiles = await Promise.all(profileIds.map((id) => base44.entities.BusinessProfile.get(id).catch(() => null)));
+      const map = {};
+      profiles.filter(Boolean).forEach((p) => { map[p.id] = p; });
+      setProfileMap(map);
     } catch (err) {
       console.error(err);
       setError(true);
@@ -177,9 +183,16 @@ export default function Marketplace() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
+          {filtered.map((listing) => {
+            const prof = profileMap[listing.business_profile_id];
+            return (
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                poster={prof ? { name: prof.business_name, avatar: prof.logo_url } : null}
+              />
+            );
+          })}
         </div>
       )}
     </div>

@@ -6,7 +6,7 @@ import ProposalModal from "@/components/listings/ProposalModal";
 import SignupPrompt from "@/components/SignupPrompt";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info, Star, ImageOff, TrendingUp } from "lucide-react";
+import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info, Star, ImageOff, TrendingUp, ArrowRight } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import moment from "moment";
 import { getPromoLabel, formatPromoQuantity } from "@/lib/promoUtils";
@@ -26,6 +26,7 @@ export default function ListingDetail() {
   const [signupOpen, setSignupOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const [sellerStats, setSellerStats] = useState({ rating: 0, reviewCount: 0, completedTrades: 0 });
+  const [creatorProfileId, setCreatorProfileId] = useState(null);
 
   useEffect(() => { loadData(); }, [id]);
 
@@ -50,6 +51,12 @@ export default function ListingDetail() {
             const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length : 0;
             setSellerStats({ rating: avgRating, reviewCount: reviews.length, completedTrades: completedTrades.length });
           }
+        } catch {}
+      }
+      if (listingData.created_by_id) {
+        try {
+          const creatorProfiles = await base44.entities.CreatorProfile.filter({ created_by_id: listingData.created_by_id });
+          if (creatorProfiles.length > 0) setCreatorProfileId(creatorProfiles[0].id);
         } catch {}
       }
     } catch (err) {
@@ -208,51 +215,56 @@ export default function ListingDetail() {
             )}
           </div>
 
-          {profile && (
-            <div className="bg-card rounded-2xl border p-6">
-              <h3 className="font-display font-semibold text-lg mb-4">Seller</h3>
-              <div className="flex items-center gap-3 mb-4">
-                {profile.logo_url ? (
-                  <img src={profile.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
-                ) : (
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-lg">
-                    {profile.business_name?.charAt(0)}
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <p className="font-semibold truncate">{profile.business_name}</p>
-                  <p className="text-xs text-muted-foreground">{profile.category}</p>
+          <div className="bg-card rounded-2xl border p-6">
+            <h3 className="font-display font-semibold text-lg mb-4">Posted by</h3>
+            <div className="flex items-center gap-3 mb-4">
+              {profile?.logo_url ? (
+                <img src={profile.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
+              ) : (
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-lg">
+                  {(profile?.business_name || "H").charAt(0)}
                 </div>
+              )}
+              <div className="min-w-0">
+                <p className="font-semibold truncate">{profile?.business_name || "hyperr Member"}</p>
+                <p className="text-xs text-muted-foreground">{profile?.category || "Business"}</p>
               </div>
-              <div className="space-y-2 text-sm">
-                {profile.location && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>{profile.location}</span>
-                  </div>
-                )}
+            </div>
+            <div className="space-y-2 text-sm">
+              {(profile?.location || listing.location) && (
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Member since {moment(profile.created_date).format("MMM YYYY")}</span>
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{profile?.location || listing.location}</span>
                 </div>
-                {sellerStats.reviewCount > 0 && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                    <span>{sellerStats.rating.toFixed(1)} ({sellerStats.reviewCount} review{sellerStats.reviewCount !== 1 ? "s" : ""})</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  <span>{sellerStats.completedTrades} completed trade{sellerStats.completedTrades !== 1 ? "s" : ""}</span>
-                </div>
+              )}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Member since {moment(profile?.created_date || listing.created_date).format("MMM YYYY")}</span>
               </div>
-              {profile.website && (
-                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-primary hover:underline mt-4 pt-4 border-t border-border/50">
+              {sellerStats.reviewCount > 0 && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                  <span>{sellerStats.rating.toFixed(1)} ({sellerStats.reviewCount} review{sellerStats.reviewCount !== 1 ? "s" : ""})</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>{sellerStats.completedTrades} completed trade{sellerStats.completedTrades !== 1 ? "s" : ""}</span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border/50">
+              {creatorProfileId && (
+                <Link to={`/creator/${creatorProfileId}`} className="flex items-center gap-1.5 text-sm text-primary hover:underline">
+                  View Profile <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
+              {profile?.website && (
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-primary hover:underline">
                   <Globe className="w-3.5 h-3.5" /> Visit website
                 </a>
               )}
             </div>
-          )}
+          </div>
 
           {!isOwner && listing.status === "active" && (
             <Button onClick={() => user ? setProposalOpen(true) : setSignupOpen(true)} className="w-full h-12 text-base rounded-xl">
