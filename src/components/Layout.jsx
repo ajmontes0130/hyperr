@@ -12,33 +12,26 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Primary nav — shown as horizontal bar on desktop (same 6 items for both roles).
-// Only the Profile link differs by role.
-const creatorPrimaryNav = [
+// Primary nav — horizontal bar items (same for both roles).
+// Profile + secondary items live in the avatar dropdown menu.
+const primaryNav = [
   { label: "Home", path: "/", icon: Home },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Marketplace", path: "/marketplace", icon: Search },
   { label: "Messages", path: "/messages", icon: MessageCircle },
-  { label: "Trades", path: "/my-trades", icon: Handshake },
-  { label: "Creator Profile", path: "/creator-profile", icon: Sparkles },
+  { label: "My Trades", path: "/my-trades", icon: Handshake },
 ];
 
-const creatorMoreNav = [
-  { label: "Saved", path: "/saved-creators", icon: Heart },
+const creatorMenuNav = [
+  { label: "Creator Profile", path: "/creator-profile", icon: Sparkles },
+  { label: "Saved Creators", path: "/saved-creators", icon: Heart },
   { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
 ];
 
-const businessPrimaryNav = [
-  { label: "Home", path: "/", icon: Home },
-  { label: "Explore", path: "/explore", icon: Compass },
-  { label: "Marketplace", path: "/marketplace", icon: Search },
-  { label: "Messages", path: "/messages", icon: MessageCircle },
-  { label: "Trades", path: "/my-trades", icon: Handshake },
+const businessMenuNav = [
   { label: "Business Profile", path: "/profile", icon: User },
-];
-
-const businessMoreNav = [
   { label: "Post Listing", path: "/create-listing", icon: PlusCircle },
   { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
   { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
@@ -60,13 +53,16 @@ export default function Layout() {
   }, []);
 
   const isBusiness = accountType === "business";
-  const primaryNav = isBusiness ? businessPrimaryNav : creatorPrimaryNav;
-  const moreNav = isBusiness ? businessMoreNav : creatorMoreNav;
-  // Full flat list for mobile drawer
-  const navItems = [...primaryNav.slice(0, -1), ...moreNav, primaryNav[primaryNav.length - 1]];
+  const menuNav = isBusiness ? businessMenuNav : creatorMenuNav;
+  // Full flat list for mobile drawer — primary items + menu items
+  const navItems = [...primaryNav, ...menuNav];
 
   const isActive = (path) => location.pathname === path;
-  const moreActive = moreNav.some((item) => isActive(item.path));
+  const menuActive = menuNav.some((item) => isActive(item.path)) || isActive("/support");
+
+  const avatarUrl = user?.avatar_url;
+  const nameStr = user?.full_name || user?.email || "";
+  const initials = nameStr.split(" ").map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase() || "?";
 
   // Close mobile menu on route change
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
@@ -101,45 +97,51 @@ export default function Layout() {
                       {item.label}
                     </Link>
                   ))}
-                  {moreNav.length > 0 && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
-                          moreActive ? "text-primary bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                        }`}>
-                          More
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        {moreNav.map((item) => (
-                          <DropdownMenuItem key={item.path} asChild>
-                            <Link to={item.path} className={`flex items-center gap-2 cursor-pointer ${isActive(item.path) ? "text-primary" : ""}`}>
-                              <item.icon className="w-4 h-4" />
-                              {item.label}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
                 </nav>
 
+                {/* Avatar dropdown menu — profile link + secondary items */}
                 <div className="hidden lg:flex items-center gap-2 flex-shrink-0 ml-2">
-                  <span className="text-sm text-muted-foreground truncate max-w-[120px]">
-                    {user.full_name || user.email}
-                  </span>
-                  <Link to="/support" className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-secondary" title="Support">
-                    <HelpCircle className="w-4 h-4" />
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => base44.auth.logout("/")}
-                    className="text-muted-foreground flex-shrink-0 select-none"
-                  >
-                    <LogOut className="w-4 h-4 select-none" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className={`flex items-center gap-2 pl-1.5 pr-2 py-1 rounded-full text-sm font-medium transition-all select-none ${
+                        menuActive ? "ring-2 ring-primary" : "hover:bg-secondary"
+                      }`}>
+                        <Avatar className="w-7 h-7">
+                          {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
+                          <AvatarFallback className="text-xs bg-primary/15 text-primary">
+                            {initials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-muted-foreground truncate max-w-[100px]">
+                          {user.full_name || user.email}
+                        </span>
+                        <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      {menuNav.map((item) => (
+                        <DropdownMenuItem key={item.path} asChild>
+                          <Link to={item.path} className={`flex items-center gap-2 cursor-pointer ${isActive(item.path) ? "text-primary" : ""}`}>
+                            <item.icon className="w-4 h-4" />
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuItem asChild>
+                        <Link to="/support" className={`flex items-center gap-2 cursor-pointer ${isActive("/support") ? "text-primary" : ""}`}>
+                          <HelpCircle className="w-4 h-4" />
+                          Support
+                        </Link>
+                      </DropdownMenuItem>
+                      <div className="h-px bg-border my-1" />
+                      <DropdownMenuItem asChild>
+                        <button onClick={() => base44.auth.logout("/")} className="flex items-center gap-2 cursor-pointer w-full text-destructive">
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
 
                 {/* Mobile hamburger */}
