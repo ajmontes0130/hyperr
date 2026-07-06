@@ -38,6 +38,7 @@ const MARKUP = `
        </a>
       <div data-navlinks style="display:flex;align-items:center;gap:30px;">
         <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
+        <a href="/marketplace" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">Browse marketplace</a>
         <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
         <a href="#business" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For businesses</a>
         <a href="#tiers" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">Tiers</a>
@@ -82,6 +83,9 @@ const MARKUP = `
           <div data-hero="rise" data-hero-delay="270" style="display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;">
             <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,109,.32);">Join as a creator <span style="font-size:17px;">→</span></a>
             <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,255,.32);">List your business</a>
+          </div>
+          <div data-hero="rise" data-hero-delay="360" style="margin-top:16px;">
+            <a href="/marketplace" style="color:#2DD4FF;text-decoration:none;font-size:14.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .15s ease;" data-h="gap:10px;">Browse the marketplace <span style="font-size:16px;">→</span></a>
           </div>
         </div>
         <div style="flex:1 1 430px;min-width:300px;display:flex;justify-content:center;perspective:1200px;">

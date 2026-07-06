@@ -46,7 +46,10 @@ const AuthenticatedApp = () => {
   const location = useLocation();
 
   // Public routes — bypass auth loading and redirect entirely
-  const isPublicRoute = location.pathname === '/landing';
+  const publicPaths = ['/landing', '/marketplace', '/creators', '/support'];
+  const isPublicRoute = publicPaths.includes(location.pathname) ||
+    location.pathname.startsWith('/creator/') ||
+    location.pathname.startsWith('/listing/');
 
   if (!isPublicRoute && (isLoadingPublicSettings || isLoadingAuth)) {
     return <BrandedLoader />;
@@ -82,25 +85,29 @@ const AuthenticatedApp = () => {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/landing" element={<Landing />} />
 
+      {/* Public browseable routes — no login required to view */}
+      <Route element={<Layout />}>
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/creators" element={<CreatorDirectory />} />
+        <Route path="/creator/:id" element={<CreatorProfilePage />} />
+        <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/support" element={<Support />} />
+      </Route>
+
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/landing" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/my-trades" element={<MyTrades />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/creators" element={<CreatorDirectory />} />
-          <Route path="/creator/:id" element={<CreatorProfilePage />} />
           <Route path="/creator-profile" element={<CreatorProfileEdit />} />
           <Route path="/cash-offers" element={<MyCashOffers />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/saved-creators" element={<SavedCreators />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
-          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/support" element={<Support />} />
         </Route>
       </Route>
 

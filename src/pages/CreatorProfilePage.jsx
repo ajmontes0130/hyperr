@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import MobileBackButton from "@/components/MobileBackButton";
 import { base44 } from "@/api/base44Client";
 import LevelBadge from "@/components/creator/LevelBadge";
 import StarRating from "@/components/creator/StarRating";
 import CashOfferModal from "@/components/creator/CashOfferModal";
 import ReviewModal from "@/components/creator/ReviewModal";
+import SignupPrompt from "@/components/SignupPrompt";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,6 +23,7 @@ const platformColors = {
 
 export default function CreatorProfilePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [creator, setCreator] = useState(null);
   const [portfolio, setPortfolio] = useState([]);
@@ -32,6 +34,7 @@ export default function CreatorProfilePage() {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [savedRecordId, setSavedRecordId] = useState(null);
+  const [signupOpen, setSignupOpen] = useState(false);
 
   useEffect(() => { loadData(); }, [id]);
 
@@ -40,18 +43,20 @@ export default function CreatorProfilePage() {
     try {
       const [creatorData, me] = await Promise.all([
         base44.entities.CreatorProfile.get(id),
-        base44.auth.me(),
+        base44.auth.me().catch(() => null),
       ]);
       setCreator(creatorData);
-      setUser(me);
-      const [port, revs, saved] = await Promise.all([
+      const [port, revs] = await Promise.all([
         base44.entities.CollabPortfolio.filter({ creator_profile_id: id }, "-created_date"),
         base44.entities.Review.filter({ reviewee_id: creatorData.created_by_id }, "-created_date"),
-        base44.entities.SavedCreator.filter({ user_id: me.id, creator_profile_id: id }).catch(() => []),
       ]);
       setPortfolio(port);
       setReviews(revs);
-      if (saved.length > 0) { setIsSaved(true); setSavedRecordId(saved[0].id); }
+      if (me) {
+        setUser(me);
+        const saved = await base44.entities.SavedCreator.filter({ user_id: me.id, creator_profile_id: id }).catch(() => []);
+        if (saved.length > 0) { setIsSaved(true); setSavedRecordId(saved[0].id); }
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -60,7 +65,7 @@ export default function CreatorProfilePage() {
   };
 
   const handleToggleSave = async () => {
-    if (!user || !creator) return;
+    if (!user || !creator) { setSignupOpen(true); return; }
     if (isSaved && savedRecordId) {
       await base44.entities.SavedCreator.delete(savedRecordId);
       setIsSaved(false);
@@ -201,16 +206,14 @@ export default function CreatorProfilePage() {
           {!isOwner && (
             <div className="space-y-3">
               {creator.accepts_cash_offers && (
-                <Button className="w-full rounded-xl h-11" onClick={() => setCashOfferOpen(true)}>
+                <Button className="w-full rounded-xl h-11" onClick={() => user ? setCashOfferOpen(true) : setSignupOpen(true)}>
                   <DollarSign className="w-4 h-4 mr-2" /> Send Cash Offer
                 </Button>
               )}
               {creator.accepts_barter && (
-                <Link to="/" className="block">
-                  <Button variant="outline" className="w-full rounded-xl h-11">
-                    <Handshake className="w-4 h-4 mr-2" /> Propose a Barter
-                  </Button>
-                </Link>
+                <Button variant="outline" className="w-full rounded-xl h-11" onClick={() => user ? navigate("/") : setSignupOpen(true)}>
+                  <Handshake className="w-4 h-4 mr-2" /> Propose a Barter
+                </Button>
               )}
               <Button variant="outline" className="w-full rounded-xl h-11" onClick={handleToggleSave}>
                 {isSaved
@@ -218,7 +221,7 @@ export default function CreatorProfilePage() {
                   : <><Bookmark className="w-4 h-4 mr-2" /> Save Creator</>
                 }
               </Button>
-              <Button variant="ghost" className="w-full rounded-xl h-11 text-muted-foreground" onClick={() => setReviewOpen(true)}>
+              <Button variant="ghost" className="w-full rounded-xl h-11 text-muted-foreground" onClick={() => user ? setReviewOpen(true) : setSignupOpen(true)}>
                 Leave a Review
               </Button>
             </div>
@@ -311,6 +314,12 @@ export default function CreatorProfilePage() {
       </div>
 
       <CashOfferModal open={cashOfferOpen} onClose={() => setCashOfferOpen(false)} creator={creator} user={user} />
+      <SignupPrompt
+        open={signupOpen}
+        onClose={() => setSignupOpen(false)}
+        title="Sign up to connect"
+        message="Create a free account to send offers, save creators, and leave reviews on hyperr."
+      />
       <ReviewModal
         open={reviewOpen}
         onClose={() => { setReviewOpen(false); loadData(); }}

@@ -33,9 +33,11 @@ export default function Marketplace() {
   const [promoType, setPromoType] = useState("All");
   const [offeringType, setOfferingType] = useState("All");
   const [valueRange, setValueRange] = useState("all");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     loadListings();
+    base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
   const loadListings = async () => {
@@ -77,11 +79,19 @@ export default function Marketplace() {
         <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-6">
           Connect with creators and businesses. Offer products and services in exchange for content and exposure.
         </p>
-        <Link to="/create-listing">
-          <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors">
-            <PlusCircle className="w-4 h-4" /> Post a Listing
-          </button>
-        </Link>
+        {user ? (
+          <Link to="/create-listing">
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors">
+              <PlusCircle className="w-4 h-4" /> Post a Listing
+            </button>
+          </Link>
+        ) : (
+          <Link to="/register">
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors">
+              <PlusCircle className="w-4 h-4" /> Sign up to Post
+            </button>
+          </Link>
+        )}
       </div>
 
       {/* Filters */}
@@ -152,7 +162,7 @@ export default function Marketplace() {
           <p className="text-muted-foreground text-sm mb-6">
             {listings.length === 0 ? "No listings yet — be the first to post one." : "Try adjusting your filters."}
           </p>
-          {listings.length === 0 && (
+          {listings.length === 0 && user && (
             <Link to="/create-listing">
               <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
                 <PlusCircle className="w-4 h-4" /> Post a Listing

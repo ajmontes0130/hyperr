@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import MobileBackButton from "@/components/MobileBackButton";
 import { base44 } from "@/api/base44Client";
 import ProposalModal from "@/components/listings/ProposalModal";
+import SignupPrompt from "@/components/SignupPrompt";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info } from "lucide-react";
@@ -15,6 +16,7 @@ export default function ListingDetail() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [proposalOpen, setProposalOpen] = useState(false);
+  const [signupOpen, setSignupOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => { loadData(); }, [id]);
@@ -24,10 +26,10 @@ export default function ListingDetail() {
     try {
       const [listingData, me] = await Promise.all([
         base44.entities.Listing.get(id),
-        base44.auth.me(),
+        base44.auth.me().catch(() => null),
       ]);
       setListing(listingData);
-      setUser(me);
+      if (me) setUser(me);
       if (listingData.business_profile_id) {
         try {
           const prof = await base44.entities.BusinessProfile.get(listingData.business_profile_id);
@@ -209,7 +211,7 @@ export default function ListingDetail() {
           )}
 
           {!isOwner && listing.status === "active" && (
-            <Button onClick={() => setProposalOpen(true)} className="w-full h-12 text-base rounded-xl">
+            <Button onClick={() => user ? setProposalOpen(true) : setSignupOpen(true)} className="w-full h-12 text-base rounded-xl">
               <Send className="w-4 h-4 mr-2" /> Propose a Trade
             </Button>
           )}
@@ -220,6 +222,12 @@ export default function ListingDetail() {
       </div>
 
       <ProposalModal listing={listing} open={proposalOpen} onClose={() => setProposalOpen(false)} user={user} />
+      <SignupPrompt
+        open={signupOpen}
+        onClose={() => setSignupOpen(false)}
+        title="Sign up to propose a trade"
+        message="Create a free account to send trade proposals to businesses on hyperr."
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
 import { Search, Loader2, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import SignupPrompt from "@/components/SignupPrompt";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
 const levels = ["All", "Bronze", "Silver", "Gold", "Platinum", "Diamond"];
@@ -30,6 +31,7 @@ export default function CreatorDirectory() {
   const [user, setUser] = useState(null);
   const [savedIds, setSavedIds] = useState(new Set());
   const [savedRecords, setSavedRecords] = useState([]);
+  const [signupOpen, setSignupOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function CreatorDirectory() {
   }, []);
 
   const handleToggleSave = async (creator) => {
-    if (!user) return;
+    if (!user) { setSignupOpen(true); return; }
     if (savedIds.has(creator.id)) {
       const record = savedRecords.find((s) => s.creator_profile_id === creator.id);
       if (record) await base44.entities.SavedCreator.delete(record.id);
@@ -153,6 +155,13 @@ export default function CreatorDirectory() {
           {filtered.map((c) => <CreatorCard key={c.id} creator={c} isSaved={savedIds.has(c.id)} onToggleSave={handleToggleSave} />)}
         </div>
       )}
+
+      <SignupPrompt
+        open={signupOpen}
+        onClose={() => setSignupOpen(false)}
+        title="Sign up to save creators"
+        message="Create a free account to bookmark creators you want to collaborate with."
+      />
     </div>
   );
 }
