@@ -2,8 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import HyperrLogo from "@/components/HyperrLogo";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function PrivacyPolicy() {
+  useSEO({
+    title: "Privacy Policy | hyperr",
+    description: "How hyperr collects, uses, and protects your personal data, including session recording and GDPR/CCPA rights.",
+  });
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">

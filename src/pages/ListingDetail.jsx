@@ -7,11 +7,17 @@ import SignupPrompt from "@/components/SignupPrompt";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
 import moment from "moment";
 
 export default function ListingDetail() {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
+
+  useSEO({
+    title: listing ? `${listing.title} — Trade Listing | hyperr` : "Trade Listing | hyperr",
+    description: listing ? (listing.offering_details?.slice(0, 140) || `${listing.title} on hyperr.`) : "Browse trade listings on hyperr.",
+  });
   const [profile, setProfile] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

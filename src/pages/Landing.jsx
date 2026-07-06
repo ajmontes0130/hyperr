@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import HyperrLogo from "@/components/HyperrLogo";
+import { useSEO } from "@/hooks/useSEO";
 
 const MARKUP = `
   <!-- symbol defs -->
@@ -321,9 +322,7 @@ const MARKUP = `
         <div>
           <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">COMPANY</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">About</a>
-            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Careers</a>
-            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Contact</a>
+            <a href="/contact" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Contact</a>
           </div>
         </div>
         <div>
@@ -331,7 +330,7 @@ const MARKUP = `
           <div style="display:flex;flex-direction:column;gap:11px;">
             <a href="/terms" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Terms of Service</a>
             <a href="/privacy" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Privacy Policy</a>
-            <a href="#" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Cookie Policy</a>
+            <a href="/cookie-policy" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Cookie Policy</a>
           </div>
         </div>
       </div>
@@ -360,6 +359,11 @@ const rootStyle = {
 
 export default function Landing() {
   const rootRef = useRef(null);
+
+  useSEO({
+    title: "hyperr — Trade products for promotion.",
+    description: "A streamlined marketplace for businesses to trade products and services for high-impact promotions and creative content.",
+  });
 
   useEffect(() => {
     const root = rootRef.current;

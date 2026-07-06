@@ -8,8 +8,13 @@ import { Label } from "@/components/ui/label";
 import HyperrLogo from "@/components/HyperrLogo";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Contact() {
+  useSEO({
+    title: "Contact Us | hyperr",
+    description: "Get in touch with the hyperr team for questions, partnerships, or support.",
+  });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useSEO } from "@/hooks/useSEO";
 import CreatorCard from "@/components/creator/CreatorCard";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,6 +23,10 @@ const reachRanges = [
 ];
 
 export default function CreatorDirectory() {
+  useSEO({
+    title: "Creator Directory — Find verified creators | hyperr",
+    description: "Discover verified creators on hyperr. Filter by niche, audience size, and tier to find your next collaboration partner.",
+  });
   const [creators, setCreators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

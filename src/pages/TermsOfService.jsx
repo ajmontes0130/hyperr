@@ -2,8 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import HyperrLogo from "@/components/HyperrLogo";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function TermsOfService() {
+  useSEO({
+    title: "Terms of Service | hyperr",
+    description: "The terms and conditions for using hyperr, the barter marketplace for creators and businesses.",
+  });
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useSEO } from "@/hooks/useSEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +13,10 @@ const types = ["Question", "Complaint", "Suggestion", "Other"];
 
 export default function Support() {
   const { toast } = useToast();
+  useSEO({
+    title: "Support | hyperr",
+    description: "Get help with your hyperr account, trades, and creator-business collaborations.",
+  });
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useSEO } from "@/hooks/useSEO";
 import ListingCard from "@/components/listings/ListingCard";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,6 +26,10 @@ const valueRanges = [
 ];
 
 export default function Marketplace() {
+  useSEO({
+    title: "Marketplace — Browse trade listings | hyperr",
+    description: "Browse active barter listings on hyperr. Find businesses trading products and services for creator promotions.",
+  });
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

@@ -49,7 +49,7 @@ const AuthenticatedApp = () => {
   const location = useLocation();
 
   // Public routes — bypass auth loading and redirect entirely
-  const publicPaths = ['/landing', '/marketplace', '/creators', '/support'];
+  const publicPaths = ['/', '/landing', '/marketplace', '/creators', '/support'];
   const isPublicRoute = publicPaths.includes(location.pathname) ||
     location.pathname.startsWith('/creator/') ||
     location.pathname.startsWith('/listing/');
@@ -99,9 +99,15 @@ const AuthenticatedApp = () => {
         <Route path="/support" element={<Support />} />
       </Route>
 
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/landing" replace />} />}>
+      {/* Root: Landing for visitors, Dashboard for authed */}
+      <Route element={<ProtectedRoute unauthenticatedElement={<Landing />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
+        </Route>
+      </Route>
+
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/" replace />} />}>
+        <Route element={<Layout />}>
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/my-trades" element={<MyTrades />} />

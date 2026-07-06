@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft, MapPin, Globe, DollarSign, Loader2, ExternalLink, Handshake, ShieldCheck, ShieldAlert, Bookmark, BookmarkCheck } from "lucide-react";
 import { formatFollowers, levelConfig } from "@/lib/creatorUtils";
+import { useSEO } from "@/hooks/useSEO";
 import moment from "moment";
 
 const platformColors = {
@@ -26,6 +27,11 @@ export default function CreatorProfilePage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [creator, setCreator] = useState(null);
+
+  useSEO({
+    title: creator ? `${creator.display_name} — Creator Profile | hyperr` : "Creator Profile | hyperr",
+    description: creator ? `${creator.display_name} is a ${creator.creator_level || ''} creator on hyperr${creator.niche?.length ? ' in ' + creator.niche.join(', ') : ''}.` : "Discover verified creators on hyperr.",
+  });
   const [portfolio, setPortfolio] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [user, setUser] = useState(null);

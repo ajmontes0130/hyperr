@@ -2,8 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import HyperrLogo from "@/components/HyperrLogo";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function CookiePolicy() {
+  useSEO({
+    title: "Cookie Policy | hyperr",
+    description: "How hyperr uses cookies and session recording, and how to manage your consent under GDPR and CCPA.",
+  });
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">
