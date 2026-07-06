@@ -2,37 +2,48 @@ import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import HyperrLogo from "@/components/HyperrLogo";
 import { base44 } from "@/api/base44Client";
-import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, Home, HelpCircle } from "lucide-react";
+import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign, Sparkles, Compass, Heart, MessageCircle, LayoutGrid, FileText, Home, HelpCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
-const creatorNav = [
+// Primary nav — shown as horizontal bar on desktop (same 6 items for both roles).
+// Only the Profile link differs by role.
+const creatorPrimaryNav = [
   { label: "Home", path: "/", icon: Home },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Marketplace", path: "/marketplace", icon: Search },
-  { label: "Saved", path: "/saved-creators", icon: Heart },
   { label: "Messages", path: "/messages", icon: MessageCircle },
-  { label: "Barter Trades", path: "/my-trades", icon: Handshake },
-  { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
+  { label: "Trades", path: "/my-trades", icon: Handshake },
   { label: "Creator Profile", path: "/creator-profile", icon: Sparkles },
 ];
 
-const businessNav = [
-  { label: "Home", path: "/", icon: Home },
-  { label: "Creators", path: "/creators", icon: Users },
-  { label: "Post Listing", path: "/create-listing", icon: PlusCircle, highlight: true },
-  { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
-  { label: "Messages", path: "/messages", icon: MessageCircle },
-  { label: "Barter Trades", path: "/my-trades", icon: Handshake },
+const creatorMoreNav = [
+  { label: "Saved", path: "/saved-creators", icon: Heart },
   { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
-  { label: "Templates", path: "/proposal-templates", icon: FileText },
+];
+
+const businessPrimaryNav = [
+  { label: "Home", path: "/", icon: Home },
+  { label: "Explore", path: "/explore", icon: Compass },
+  { label: "Marketplace", path: "/marketplace", icon: Search },
+  { label: "Messages", path: "/messages", icon: MessageCircle },
+  { label: "Trades", path: "/my-trades", icon: Handshake },
   { label: "Business Profile", path: "/profile", icon: User },
 ];
 
-const defaultNav = [...creatorNav, ...businessNav].filter(
-  (v, i, a) => a.findIndex((x) => x.path === v.path) === i
-);
+const businessMoreNav = [
+  { label: "Post Listing", path: "/create-listing", icon: PlusCircle },
+  { label: "My Listings", path: "/my-listings", icon: LayoutGrid },
+  { label: "Cash Offers", path: "/cash-offers", icon: DollarSign },
+  { label: "Templates", path: "/proposal-templates", icon: FileText },
+];
 
 export default function Layout() {
   const location = useLocation();
@@ -48,13 +59,14 @@ export default function Layout() {
     }).catch(() => {});
   }, []);
 
-  const navItems = accountType === "creator"
-    ? creatorNav
-    : accountType === "business"
-    ? businessNav
-    : defaultNav;
+  const isBusiness = accountType === "business";
+  const primaryNav = isBusiness ? businessPrimaryNav : creatorPrimaryNav;
+  const moreNav = isBusiness ? businessMoreNav : creatorMoreNav;
+  // Full flat list for mobile drawer
+  const navItems = [...primaryNav.slice(0, -1), ...moreNav, primaryNav[primaryNav.length - 1]];
 
   const isActive = (path) => location.pathname === path;
+  const moreActive = moreNav.some((item) => isActive(item.path));
 
   // Close mobile menu on route change
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
@@ -74,16 +86,14 @@ export default function Layout() {
             {user ? (
               <>
                 {/* Desktop nav — authenticated */}
-                <nav className="hidden lg:flex items-center gap-0.5 overflow-x-auto">
-                  {navItems.map((item) => (
+                <nav className="hidden lg:flex items-center gap-0.5">
+                  {primaryNav.map((item) => (
                     <Link
                       key={item.path}
                       to={item.path}
                       className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
-                        item.highlight && !isActive(item.path)
-                          ? "text-primary-foreground bg-primary hover:bg-primary/90 mx-1"
-                          : isActive(item.path)
-                          ? "text-primary border-b-2 border-primary"
+                        isActive(item.path)
+                          ? "text-primary bg-secondary"
                           : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                       }`}
                     >
@@ -91,6 +101,28 @@ export default function Layout() {
                       {item.label}
                     </Link>
                   ))}
+                  {moreNav.length > 0 && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap select-none ${
+                          moreActive ? "text-primary bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}>
+                          More
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        {moreNav.map((item) => (
+                          <DropdownMenuItem key={item.path} asChild>
+                            <Link to={item.path} className={`flex items-center gap-2 cursor-pointer ${isActive(item.path) ? "text-primary" : ""}`}>
+                              <item.icon className="w-4 h-4" />
+                              {item.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </nav>
 
                 <div className="hidden lg:flex items-center gap-2 flex-shrink-0 ml-2">

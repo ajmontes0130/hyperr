@@ -7,7 +7,7 @@ const creatorTabs = [
   { label: "Market", path: "/marketplace", icon: Search },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Messages", path: "/messages", icon: MessageCircle },
-  { label: "Profile", path: "/profile", icon: User },
+  { label: "Profile", path: "/creator-profile", icon: User },
 ];
 
 const businessTabs = [
