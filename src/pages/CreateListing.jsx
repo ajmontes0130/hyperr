@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import MobileSelect from "@/components/MobileSelect";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Upload, X, Plus, ArrowLeft, Eye } from "lucide-react";
+import { Loader2, Upload, X, Plus, ArrowLeft, Eye, TrendingUp, ImageOff } from "lucide-react";
 
 const categories = ["Restaurant & Food","Retail & Fashion","Health & Beauty","Tech & Software","Travel & Hospitality","Fitness & Wellness","Entertainment","Professional Services","Education","Other"];
 const promoTypes = ["Instagram Post","Instagram Reel","TikTok Video","YouTube Video","Blog Post","Podcast Mention","Twitter/X Post","Newsletter Feature","Event Appearance","Other"];
@@ -153,8 +153,9 @@ export default function CreateListing() {
               ))}
             </div>
           ) : (
-            <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 flex items-center justify-center">
-              <span className="text-6xl opacity-30">📦</span>
+            <div className="px-5 py-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <ImageOff className="w-4 h-4 text-muted-foreground/40" />
+              No photos added yet
             </div>
           )}
         </div>
@@ -275,32 +276,43 @@ export default function CreateListing() {
             </div>
           </div>
 
-          {/* Images */}
-          <div className="space-y-2">
-            <Label>Images <span className="text-muted-foreground font-normal">(up to 5)</span></Label>
-            <div className="flex flex-wrap gap-3">
-              {form.image_urls.map((url, i) => (
-                <div key={i} className="relative">
-                  <img src={url} alt="" className="w-20 h-20 rounded-xl object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(i)}
-                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive text-white rounded-full flex items-center justify-center"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                  {i === 0 && <span className="absolute bottom-1 left-1 text-xs bg-black/60 text-white px-1 rounded">Main</span>}
-                </div>
-              ))}
-              {form.image_urls.length < 5 && (
-                <label className="w-20 h-20 rounded-xl border-2 border-dashed border-border hover:border-primary/50 cursor-pointer transition-colors flex flex-col items-center justify-center text-muted-foreground hover:text-foreground">
-                  {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                  <span className="text-xs mt-1">Add</span>
-                  <input type="file" accept="image/*" multiple className="hidden" onChange={handleImages} />
-                </label>
-              )}
-            </div>
+        </div>
+
+        {/* Photos — highlighted step */}
+        <div className="bg-card rounded-2xl border-2 border-primary/30 p-6 space-y-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">1</span>
+            <h2 className="font-display font-semibold text-lg">Add Photos</h2>
+            <Badge className="bg-primary/10 text-primary border-primary/20 ml-auto text-xs">Recommended</Badge>
           </div>
+          <p className="text-sm text-primary flex items-center gap-1.5 font-medium">
+            <TrendingUp className="w-3.5 h-3.5" />
+            Listings with photos get more proposals
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {form.image_urls.map((url, i) => (
+              <div key={i} className="relative">
+                <img src={url} alt="" className="w-20 h-20 rounded-xl object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-destructive text-white rounded-full flex items-center justify-center"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+                {i === 0 && <span className="absolute bottom-1 left-1 text-xs bg-black/60 text-white px-1 rounded">Main</span>}
+              </div>
+            ))}
+            {form.image_urls.length < 5 && (
+              <label className="w-20 h-20 rounded-xl border-2 border-dashed border-border hover:border-primary/50 cursor-pointer transition-colors flex flex-col items-center justify-center text-muted-foreground hover:text-foreground">
+                {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                <span className="text-xs mt-1">Add</span>
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handleImages} />
+              </label>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">Upload up to 5 images. The first image becomes the main photo shown on your listing card.</p>
         </div>
 
         {/* Promotion selection with qty/notes */}

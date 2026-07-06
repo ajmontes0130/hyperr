@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, ImageOff } from "lucide-react";
 
 const typeColors = {
   Product: "bg-[#0E2A22] text-[#34D399] border-[#34D399]/30",
@@ -15,24 +15,29 @@ export default function ListingCard({ listing }) {
       to={`/listing/${listing.id}`}
       className="group bg-card rounded-2xl border border-border overflow-hidden hover:bg-secondary hover:border-[#34425A] hover:shadow-lg hover:shadow-black/30 transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
     >
-      <div className="aspect-[16/10] bg-gradient-to-br from-primary/5 to-primary/10 relative overflow-hidden">
-        {listing.image_url ? (
+      {listing.image_url ? (
+        <div className="aspect-[16/10] bg-gradient-to-br from-primary/5 to-primary/10 relative overflow-hidden">
           <img
             src={listing.image_url}
             alt={listing.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl opacity-30">📦</span>
+          <div className="absolute top-3 left-3">
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${typeColors[listing.offering_type] || "bg-gray-50 text-gray-700 border-gray-200"}`}>
+              {listing.offering_type}
+            </span>
           </div>
-        )}
-        <div className="absolute top-3 left-3">
+        </div>
+      ) : (
+        <div className="px-5 py-2.5 border-b border-border/50 flex items-center gap-2">
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${typeColors[listing.offering_type] || "bg-gray-50 text-gray-700 border-gray-200"}`}>
             {listing.offering_type}
           </span>
+          <span className="text-xs text-muted-foreground/50 flex items-center gap-1 ml-auto">
+            <ImageOff className="w-3 h-3" /> No photo
+          </span>
         </div>
-      </div>
+      )}
 
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-display font-semibold text-base leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
