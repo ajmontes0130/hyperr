@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
 import { calcTotalReach, calcVerifiedReach, calcLevel } from "@/lib/creatorUtils";
-import { Loader2, Upload, Save, Plus, Trash2 } from "lucide-react";
+import { Loader2, Upload, Save, Plus, Trash2, CheckCircle } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
 import SocialVerifyButton from "@/components/creator/SocialVerifyButton";
 import {
@@ -79,6 +79,10 @@ export default function CreatorProfileEdit() {
           accepts_cash_offers: p.accepts_cash_offers !== false,
           accepts_barter: p.accepts_barter !== false,
           website: p.website || "",
+          instagram_verified: p.instagram_verified || false,
+          tiktok_verified: p.tiktok_verified || false,
+          youtube_verified: p.youtube_verified || false,
+          twitter_verified: p.twitter_verified || false,
         });
         const myPort = await base44.entities.CollabPortfolio.filter({ creator_profile_id: p.id });
         setPortfolio(myPort);
@@ -144,15 +148,21 @@ export default function CreatorProfileEdit() {
     setSyncing('instagram');
     try {
       const res = await base44.functions.invoke('fetchInstagramStats', {});
+      const data = res.data;
+      if (!data || data.error || !data.handle) {
+        throw new Error(data?.error || 'Could not retrieve your Instagram data.');
+      }
       setForm((prev) => ({
         ...prev,
-        instagram_handle: res.data.handle,
-        instagram_followers: res.data.followers,
+        instagram_handle: data.handle,
+        instagram_followers: data.followers,
         instagram_verified: true,
       }));
-      toast({ title: 'Instagram synced!' });
-    } catch {
-      toast({ title: 'Failed to sync Instagram', variant: 'destructive' });
+      toast({ title: 'Instagram verified!', description: `@${data.handle} · ${(data.followers || 0).toLocaleString()} followers` });
+    } catch (err) {
+      const errMsg = err?.response?.data?.error || err?.message || 'Unknown error';
+      toast({ title: 'Instagram verification failed', description: errMsg, variant: 'destructive' });
+      throw err;
     } finally {
       setSyncing(null);
     }
@@ -162,15 +172,21 @@ export default function CreatorProfileEdit() {
     setSyncing('tiktok');
     try {
       const res = await base44.functions.invoke('fetchTikTokStats', {});
+      const data = res.data;
+      if (!data || data.error || !data.handle) {
+        throw new Error(data?.error || 'Could not retrieve your TikTok data.');
+      }
       setForm((prev) => ({
         ...prev,
-        tiktok_handle: res.data.handle,
-        tiktok_followers: res.data.followers,
+        tiktok_handle: data.handle,
+        tiktok_followers: data.followers,
         tiktok_verified: true,
       }));
-      toast({ title: 'TikTok synced!' });
-    } catch {
-      toast({ title: 'Failed to sync TikTok', variant: 'destructive' });
+      toast({ title: 'TikTok verified!', description: `@${data.handle} · ${(data.followers || 0).toLocaleString()} followers` });
+    } catch (err) {
+      const errMsg = err?.response?.data?.error || err?.message || 'Unknown error';
+      toast({ title: 'TikTok verification failed', description: errMsg, variant: 'destructive' });
+      throw err;
     } finally {
       setSyncing(null);
     }
@@ -334,14 +350,19 @@ export default function CreatorProfileEdit() {
                )}
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Input value={form[s.handleKey]} onChange={(e) => setForm({ ...form, [s.handleKey]: e.target.value })} placeholder={s.placeholder} />
-                <div className="relative">
-                  <Input type="number" value={form[s.followerKey]} onChange={(e) => setForm({ ...form, [s.followerKey]: e.target.value })} placeholder="0" className={!form[s.verifiedKey] && form[s.followerKey] ? "border-amber-300 focus-visible:ring-amber-400" : ""} />
-                  {!form[s.verifiedKey] && form[s.followerKey] > 0 && (
-                    <span className="absolute -bottom-4 left-0 text-xs text-amber-600">Unverified</span>
-                  )}
-                </div>
-              </div>
+                 <Input value={form[s.handleKey]} onChange={(e) => setForm({ ...form, [s.handleKey]: e.target.value })} placeholder={s.placeholder} readOnly={form[s.verifiedKey]} className={form[s.verifiedKey] ? "opacity-70 cursor-not-allowed" : ""} />
+                 <div className="relative">
+                   <Input type="number" value={form[s.followerKey]} onChange={(e) => setForm({ ...form, [s.followerKey]: e.target.value })} placeholder="0" readOnly={form[s.verifiedKey]} className={`${form[s.verifiedKey] ? "opacity-70 cursor-not-allowed" : ""} ${!form[s.verifiedKey] && form[s.followerKey] ? "border-amber-300 focus-visible:ring-amber-400" : ""}`} />
+                   {!form[s.verifiedKey] && form[s.followerKey] > 0 && (
+                     <span className="absolute -bottom-4 left-0 text-xs text-amber-600">Unverified</span>
+                   )}
+                   {form[s.verifiedKey] && (
+                     <span className="absolute -bottom-4 left-0 text-xs text-emerald-400 flex items-center gap-1">
+                       <CheckCircle className="w-3 h-3" /> Verified
+                     </span>
+                   )}
+                 </div>
+               </div>
             </div>
           ))}
         </div>
