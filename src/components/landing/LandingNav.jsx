@@ -41,9 +41,9 @@ export default function LandingNav() {
         </a>
 
         {/* Desktop center links */}
-        <div className="landing-nav-links" style={{ display: "flex", gap: 32, margin: "0 auto" }}>
+        <div className="landing-nav-links" style={{ display: "flex", gap: 32, margin: "0 auto", whiteSpace: "nowrap" }}>
           {links.map((l) => (
-            <a key={l.label} href={l.href} style={{ color: "#8C97A3", textDecoration: "none", fontSize: 14, fontWeight: 500, transition: "color 0.2s" }}
+            <a key={l.label} href={l.href} style={{ color: "#8C97A3", textDecoration: "none", fontSize: 14, fontWeight: 500, transition: "color 0.2s", whiteSpace: "nowrap" }}
               onMouseEnter={e => e.target.style.color = "#EAF1F7"}
               onMouseLeave={e => e.target.style.color = "#8C97A3"}
             >
@@ -53,14 +53,14 @@ export default function LandingNav() {
         </div>
 
         {/* Desktop right */}
-        <div className="landing-nav-actions" style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
-          <a href="/login" style={{ color: "#8C97A3", textDecoration: "none", fontSize: 14, fontWeight: 500, padding: "8px 16px", borderRadius: 8, border: "1px solid #25303F", transition: "all 0.2s" }}
+        <div className="landing-nav-actions" style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0, whiteSpace: "nowrap" }}>
+          <a href="/login" style={{ color: "#8C97A3", textDecoration: "none", fontSize: 14, fontWeight: 500, padding: "8px 16px", borderRadius: 8, border: "1px solid #25303F", transition: "all 0.2s", whiteSpace: "nowrap" }}
             onMouseEnter={e => { e.target.style.borderColor = "#34404F"; e.target.style.color = "#EAF1F7"; }}
             onMouseLeave={e => { e.target.style.borderColor = "#25303F"; e.target.style.color = "#8C97A3"; }}
           >
             Log in
           </a>
-          <a href="/register" style={{ background: "#2DD4FF", color: "#06303B", textDecoration: "none", fontSize: 14, fontWeight: 600, padding: "8px 18px", borderRadius: 8, transition: "all 0.2s" }}
+          <a href="/register" style={{ background: "#2DD4FF", color: "#06303B", textDecoration: "none", fontSize: 14, fontWeight: 600, padding: "8px 18px", borderRadius: 8, transition: "all 0.2s", whiteSpace: "nowrap" }}
             onMouseEnter={e => { e.target.style.background = "#5CDEFF"; }}
             onMouseLeave={e => { e.target.style.background = "#2DD4FF"; }}
           >
@@ -96,10 +96,14 @@ export default function LandingNav() {
       )}
 
       <style>{`
-        @media (max-width: 780px) {
+        @media (max-width: 1100px) {
           .landing-nav-links { display: none !important; }
           .landing-nav-actions { display: none !important; }
           .landing-hamburger { display: block !important; }
+        }
+        @media (min-width: 1101px) and (max-width: 1350px) {
+          .landing-nav-links { gap: 20px !important; }
+          .landing-nav-actions { gap: 8px !important; }
         }
       `}</style>
     </nav>
