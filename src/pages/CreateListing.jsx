@@ -360,7 +360,7 @@ export default function CreateListing() {
                     <div className="space-y-1">
                       <Label className="text-xs">Custom label *</Label>
                       <Input
-                        placeholder="e.g. LinkedIn carousel, Pinterest pin…"
+                        placeholder="e.g. UGC photos, LinkedIn carousel…"
                         value={req.custom_label || ""}
                         onChange={(e) => updateRequirement(req.type, "custom_label", e.target.value)}
                         className="h-8 text-sm"

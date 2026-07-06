@@ -21,12 +21,17 @@ export function getPromoLabel(req) {
 
 /**
  * Formats quantity with unit noun when known (e.g. "10× posts").
- * For "Other" types without a known unit, returns just "×10".
+ * For "Other" with a custom_label, uses the label as the unit (e.g. "10× UGC photos").
+ * For "Other" without a custom_label, falls back to "10 promotions".
  */
 export function formatPromoQuantity(req) {
   const qty = req.quantity || 1;
   const unit = PROMO_UNITS[req.type];
   if (unit) return `${qty}× ${unit}`;
+  if (req.type === "Other") {
+    if (req.custom_label?.trim()) return `${qty}× ${req.custom_label.trim()}`;
+    return `${qty} promotions`;
+  }
   return `×${qty}`;
 }
 
