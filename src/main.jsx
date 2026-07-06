@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom/client'
-import App from '@/App.jsx'
+import BrandedLoader from '@/components/BrandedLoader'
 import '@/index.css'
+import '@/lib/analytics-loader'
+
+// App is lazy so the initial JS bundle is tiny (React + loader + CSS only).
+// The branded skeleton in index.html shows instantly, then BrandedLoader
+// (identical look) holds until the App chunk loads.
+const App = lazy(() => import('@/App.jsx'))
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <App />
+  <Suspense fallback={<BrandedLoader />}>
+    <App />
+  </Suspense>
 )

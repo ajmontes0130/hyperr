@@ -46,10 +46,9 @@ import { lazy, Suspense, useEffect } from 'react';
 import BrandedLoader from '@/components/BrandedLoader';
 import Layout from '@/components/Layout';
 import Onboarding from '@/pages/Onboarding';
-import Landing from '@/pages/Landing';
 
-// Eager: Landing + auth pages render immediately for unauthenticated users.
-// Lazy: authenticated pages are code-split per route to reduce initial bundle.
+// All pages are code-split per route to reduce initial bundle size.
+const Landing = lazy(() => import('@/pages/Landing'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Marketplace = lazy(() => import('@/pages/Marketplace'));
 const ListingDetail = lazy(() => import('@/pages/ListingDetail'));

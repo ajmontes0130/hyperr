@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Cookie, X } from "lucide-react";
+import { Cookie } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import "@/lib/analytics-loader";
 
 const STORAGE_KEY = "hyperr_consent";
 
@@ -22,6 +23,7 @@ export default function ConsentBanner() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ choice, date: new Date().toISOString() }));
     } catch {}
     setVisible(false);
+    window.dispatchEvent(new CustomEvent('hyperr:consent-change'));
   };
 
   if (!visible) return null;

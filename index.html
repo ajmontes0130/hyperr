@@ -7,7 +7,15 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" />
+
+    <!-- Critical fonts: render-blocking, needed for hero + UI first paint -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=DM+Sans:wght@400;500;600;700&display=swap" />
+
+    <!-- Non-critical fonts: deferred until after first paint -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" /></noscript>
+
     <title>hyperr — Trade products for promotion.</title>
     <meta name="description" content="A streamlined marketplace for businesses to trade products and services for high-impact promotions and creative content." />
     <meta property="og:title" content="hyperr — Trade products for promotion." />
