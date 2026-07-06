@@ -4,10 +4,11 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus, Mail, Lock, Loader2, Eye, EyeOff, MapPin, Palette, Building2, Check } from "lucide-react";
+import { UserPlus, Mail, Lock, Loader2, Eye, EyeOff, Palette, Building2, Check } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import LocationInput from "@/components/LocationInput";
 import { toast } from "@/components/ui/use-toast";
 
 function getPasswordStrength(pw) {
@@ -213,15 +214,11 @@ export default function Register() {
 
         <div className="space-y-2">
           <Label htmlFor="location">Location <span className="text-muted-foreground font-normal">(optional)</span></Label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              id="location" type="text" autoComplete="address-level2"
-              placeholder="City, State or Country" value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="pl-10 h-12"
-            />
-          </div>
+          <LocationInput
+            value={location}
+            onChange={setLocation}
+            placeholder="City, State"
+          />
         </div>
 
         <div className="space-y-2">

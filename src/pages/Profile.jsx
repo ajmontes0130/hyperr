@@ -14,6 +14,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Upload, Save, Building2, Trash2, Plus, X } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
+import LocationInput from "@/components/LocationInput";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -204,7 +205,7 @@ export default function Profile() {
             </div>
             <div className="space-y-2">
               <Label>Location</Label>
-              <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="City, State" />
+              <LocationInput value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="City, State" />
             </div>
           </div>
         </div>
