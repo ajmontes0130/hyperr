@@ -14,28 +14,32 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 
+import { lazy, Suspense } from 'react';
+import BrandedLoader from '@/components/BrandedLoader';
 import Layout from '@/components/Layout';
-import Marketplace from '@/pages/Marketplace';
-import ListingDetail from '@/pages/ListingDetail';
-import CreateListing from '@/pages/CreateListing';
-import MyListings from '@/pages/MyListings';
-import MyTrades from '@/pages/MyTrades';
-import Profile from '@/pages/Profile';
-import CreatorDirectory from '@/pages/CreatorDirectory';
-import CreatorProfilePage from '@/pages/CreatorProfilePage';
-import CreatorProfileEdit from '@/pages/CreatorProfileEdit';
-import MyCashOffers from '@/pages/MyCashOffers';
-import Explore from '@/pages/Explore';
-import SavedCreators from '@/pages/SavedCreators';
-import Messages from '@/pages/Messages';
-import ProposalTemplates from '@/pages/ProposalTemplates';
 import Onboarding from '@/pages/Onboarding';
-
-import TermsOfService from '@/pages/TermsOfService';
-import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Landing from '@/pages/Landing';
-import Dashboard from '@/pages/Dashboard';
-import Support from '@/pages/Support';
+
+// Eager: Landing + auth pages render immediately for unauthenticated users.
+// Lazy: authenticated pages are code-split per route to reduce initial bundle.
+const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Marketplace = lazy(() => import('@/pages/Marketplace'));
+const ListingDetail = lazy(() => import('@/pages/ListingDetail'));
+const CreateListing = lazy(() => import('@/pages/CreateListing'));
+const MyListings = lazy(() => import('@/pages/MyListings'));
+const MyTrades = lazy(() => import('@/pages/MyTrades'));
+const Profile = lazy(() => import('@/pages/Profile'));
+const CreatorDirectory = lazy(() => import('@/pages/CreatorDirectory'));
+const CreatorProfilePage = lazy(() => import('@/pages/CreatorProfilePage'));
+const CreatorProfileEdit = lazy(() => import('@/pages/CreatorProfileEdit'));
+const MyCashOffers = lazy(() => import('@/pages/MyCashOffers'));
+const Explore = lazy(() => import('@/pages/Explore'));
+const SavedCreators = lazy(() => import('@/pages/SavedCreators'));
+const Messages = lazy(() => import('@/pages/Messages'));
+const ProposalTemplates = lazy(() => import('@/pages/ProposalTemplates'));
+const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
+const Support = lazy(() => import('@/pages/Support'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,11 +49,7 @@ const AuthenticatedApp = () => {
   const isPublicRoute = location.pathname === '/landing';
 
   if (!isPublicRoute && (isLoadingPublicSettings || isLoadingAuth)) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <BrandedLoader />;
   }
 
   if (!isPublicRoute && authError) {
@@ -71,6 +71,7 @@ const AuthenticatedApp = () => {
       transition={{ duration: 0.18, ease: "easeOut" }}
       style={{ minHeight: "100vh" }}
     >
+    <Suspense fallback={<BrandedLoader />}>
     <Routes location={location}>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -105,6 +106,7 @@ const AuthenticatedApp = () => {
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
     </motion.div>
     </AnimatePresence>
   );

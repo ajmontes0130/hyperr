@@ -15,5 +15,22 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-  ]
+  ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-router')) return 'router';
+            if (id.includes('react-dom') || id.includes('node_modules/react/')) return 'react-core';
+            if (id.includes('recharts') || id.includes('d3-')) return 'charts';
+            if (id.includes('framer-motion') || id.includes('motion-dom')) return 'motion';
+            if (id.includes('@radix-ui')) return 'radix';
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('@tanstack')) return 'query';
+          }
+        }
+      }
+    }
+  }
 });
