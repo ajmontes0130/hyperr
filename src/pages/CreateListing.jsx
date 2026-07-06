@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import MobileSelect from "@/components/MobileSelect";
+import LocationInput from "@/components/LocationInput";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Upload, X, Plus, ArrowLeft, Eye, TrendingUp, ImageOff } from "lucide-react";
@@ -272,7 +273,7 @@ export default function CreateListing() {
             </div>
             <div className="space-y-2">
               <Label>Location</Label>
-              <Input placeholder="e.g. New York, NY" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+              <LocationInput value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="City, State" />
             </div>
           </div>
 

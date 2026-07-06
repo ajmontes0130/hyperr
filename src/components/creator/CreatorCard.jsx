@@ -5,6 +5,11 @@ import LevelBadge from "./LevelBadge";
 import StarRating from "./StarRating";
 import { formatFollowers } from "@/lib/creatorUtils";
 
+// Display labels for niches — handles old enum values gracefully.
+const NICHE_LABELS = {
+  Business: "Business & Entrepreneurship",
+};
+
 const platformIcons = {
   instagram_followers: { label: "IG", color: "bg-[#2E121A] text-[#FF4D6D]", verifiedKey: "instagram_verified" },
   tiktok_followers:    { label: "TT", color: "bg-secondary text-foreground", verifiedKey: "tiktok_verified" },
@@ -70,7 +75,7 @@ export default function CreatorCard({ creator, isSaved, onToggleSave }) {
         {creator.niche && creator.niche.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
             {creator.niche.slice(0, 3).map((n) => (
-              <span key={n} className="text-xs bg-accent text-accent-foreground px-2 py-0.5 rounded-full">{n}</span>
+              <span key={n} className="text-xs bg-accent text-accent-foreground px-2 py-0.5 rounded-full">{NICHE_LABELS[n] || n}</span>
             ))}
             {creator.niche.length > 3 && (
               <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">+{creator.niche.length - 3}</span>

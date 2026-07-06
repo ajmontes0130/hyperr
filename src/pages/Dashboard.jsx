@@ -223,7 +223,7 @@ function Welcome({ rm, user, stats }) {
 function OfferCard({ listing, delay, rm }) {
   const [ref, vis] = useScrollReveal(0.08);
   const [saved, setSaved] = useState(false);
-  const tags = [listing.category, ...(listing.offering_type ? [listing.offering_type] : [])].filter(Boolean).map(t => t.toUpperCase().slice(0, 10));
+  const tags = [listing.category, ...(listing.offering_type ? [listing.offering_type] : [])].filter(Boolean).map(t => t.toUpperCase());
 
   return (
     <div
@@ -249,7 +249,7 @@ function OfferCard({ listing, delay, rm }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
           {tags.slice(0, 2).map((tag) => (
-            <span key={tag} style={{ ...mono, fontSize: 10, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "#1B2330", color: "#5C6672", letterSpacing: "0.06em" }}>
+            <span key={tag} style={{ ...mono, fontSize: 10, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "#1B2330", color: "#5C6672", letterSpacing: "0.04em", whiteSpace: "nowrap", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis" }}>
               {tag}
             </span>
           ))}

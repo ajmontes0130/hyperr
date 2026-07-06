@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import MobileSelect from "@/components/MobileSelect";
+import LocationInput from "@/components/LocationInput";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import LevelBadge from "@/components/creator/LevelBadge";
@@ -19,7 +20,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const niches = ["Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
+const niches = ["Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business & Entrepreneurship", "Sustainability", "Other"];
 const platforms = ["Instagram", "TikTok", "YouTube", "Blog", "Podcast", "Twitter/X", "Newsletter", "Event", "Other"];
 
 export default function CreatorProfileEdit() {
@@ -286,7 +287,7 @@ export default function CreatorProfileEdit() {
             </div>
             <div className="space-y-2">
               <Label>Location</Label>
-              <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="City, Country" />
+              <LocationInput value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="City, State" />
             </div>
           </div>
         </div>

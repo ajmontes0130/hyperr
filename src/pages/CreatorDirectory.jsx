@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import SignupPrompt from "@/components/SignupPrompt";
 
-const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
+const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business & Entrepreneurship", "Sustainability", "Other"];
 const levels = ["All", "Bronze", "Silver", "Gold", "Platinum", "Diamond"];
 const reachRanges = [
   { label: "Any reach", value: "all" },
