@@ -296,6 +296,7 @@ const MARKUP = `
           <input type="email" name="email" placeholder="Enter your email" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid rgba(45,212,255,.3);border-radius:11px;background:rgba(12,17,26,.8);color:#EAF1F7;font-size:14px;font-family:inherit;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,box-shadow .2s ease;" data-h="border-color:rgba(45,212,255,.6);box-shadow:0 0 0 3px rgba(45,212,255,.15);" />
           <button type="submit" style="padding:14px 26px;background:#2DD4FF;border:none;border-radius:11px;color:#06303B;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;white-space:nowrap;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,212,255,.24);">Subscribe</button>
         </form>
+        <p data-newsletter-error style="color:#FF6B85;font-size:13px;margin:10px 0 0;display:none;font-family:Inter,sans-serif;"></p>
         <p style="color:#5C6672;font-size:12px;margin:16px 0 0;">We respect your inbox. Unsubscribe anytime.</p>
       </div>
     </section>
@@ -452,23 +453,37 @@ export default function Landing() {
     // newsletter signup
     const form = root.querySelector("[data-newsletter-form]");
     if (form) {
+      const input = form.querySelector('input[type="email"]');
+      const errEl = form.parentElement.querySelector("[data-newsletter-error]");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      const clearError = () => { if (errEl) { errEl.style.display = "none"; errEl.textContent = ""; } };
+      if (input) input.addEventListener("input", clearError);
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const input = form.querySelector('input[type="email"]');
         const email = input?.value?.trim();
         if (!email) return;
+
+        if (!emailRegex.test(email)) {
+          if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; }
+          return;
+        }
+        clearError();
+
         const btn = form.querySelector("button");
         btn.disabled = true;
+        btn.textContent = "Subscribing…";
         try {
           await base44.entities.Newsletter.create({ email });
           input.value = "";
-          const orig = btn.textContent;
           btn.textContent = "✓ Thanks for subscribing!";
-          setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
+          setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; }, 3000);
         } catch (err) {
           console.error("Newsletter signup failed:", err);
-          btn.textContent = "Error — try again";
-          setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; }, 2000);
+          if (errEl) { errEl.textContent = "Something went wrong. Please try again."; errEl.style.display = "block"; }
+          btn.textContent = "Subscribe";
+          btn.disabled = false;
         }
       });
     }

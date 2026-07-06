@@ -137,7 +137,7 @@ export default function MyCashOffers() {
                 <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="font-display font-semibold text-lg mb-1">No cash offers received</h3>
                 <p className="text-sm text-muted-foreground mb-5">Brands send cash offers here when they want to work with you.</p>
-                {(!creatorProfile || !creatorProfile.display_name?.trim() || !creatorProfile.niche?.length) ? (
+                {creatorProfile && (!creatorProfile.display_name?.trim() || !creatorProfile.niche?.length) ? (
                   <Link to="/creator-profile">
                     <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
                       Complete Your Creator Profile

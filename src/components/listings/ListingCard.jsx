@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, ArrowRight, ImageOff } from "lucide-react";
+import { MapPin, ArrowRight, ImageOff, TrendingUp } from "lucide-react";
 import { getPromoTypesForDisplay } from "@/lib/promoUtils";
 
 const typeColors = {
@@ -30,12 +30,12 @@ export default function ListingCard({ listing, poster }) {
           </div>
         </div>
       ) : (
-        <div className="px-5 py-2.5 border-b border-border/50 flex items-center gap-2">
+        <div className="px-5 py-3 border-b border-border/50 flex items-center gap-2">
           <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${typeColors[listing.offering_type] || "bg-gray-50 text-gray-700 border-gray-200"}`}>
             {listing.offering_type}
           </span>
-          <span className="text-xs text-muted-foreground/50 flex items-center gap-1 ml-auto">
-            <ImageOff className="w-3 h-3" /> No photo
+          <span className="text-xs text-amber-400/70 flex items-center gap-1 ml-auto font-medium">
+            <TrendingUp className="w-3 h-3" /> Listings with photos get more proposals
           </span>
         </div>
       )}
