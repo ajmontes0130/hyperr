@@ -145,7 +145,7 @@ export default function Layout() {
 
         {/* Mobile nav drawer */}
         {mobileOpen && (
-          <div className="lg:hidden border-t bg-card px-4 pb-4 space-y-1">
+          <div className="lg:hidden border-t bg-card px-4 pb-[calc(5rem+env(safe-area-inset-bottom))] space-y-1">
             <div className="pt-3 space-y-1">
               {user ? (
                 <>
