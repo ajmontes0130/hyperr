@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import HyperrLogo from "@/components/HyperrLogo";
 
 export default function PrivacyPolicy() {
   return (
@@ -11,7 +12,7 @@ export default function PrivacyPolicy() {
         </Link>
         <div className="bg-white rounded-2xl border p-8">
           <div className="flex items-center gap-3 mb-6">
-            <img src="https://media.base44.com/images/public/6a3c51b5316c274a51ac7590/3c7980363_image.png" alt="Hyper" className="h-8 w-auto" />
+            <HyperrLogo size="md" />
             <h1 className="font-display font-bold text-2xl">Privacy Policy</h1>
           </div>
           <p className="text-sm text-muted-foreground mb-6">Last updated: June 2025 · This policy is a placeholder and will be replaced with the full legal document before launch.</p>
@@ -19,7 +20,7 @@ export default function PrivacyPolicy() {
           <div className="space-y-6 text-sm leading-relaxed text-foreground">
             <section>
               <h2 className="font-semibold text-base mb-2">1. Information We Collect</h2>
-              <p className="text-muted-foreground">We collect information you provide directly (name, email, profile details), information from social platforms you connect, and usage data generated while using Hyper.</p>
+              <p className="text-muted-foreground">We collect information you provide directly (name, email, profile details), information from social platforms you connect, and usage data generated while using hyperr.</p>
             </section>
             <section>
               <h2 className="font-semibold text-base mb-2">2. How We Use Your Information</h2>

@@ -130,7 +130,7 @@ export default function Register() {
     <AuthLayout
       icon={UserPlus}
       title="Create your account"
-      subtitle="Join Hyper — Connect. Collaborate. Grow."
+      subtitle="Join hyperr — Connect. Collaborate. Grow."
       footer={
         <>
           Already have an account?{" "}
@@ -297,7 +297,7 @@ export default function Register() {
             className="mt-0.5 w-4 h-4 rounded border-border accent-primary cursor-pointer flex-shrink-0"
           />
           <label htmlFor="terms" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-            I agree to Hyper's{" "}
+            I agree to hyperr's{" "}
             <Link to="/terms" target="_blank" className="text-primary font-medium hover:underline">
               Terms of Service
             </Link>{" "}
