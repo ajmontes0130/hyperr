@@ -23,6 +23,7 @@ export default function MyCashOffers() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviewTarget, setReviewTarget] = useState(null);
+  const [creatorProfile, setCreatorProfile] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => { loadData(); }, []);
@@ -32,12 +33,14 @@ export default function MyCashOffers() {
     try {
       const me = await base44.auth.me();
       setUser(me);
-      const [recv, snt] = await Promise.all([
+      const [recv, snt, profiles] = await Promise.all([
         base44.entities.CashOffer.filter({ creator_user_id: me.id }, "-created_date"),
         base44.entities.CashOffer.filter({ business_user_id: me.id }, "-created_date"),
+        base44.entities.CreatorProfile.filter({ created_by_id: me.id }),
       ]);
       setReceived(recv);
       setSent(snt);
+      setCreatorProfile(profiles[0] || null);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
@@ -134,11 +137,19 @@ export default function MyCashOffers() {
                 <DollarSign className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
                 <h3 className="font-display font-semibold text-lg mb-1">No cash offers received</h3>
                 <p className="text-sm text-muted-foreground mb-5">Brands send cash offers here when they want to work with you.</p>
-                <Link to="/creator-profile">
-                  <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
-                    Complete Your Creator Profile
-                  </button>
-                </Link>
+                {(!creatorProfile || !creatorProfile.display_name?.trim() || !creatorProfile.niche?.length) ? (
+                  <Link to="/creator-profile">
+                    <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                      Complete Your Creator Profile
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/creators">
+                    <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors">
+                      <Users className="w-4 h-4" /> Browse Creators
+                    </button>
+                  </Link>
+                )}
               </div>
             )
             : <div className="space-y-4">{received.map((o) => <OfferCard key={o.id} offer={o} type="received" />)}</div>
