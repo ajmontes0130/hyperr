@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, FileText, Check, X, DollarSign, Calendar } from "lucide-react";
+import { formatMessageTime } from "@/lib/messageDates";
 
 const typeStyles = {
   Cash: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
@@ -90,7 +91,7 @@ export default function OfferBubble({ offer, isMine, onUpdate }) {
           )}
 
           <p className="text-xs text-muted-foreground pt-1">
-            {new Date(offer.created_date).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+            {formatMessageTime(offer.created_date)}
           </p>
         </div>
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import OfferModal from "@/components/messages/OfferModal";
 import OfferBubble from "@/components/messages/OfferBubble";
+import { getDateLabel, formatMessageTime, getDateKey } from "@/lib/messageDates";
 
 function makeThreadId(a, b) {
   return [a, b].sort().join("_");
@@ -278,30 +279,44 @@ export default function Messages() {
                   Send a message to start the conversation.
                 </div>
               )}
-              {timeline.map((item) => {
+              {timeline.map((item, idx) => {
+                const prevItem = timeline[idx - 1];
+                const showSeparator = !prevItem || getDateKey(prevItem.date) !== getDateKey(item.date);
+                const dateLabel = getDateLabel(item.date);
+                const separator = showSeparator && (
+                  <div className="flex items-center justify-center my-3">
+                    <span className="text-xs font-medium text-muted-foreground bg-card px-3 py-1 rounded-full border">{dateLabel}</span>
+                  </div>
+                );
+
                 if (item.kind === "offer") {
                   const offer = item.data;
                   const isMine = offer.sender_id === user?.id;
                   return (
-                    <OfferBubble
-                      key={`offer-${offer.id}`}
-                      offer={offer}
-                      isMine={isMine}
-                      onUpdate={handleOfferUpdate}
-                    />
+                    <React.Fragment key={`offer-${offer.id}`}>
+                      {separator}
+                      <OfferBubble
+                        offer={offer}
+                        isMine={isMine}
+                        onUpdate={handleOfferUpdate}
+                      />
+                    </React.Fragment>
                   );
                 }
                 const msg = item.data;
                 const isMe = msg.sender_id === user?.id;
                 return (
-                  <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${isMe ? "bg-primary text-white rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm"}`}>
-                      {msg.content}
-                      <p className={`text-xs mt-1 ${isMe ? "text-white/60" : "text-muted-foreground"}`}>
-                        {new Date(msg.created_date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </p>
+                  <React.Fragment key={msg.id}>
+                    {separator}
+                    <div className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${isMe ? "bg-primary text-white rounded-br-sm" : "bg-muted text-foreground rounded-bl-sm"}`}>
+                        {msg.content}
+                        <p className={`text-xs mt-1 ${isMe ? "text-white/60" : "text-muted-foreground"}`}>
+                          {formatMessageTime(msg.created_date)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </React.Fragment>
                 );
               })}
               <div ref={bottomRef} />
