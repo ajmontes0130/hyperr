@@ -10,6 +10,7 @@ import LocationInput from "@/components/LocationInput";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Upload, X, Plus, ArrowLeft, Eye, TrendingUp, ImageOff } from "lucide-react";
+import { getPromoLabel, formatPromoQuantity } from "@/lib/promoUtils";
 
 const categories = ["Restaurant & Food","Retail & Fashion","Health & Beauty","Tech & Software","Travel & Hospitality","Fitness & Wellness","Entertainment","Professional Services","Education","Other"];
 const promoTypes = ["Instagram Post","Instagram Reel","TikTok Video","YouTube Video","Blog Post","Podcast Mention","Twitter/X Post","Newsletter Feature","Event Appearance","Other"];
@@ -46,7 +47,7 @@ export default function CreateListing() {
       if (already) {
         return { ...prev, promotion_requirements: prev.promotion_requirements.filter((r) => r.type !== type) };
       }
-      return { ...prev, promotion_requirements: [...prev.promotion_requirements, { type, quantity: 1, note: "" }] };
+      return { ...prev, promotion_requirements: [...prev.promotion_requirements, { type, quantity: 1, note: "", custom_label: "" }] };
     });
   };
 
@@ -88,6 +89,11 @@ export default function CreateListing() {
     }
     if (form.estimated_value !== "" && (Number(form.estimated_value) < 0 || isNaN(Number(form.estimated_value)))) {
       toast({ title: "Offering value must be a positive number", variant: "destructive" });
+      return false;
+    }
+    const missingLabels = form.promotion_requirements.filter((r) => r.type === "Other" && !r.custom_label?.trim());
+    if (missingLabels.length > 0) {
+      toast({ title: "Please enter a custom label for each 'Other' promotion type", variant: "destructive" });
       return false;
     }
     return true;
@@ -190,9 +196,9 @@ export default function CreateListing() {
           <h3 className="font-display font-semibold">Looking For</h3>
           {form.promotion_requirements.map((r) => (
             <div key={r.type} className="flex items-start gap-3 p-3 rounded-xl bg-accent/50">
-              <Badge className="bg-accent text-accent-foreground border-0 mt-0.5 flex-shrink-0">{r.type}</Badge>
+              <Badge className="bg-accent text-accent-foreground border-0 mt-0.5 flex-shrink-0">{getPromoLabel(r)}</Badge>
               <div className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">×{r.quantity}</span>
+                <span className="font-medium text-foreground">{formatPromoQuantity(r)}</span>
                 {r.note && <span> — {r.note}</span>}
               </div>
             </div>
@@ -350,6 +356,17 @@ export default function CreateListing() {
               {form.promotion_requirements.map((req) => (
                 <div key={req.type} className="bg-muted/40 rounded-xl p-4 space-y-3">
                   <p className="font-medium text-sm">{req.type}</p>
+                  {req.type === "Other" && (
+                    <div className="space-y-1">
+                      <Label className="text-xs">Custom label *</Label>
+                      <Input
+                        placeholder="e.g. LinkedIn carousel, Pinterest pin…"
+                        value={req.custom_label || ""}
+                        onChange={(e) => updateRequirement(req.type, "custom_label", e.target.value)}
+                        className="h-8 text-sm"
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <Label className="text-xs">Quantity</Label>

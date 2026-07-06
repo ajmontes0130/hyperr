@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, ArrowRight, ImageOff } from "lucide-react";
+import { getPromoTypesForDisplay } from "@/lib/promoUtils";
 
 const typeColors = {
   Product: "bg-[#0E2A22] text-[#34D399] border-[#34D399]/30",
@@ -50,9 +51,9 @@ export default function ListingCard({ listing }) {
 
         {listing.wanted_promotion_type && listing.wanted_promotion_type.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {listing.wanted_promotion_type.slice(0, 2).map((type) => (
-              <Badge key={type} variant="secondary" className="text-xs font-normal">
-                {type}
+            {getPromoTypesForDisplay(listing).slice(0, 2).map((label, i) => (
+              <Badge key={i} variant="secondary" className="text-xs font-normal">
+                {label}
               </Badge>
             ))}
             {listing.wanted_promotion_type.length > 2 && (

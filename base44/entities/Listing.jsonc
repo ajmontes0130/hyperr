@@ -53,6 +53,9 @@
           },
           "note": {
             "type": "string"
+          },
+          "custom_label": {
+            "type": "string"
           }
         }
       }

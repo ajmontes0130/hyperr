@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MapPin, DollarSign, Calendar, Loader2, Send, Globe, ChevronLeft, ChevronRight, Info, Star, ImageOff, TrendingUp } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import moment from "moment";
+import { getPromoLabel, formatPromoQuantity } from "@/lib/promoUtils";
 
 export default function ListingDetail() {
   const { id } = useParams();
@@ -178,9 +179,9 @@ export default function ListingDetail() {
               <div className="space-y-3">
                 {listing.promotion_requirements.map((req, i) => (
                   <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-accent/50">
-                    <Badge className="bg-accent text-accent-foreground border-0 flex-shrink-0 mt-0.5">{req.type}</Badge>
+                    <Badge className="bg-accent text-accent-foreground border-0 flex-shrink-0 mt-0.5">{getPromoLabel(req)}</Badge>
                     <div className="text-sm">
-                      <span className="font-medium">×{req.quantity || 1}</span>
+                      <span className="font-medium">{formatPromoQuantity(req)}</span>
                       {req.note && <span className="text-muted-foreground"> — {req.note}</span>}
                     </div>
                   </div>
@@ -188,9 +189,14 @@ export default function ListingDetail() {
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {listing.wanted_promotion_type?.map((type) => (
-                  <Badge key={type} className="bg-accent text-accent-foreground border-0 font-medium">{type}</Badge>
-                ))}
+                {listing.wanted_promotion_type?.map((type) => {
+                  const displayLabel = type === "Other"
+                    ? getPromoLabel(listing.promotion_requirements?.find((r) => r.type === "Other") || { type })
+                    : type;
+                  return (
+                    <Badge key={type} className="bg-accent text-accent-foreground border-0 font-medium">{displayLabel}</Badge>
+                  );
+                })}
               </div>
             )}
 

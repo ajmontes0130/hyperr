@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/components/ui/use-toast";
 import MobileSelect from "@/components/MobileSelect";
 import { Loader2, Upload, X, Plus } from "lucide-react";
+import { getPromoLabel, formatPromoQuantity } from "@/lib/promoUtils";
 
 const categories = ["Restaurant & Food","Retail & Fashion","Health & Beauty","Tech & Software","Travel & Hospitality","Fitness & Wellness","Entertainment","Professional Services","Education","Other"];
 const promoTypes = ["Instagram Post","Instagram Reel","TikTok Video","YouTube Video","Blog Post","Podcast Mention","Twitter/X Post","Newsletter Feature","Event Appearance","Other"];
@@ -44,7 +45,7 @@ export default function EditListingModal({ listing, open, onClose, onSaved }) {
     setForm((prev) => {
       const already = prev.promotion_requirements.find((r) => r.type === type);
       if (already) return { ...prev, promotion_requirements: prev.promotion_requirements.filter((r) => r.type !== type) };
-      return { ...prev, promotion_requirements: [...prev.promotion_requirements, { type, quantity: 1, note: "" }] };
+      return { ...prev, promotion_requirements: [...prev.promotion_requirements, { type, quantity: 1, note: "", custom_label: "" }] };
     });
   };
 
@@ -82,6 +83,11 @@ export default function EditListingModal({ listing, open, onClose, onSaved }) {
   const handleSave = async () => {
     if (!form.title?.trim() || !form.offering_type || !form.offering_details?.trim() || !form.category) {
       toast({ title: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    const missingLabels = (form.promotion_requirements || []).filter((r) => r.type === "Other" && !r.custom_label?.trim());
+    if (missingLabels.length > 0) {
+      toast({ title: "Please enter a custom label for each 'Other' promotion type", variant: "destructive" });
       return;
     }
     setSaving(true);
@@ -206,6 +212,17 @@ export default function EditListingModal({ listing, open, onClose, onSaved }) {
                 {form.promotion_requirements.map((req) => (
                   <div key={req.type} className="bg-muted/40 rounded-xl p-3 space-y-2">
                     <p className="font-medium text-sm">{req.type}</p>
+                    {req.type === "Other" && (
+                      <div className="space-y-1">
+                        <Label className="text-xs">Custom label *</Label>
+                        <Input
+                          placeholder="e.g. LinkedIn carousel, Pinterest pin…"
+                          value={req.custom_label || ""}
+                          onChange={(e) => updateRequirement(req.type, "custom_label", e.target.value)}
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label className="text-xs">Quantity</Label>
