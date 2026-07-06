@@ -73,10 +73,12 @@ export default function ListingCard({ listing }) {
             )}
             {!listing.location && <span>{listing.category}</span>}
           </div>
-          {listing.estimated_value > 0 && (
+          {listing.estimated_value > 0 ? (
             <span className="text-xs font-semibold text-primary">
-              ~${listing.estimated_value}
+              ~${listing.estimated_value.toLocaleString()} value
             </span>
+          ) : (
+            <span className="text-xs text-muted-foreground/60">Value TBD</span>
           )}
         </div>
       </div>

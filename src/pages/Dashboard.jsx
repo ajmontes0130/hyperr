@@ -223,7 +223,6 @@ function Welcome({ rm, user, stats }) {
 function OfferCard({ listing, delay, rm }) {
   const [ref, vis] = useScrollReveal(0.08);
   const [saved, setSaved] = useState(false);
-  const val = useCountUp(listing.estimated_value || 0, 800, vis, rm);
   const tags = [listing.category, ...(listing.offering_type ? [listing.offering_type] : [])].filter(Boolean).map(t => t.toUpperCase().slice(0, 10));
 
   return (
@@ -279,16 +278,13 @@ function OfferCard({ listing, delay, rm }) {
       </p>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: "auto" }}>
-        <div style={{ lineHeight: 1 }}>
-          {listing.estimated_value ? (
-            <>
-              <span style={{ ...mono, fontSize: 20, fontWeight: 700, color: "#EAF1F7" }}>${val}</span>
-              <span style={{ ...mono, fontSize: 11, color: "#5C6672", marginLeft: 5 }}>value</span>
-            </>
-          ) : (
-            <span style={{ ...mono, fontSize: 13, color: "#5C6672" }}>Value TBD</span>
-          )}
-        </div>
+      <div style={{ lineHeight: 1 }}>
+        {listing.estimated_value ? (
+          <span style={{ ...mono, fontSize: 14, fontWeight: 600, color: "#8C97A3" }}>~${listing.estimated_value.toLocaleString()} <span style={{ fontSize: 11, color: "#5C6672" }}>value</span></span>
+        ) : (
+          <span style={{ ...mono, fontSize: 13, color: "#5C6672" }}>Value TBD</span>
+        )}
+      </div>
         <Link
           to={`/listing/${listing.id}`}
           style={{ ...mono, fontSize: 11.5, fontWeight: 600, padding: "8px 14px", borderRadius: 8, background: "#2DD4FF", color: "#06303B", border: "none", cursor: "pointer", minHeight: 34, transition: "background 0.18s", whiteSpace: "nowrap", textDecoration: "none", display: "inline-flex", alignItems: "center" }}
