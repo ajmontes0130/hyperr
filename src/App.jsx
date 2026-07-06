@@ -10,12 +10,39 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import ConsentBanner from '@/components/ConsentBanner';
 
+const ROUTE_TITLES = {
+  '/landing': 'hyperr — Trade products for promotion.',
+  '/marketplace': 'Marketplace — Browse trade listings | hyperr',
+  '/creators': 'Creator Directory — Find verified creators | hyperr',
+  '/support': 'Support | hyperr',
+  '/login': 'Log In | hyperr',
+  '/register': 'Sign Up | hyperr',
+  '/forgot-password': 'Reset Password | hyperr',
+  '/reset-password': 'Reset Password | hyperr',
+  '/onboarding': 'Welcome | hyperr',
+  '/dashboard': 'Dashboard | hyperr',
+  '/create-listing': 'Create Listing | hyperr',
+  '/my-listings': 'My Listings | hyperr',
+  '/my-trades': 'My Trades | hyperr',
+  '/profile': 'Profile | hyperr',
+  '/creator-profile': 'Edit Creator Profile | hyperr',
+  '/cash-offers': 'Cash Offers | hyperr',
+  '/explore': 'Explore Creators | hyperr',
+  '/saved-creators': 'Saved Creators | hyperr',
+  '/messages': 'Messages | hyperr',
+  '/proposal-templates': 'Proposal Templates | hyperr',
+  '/terms': 'Terms of Service | hyperr',
+  '/privacy': 'Privacy Policy | hyperr',
+  '/cookie-policy': 'Cookie Policy | hyperr',
+  '/contact': 'Contact Us | hyperr',
+};
+
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import BrandedLoader from '@/components/BrandedLoader';
 import Layout from '@/components/Layout';
 import Onboarding from '@/pages/Onboarding';
@@ -45,8 +72,27 @@ const Contact = lazy(() => import('@/pages/Contact'));
 const Support = lazy(() => import('@/pages/Support'));
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated } = useAuth();
   const location = useLocation();
+
+  // Centralized tab title — fires on every route change and auth-state change.
+  // Page-level useSEO hooks override with data-specific titles once dynamic content loads.
+  useEffect(() => {
+    const path = location.pathname;
+    let title = null;
+
+    if (path === '/') {
+      title = isAuthenticated ? 'Dashboard | hyperr' : 'hyperr — Trade products for promotion.';
+    } else if (path.startsWith('/creator/')) {
+      title = 'Creator Profile | hyperr';
+    } else if (path.startsWith('/listing/')) {
+      title = 'Trade Listing | hyperr';
+    } else {
+      title = ROUTE_TITLES[path] || null;
+    }
+
+    if (title) document.title = title;
+  }, [location.pathname, isAuthenticated]);
 
   // Public routes — bypass auth loading and redirect entirely
   const publicPaths = ['/', '/landing', '/marketplace', '/creators', '/support'];
