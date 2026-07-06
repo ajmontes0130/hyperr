@@ -40,6 +40,8 @@ const Messages = lazy(() => import('@/pages/Messages'));
 const ProposalTemplates = lazy(() => import('@/pages/ProposalTemplates'));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
+const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
+const Contact = lazy(() => import('@/pages/Contact'));
 const Support = lazy(() => import('@/pages/Support'));
 
 const AuthenticatedApp = () => {
@@ -84,6 +86,8 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/cookie-policy" element={<CookiePolicy />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/landing" element={<Landing />} />
 
       {/* Public browseable routes — no login required to view */}

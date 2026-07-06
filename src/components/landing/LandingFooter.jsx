@@ -13,10 +13,7 @@ const cols = [
   {
     heading: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "#" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -24,7 +21,7 @@ const cols = [
     links: [
       { label: "Terms of Service", href: "/terms" },
       { label: "Privacy Policy", href: "/privacy" },
-      { label: "Cookie Policy", href: "#" },
+      { label: "Cookie Policy", href: "/cookie-policy" },
     ],
   },
 ];
