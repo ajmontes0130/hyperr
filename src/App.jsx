@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ConsentBanner from '@/components/ConsentBanner';
 
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -126,6 +127,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <AuthenticatedApp />
+          <ConsentBanner />
         </Router>
         <Toaster />
       </QueryClientProvider>
