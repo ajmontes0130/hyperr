@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useSEO } from "@/hooks/useSEO";
 import ListingCard from "@/components/listings/ListingCard";
@@ -10,9 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Loader2, Package, PlusCircle } from "lucide-react";
+import { Search, Loader2, Package, PlusCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import PullToRefresh from "@/components/PullToRefresh";
+import { useDebounce } from "@/hooks/useDebounce";
+import { usePagination } from "@/hooks/usePagination";
+import { batchFetchBusinessProfiles } from "@/lib/batchProfileFetch";
 
 const categories = ["All", "Restaurant & Food", "Retail & Fashion", "Health & Beauty", "Tech & Software", "Travel & Hospitality", "Fitness & Wellness", "Entertainment", "Professional Services", "Education", "Other"];
 const promoTypes = ["All", "Instagram Post", "Instagram Reel", "TikTok Video", "YouTube Video", "Blog Post", "Podcast Mention", "Twitter/X Post", "Newsletter Feature", "Event Appearance", "Other"];
@@ -24,6 +27,8 @@ const valueRanges = [
   { label: "$200 – $500", value: "200-500" },
   { label: "$500+", value: "500-999999" },
 ];
+
+const ITEMS_PER_PAGE = 12;
 
 export default function Marketplace() {
   useSEO({
@@ -41,6 +46,9 @@ export default function Marketplace() {
   const [user, setUser] = useState(null);
   const [profileMap, setProfileMap] = useState({});
 
+  // Debounce search to avoid excessive filtering
+  const debouncedSearch = useDebounce(search, 300);
+
   useEffect(() => {
     loadListings();
     base44.auth.me().then(setUser).catch(() => {});
@@ -52,10 +60,10 @@ export default function Marketplace() {
     try {
       const data = await base44.entities.Listing.filter({ status: "active" }, "-created_date");
       setListings(data);
+      
+      // Batch fetch profiles instead of one-by-one
       const profileIds = [...new Set(data.map((l) => l.business_profile_id).filter(Boolean))];
-      const profiles = await Promise.all(profileIds.map((id) => base44.entities.BusinessProfile.get(id).catch(() => null)));
-      const map = {};
-      profiles.filter(Boolean).forEach((p) => { map[p.id] = p; });
+      const map = await batchFetchBusinessProfiles(profileIds, base44);
       setProfileMap(map);
     } catch (err) {
       console.error(err);
@@ -65,18 +73,26 @@ export default function Marketplace() {
     }
   };
 
-  const filtered = listings.filter((l) => {
-    const matchSearch = !search || l.title?.toLowerCase().includes(search.toLowerCase()) || l.offering_details?.toLowerCase().includes(search.toLowerCase());
-    const matchCat = category === "All" || l.category === category;
-    const matchPromo = promoType === "All" || (l.wanted_promotion_type && l.wanted_promotion_type.includes(promoType));
-    const matchType = offeringType === "All" || l.offering_type === offeringType;
-    const matchValue = valueRange === "all" || (() => {
-      const [min, max] = valueRange.split("-").map(Number);
-      const v = l.estimated_value || 0;
-      return v >= min && v <= max;
-    })();
-    return matchSearch && matchCat && matchPromo && matchType && matchValue;
-  });
+  // Memoize filtered results to avoid recomputing on every render
+  const filtered = useMemo(() => {
+    return listings.filter((l) => {
+      const matchSearch = !debouncedSearch || 
+        l.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) || 
+        l.offering_details?.toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchCat = category === "All" || l.category === category;
+      const matchPromo = promoType === "All" || (l.wanted_promotion_type && l.wanted_promotion_type.includes(promoType));
+      const matchType = offeringType === "All" || l.offering_type === offeringType;
+      const matchValue = valueRange === "all" || (() => {
+        const [min, max] = valueRange.split("-").map(Number);
+        const v = l.estimated_value || 0;
+        return v >= min && v <= max;
+      })();
+      return matchSearch && matchCat && matchPromo && matchType && matchValue;
+    });
+  }, [listings, debouncedSearch, category, promoType, offeringType, valueRange]);
+
+  // Use pagination to avoid rendering all items at once
+  const pagination = usePagination(filtered, ITEMS_PER_PAGE);
 
   return (
     <PullToRefresh onRefresh={loadListings}>
@@ -182,18 +198,43 @@ export default function Marketplace() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((listing) => {
-            const prof = profileMap[listing.business_profile_id];
-            return (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                poster={prof ? { name: prof.business_name, avatar: prof.logo_url } : null}
-              />
-            );
-          })}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {pagination.currentItems.map((listing) => {
+              const prof = profileMap[listing.business_profile_id];
+              return (
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  poster={prof ? { name: prof.business_name, avatar: prof.logo_url } : null}
+                />
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <button
+                onClick={pagination.prevPage}
+                disabled={!pagination.hasPrevPage}
+                className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="text-sm text-muted-foreground">
+                Page {pagination.currentPage} of {pagination.totalPages}
+              </span>
+              <button
+                onClick={pagination.nextPage}
+                disabled={!pagination.hasNextPage}
+                className="p-2 rounded-lg border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
     </PullToRefresh>
