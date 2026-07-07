@@ -130,11 +130,29 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing email' }, { status: 400 });
     }
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: email,
-      subject: "Welcome to Hyperr — Let's get you seen 🚀",
-      body: WELCOME_HTML,
+    const apiKey = Deno.env.get("RESEND_API_KEY");
+    if (!apiKey) {
+      return Response.json({ error: "RESEND_API_KEY secret is not set" }, { status: 500 });
+    }
+
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Hyperr <welcome@buildinghyperr.com>",
+        to: [email],
+        subject: "Welcome to Hyperr — Let's get you seen 🚀",
+        html: WELCOME_HTML,
+      }),
     });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      return Response.json({ error: `Resend API error: ${errText}` }, { status: 502 });
+    }
 
     return Response.json({ success: true, email });
   } catch (error) {
