@@ -10,29 +10,39 @@ export default function SocialVerifyButton({ platform, connectorId, onVerified, 
     setLoading(true);
     setError(null);
 
-    // Step 1: Get the OAuth URL
-    let url;
-    try {
-      url = await base44.connectors.connectAppUser(connectorId);
-    } catch (err) {
-      setError(`Couldn't start ${platform} connection. Please try again.`);
-      setLoading(false);
-      return;
-    }
-
-    // Step 2: Open OAuth popup
-    const popup = window.open(url, '_blank', 'width=600,height=700');
+    // Step 1: Open popup synchronously to preserve the user-gesture
+    // (browsers block window.open after an await — popup would never appear)
+    const popup = window.open('about:blank', '_blank', 'width=600,height=700');
     if (!popup) {
       setError(`Popup was blocked. Allow popups for this site, then click again.`);
       setLoading(false);
       return;
     }
 
-    // Step 3: Poll for popup close, then sync
+    // Step 2: Get the OAuth URL from the platform
+    let url;
+    try {
+      url = await base44.connectors.connectAppUser(connectorId);
+    } catch (err) {
+      popup.close();
+      setError(`Couldn't start ${platform} connection. Please try again.`);
+      setLoading(false);
+      return;
+    }
+
+    // Step 3: Navigate the already-open popup to the OAuth URL
+    try {
+      popup.location.href = url;
+    } catch {
+      // Cross-origin or closed — fall back to full-page redirect
+      window.location.href = url;
+    }
+
+    // Step 4: Poll for popup close, then sync
     const timer = setInterval(() => {
       if (popup.closed) {
         clearInterval(timer);
-        // Step 4: Sync data from backend (onVerified shows its own toasts)
+        // Step 5: Sync data from backend (onVerified shows its own toasts)
         Promise.resolve(onVerified?.())
           .catch(() => { /* error toast already shown by sync fn */ })
           .finally(() => setLoading(false));
