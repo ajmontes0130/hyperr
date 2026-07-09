@@ -281,8 +281,9 @@ export default function ListingDetail() {
       <SignupPrompt
         open={signupOpen}
         onClose={() => setSignupOpen(false)}
-        title="Sign up to propose a trade"
+        title="Sign up to propose this trade"
         message="Create a free account to send trade proposals to businesses on hyperr."
+        redirect={`/listing/${id}`}
       />
     </div>
   );

@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export default function SignupPrompt({ open, onClose, title = "Sign up to continue", message = "Create a free account to take action on hyperr." }) {
+export default function SignupPrompt({ open, onClose, title = "Sign up to continue", message = "Create a free account to take action on hyperr.", redirect }) {
+  const registerTo = redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : "/register";
+  const loginTo = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-sm text-center">
@@ -23,10 +25,10 @@ export default function SignupPrompt({ open, onClose, title = "Sign up to contin
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2 mt-4">
-          <Link to="/register" onClick={onClose}>
+          <Link to={registerTo} onClick={onClose}>
             <Button className="w-full rounded-xl h-11">Sign up free</Button>
           </Link>
-          <Link to="/login" onClick={onClose}>
+          <Link to={loginTo} onClick={onClose}>
             <Button variant="outline" className="w-full rounded-xl h-11">Log in</Button>
           </Link>
         </div>
