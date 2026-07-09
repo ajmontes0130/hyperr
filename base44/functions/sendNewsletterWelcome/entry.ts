@@ -124,15 +124,24 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const payload = await req.json();
-    const email = payload?.email;
+    const email = payload?.email?.trim()?.toLowerCase();
 
-    if (!email) {
-      return Response.json({ error: 'Missing email' }, { status: 400 });
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return Response.json({ error: 'Please enter a valid email address.' }, { status: 400 });
     }
 
+    // Save subscriber to the Newsletter entity using service-role (no auth required)
+    try {
+      await base44.asServiceRole.entities.Newsletter.create({ email });
+    } catch (e) {
+      // If duplicate or other DB error, still attempt to send the email
+      console.error('Failed to save newsletter subscriber:', e.message || e);
+    }
+
+    // Send welcome email via Resend
     const apiKey = Deno.env.get("RESEND_API_KEY");
     if (!apiKey) {
-      return Response.json({ error: "RESEND_API_KEY secret is not set" }, { status: 500 });
+      return Response.json({ error: "Email service not configured. Please try again later." }, { status: 500 });
     }
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -151,7 +160,7 @@ Deno.serve(async (req) => {
 
     if (!res.ok) {
       const errText = await res.text();
-      return Response.json({ error: `Resend API error: ${errText}` }, { status: 502 });
+      return Response.json({ error: `Email delivery failed: ${errText}` }, { status: 502 });
     }
 
     return Response.json({ success: true, email });

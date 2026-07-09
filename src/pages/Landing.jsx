@@ -466,7 +466,7 @@ export default function Landing() {
         if (!email) return;
 
         if (!emailRegex.test(email)) {
-          if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; }
+          if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.color = "#FF6B85"; errEl.style.display = "block"; }
           return;
         }
         clearError();
@@ -475,13 +475,16 @@ export default function Landing() {
         btn.disabled = true;
         btn.textContent = "Subscribing…";
         try {
-          await base44.entities.Newsletter.create({ email });
+          const res = await base44.functions.invoke('sendNewsletterWelcome', { email });
+          if (res.data?.error) throw new Error(res.data.error);
           input.value = "";
-          btn.textContent = "✓ Thanks for subscribing!";
-          setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; }, 3000);
+          if (errEl) { errEl.textContent = "You're in — check your inbox"; errEl.style.color = "#2EE6A6"; errEl.style.display = "block"; }
+          btn.textContent = "✓ Subscribed";
+          setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; if (errEl) { errEl.style.display = "none"; } }, 5000);
         } catch (err) {
           console.error("Newsletter signup failed:", err);
-          if (errEl) { errEl.textContent = "Something went wrong. Please try again."; errEl.style.display = "block"; }
+          const msg = err?.response?.data?.error || err?.message || "Something went wrong. Please try again.";
+          if (errEl) { errEl.textContent = msg; errEl.style.color = "#FF6B85"; errEl.style.display = "block"; }
           btn.textContent = "Subscribe";
           btn.disabled = false;
         }
