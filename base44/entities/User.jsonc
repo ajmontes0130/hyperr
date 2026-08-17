@@ -7,6 +7,14 @@
         "admin",
         "user"
       ]
+    },
+    "account_type": {
+      "type": "string",
+      "description": "Whether the user onboarded as a creator or a business",
+      "enum": [
+        "creator",
+        "business"
+      ]
     }
   },
   "required": [
