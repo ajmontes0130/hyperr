@@ -35,26 +35,33 @@ export default function Explore() {
   const isBusiness = user?.account_type === "business";
 
   useEffect(() => {
-    Promise.all([
-      base44.auth.me(),
-      isCreator === null ? Promise.resolve([]) :
-        isCreator ?
-          base44.entities.BusinessProfile.list("-created_date") :
-          base44.entities.CreatorProfile.list("-total_reach"),
-    ]).then(([me, list]) => {
-      setUser(me);
-      setAllItems(list);
+    let cancelled = false;
+    (async () => {
+      try {
+        const me = await base44.auth.me();
+        if (cancelled) return;
+        setUser(me);
 
-      // Only fetch saved items if user is a creator (they save creators they like)
-      if (me?.account_type === "creator") {
-        return base44.entities.SavedCreator.filter({ user_id: me.id });
+        const isCreatorAccount = me?.account_type === "creator";
+        const list = isCreatorAccount
+          ? await base44.entities.BusinessProfile.list("-created_date")
+          : await base44.entities.CreatorProfile.list("-total_reach");
+        if (cancelled) return;
+        setAllItems(list);
+
+        // Only fetch saved items if user is a creator (they save creators they like)
+        if (isCreatorAccount) {
+          const savedList = await base44.entities.SavedCreator.filter({ user_id: me.id });
+          if (cancelled) return;
+          if (savedList && savedList.length > 0) {
+            setSaved(new Set(savedList.map((s) => s.creator_profile_id)));
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      return Promise.resolve([]);
-    }).then((savedList) => {
-      if (savedList && savedList.length > 0) {
-        setSaved(new Set(savedList.map((s) => s.creator_profile_id)));
-      }
-    }).finally(() => setLoading(false));
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const audienceMatch = (reach, band) => {
