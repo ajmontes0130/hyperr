@@ -146,7 +146,7 @@ export default function Explore() {
     <div>
       <div className="text-center mb-8">
         <h1 className="font-display font-bold text-3xl sm:text-4xl tracking-tight mb-2">
-          {pageTitle} <span className="text-primary">{isCreator ? "Businesses" : "Creators"}</span>
+          <span className="text-primary">{pageTitle}</span>
         </h1>
         <p className="text-muted-foreground">{pageSubtitle}</p>
       </div>
