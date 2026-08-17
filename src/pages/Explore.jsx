@@ -23,6 +23,7 @@ export default function Explore() {
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(new Set());
   const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState(null); // "creator" | "business" | null
   const [showFilters, setShowFilters] = useState(false);
   const [filterNiche, setFilterNiche] = useState("All");
   const [filterAudience, setFilterAudience] = useState("all");
@@ -30,9 +31,12 @@ export default function Explore() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Determine if this user is a Creator or Business
-  const isCreator = user?.account_type === "creator";
-  const isBusiness = user?.account_type === "business";
+  // Determine if this user is a Creator or Business.
+  // Primary: account_type set during onboarding.
+  // Fallback: check which profile the user has (for users who onboarded
+  // before account_type was added to the schema).
+  const isCreator = userType === "creator";
+  const isBusiness = userType === "business";
 
   useEffect(() => {
     let cancelled = false;
@@ -42,7 +46,25 @@ export default function Explore() {
         if (cancelled) return;
         setUser(me);
 
-        const isCreatorAccount = me?.account_type === "creator";
+        let resolvedType = me?.account_type || null;
+
+        // Fallback: account_type not set — infer from which profile exists
+        if (!resolvedType) {
+          const [creatorProfiles, businessProfiles] = await Promise.all([
+            base44.entities.CreatorProfile.filter({ created_by_id: me.id }),
+            base44.entities.BusinessProfile.filter({ created_by_id: me.id }),
+          ]);
+          if (creatorProfiles.length > 0 && businessProfiles.length === 0) {
+            resolvedType = "creator";
+          } else if (businessProfiles.length > 0 && creatorProfiles.length === 0) {
+            resolvedType = "business";
+          }
+        }
+
+        if (cancelled) return;
+        setUserType(resolvedType);
+
+        const isCreatorAccount = resolvedType === "creator";
         const list = isCreatorAccount
           ? await base44.entities.BusinessProfile.list("-created_date")
           : await base44.entities.CreatorProfile.list("-total_reach");
