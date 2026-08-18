@@ -5,6 +5,7 @@ import { Loader2, Users, Building2, SlidersHorizontal, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CreatorFeedCard from "@/components/explore/CreatorFeedCard";
+import BusinessFeedCard from "@/components/explore/BusinessFeedCard";
 import { calcLevel } from "@/lib/creatorUtils";
 
 const niches = ["All", "Food & Dining", "Travel", "Fashion & Style", "Beauty & Skincare", "Fitness & Health", "Tech & Gaming", "Lifestyle", "Finance", "Education", "Entertainment", "Music", "Art & Design", "Parenting", "Business", "Sustainability", "Other"];
@@ -157,6 +158,21 @@ export default function Explore() {
     }
   };
 
+  // Creators saving businesses — local-only for now (no SavedBusiness entity yet)
+  const toggleSaveBusiness = (business) => {
+    setSaved((s) => {
+      const n = new Set(s);
+      if (n.has(business.id)) {
+        n.delete(business.id);
+        toast({ title: "Removed from saved" });
+      } else {
+        n.add(business.id);
+        toast({ title: "Saved!", description: `${business.business_name} added to your saved businesses.` });
+      }
+      return n;
+    });
+  };
+
   const openMessage = (item) => {
     navigate(`/messages?with=${item.created_by_id || item.id}&name=${encodeURIComponent(item.display_name || item.business_name)}&avatar=${encodeURIComponent(item.avatar_url || item.logo_url || "")}`);
   };
@@ -281,15 +297,25 @@ export default function Explore() {
 
         {/* Scrollable feed */}
         <div className="flex flex-col gap-5 snap-y snap-mandatory pb-8">
-          {items.map((item) => (
-            <CreatorFeedCard
-              key={item.id}
-              creator={item}
-              saved={isCreator ? saved : new Set()}
-              onToggleSave={isCreator ? toggleSave : () => {}}
-              onMessage={openMessage}
-            />
-          ))}
+          {items.map((item) =>
+            isCreator ? (
+              <BusinessFeedCard
+                key={item.id}
+                business={item}
+                saved={saved}
+                onToggleSave={toggleSaveBusiness}
+                onMessage={openMessage}
+              />
+            ) : (
+              <CreatorFeedCard
+                key={item.id}
+                creator={item}
+                saved={saved}
+                onToggleSave={toggleSave}
+                onMessage={openMessage}
+              />
+            )
+          )}
         </div>
 
         {/* Saved quick strip (only for creators/businesses browsing creators) */}
