@@ -302,12 +302,17 @@ export default function LandingHero() {
           {/* Right: trade visual */}
           <div style={{ ...fadeUp(120), display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
             <div style={{
+              background: "rgba(45,212,255,0.1)",
+              border: "1px solid rgba(45,212,255,0.3)",
+              color: "#2DD4FF",
+              borderRadius: 999,
+              padding: "5px 16px",
+              fontSize: 11,
               fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 10,
-              letterSpacing: "0.15em",
-              color: "#8C97A3",
               fontWeight: 600,
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
+              whiteSpace: "nowrap",
             }}>
               Example
             </div>
