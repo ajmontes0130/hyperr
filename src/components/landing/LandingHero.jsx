@@ -300,7 +300,17 @@ export default function LandingHero() {
           </div>
 
           {/* Right: trade visual */}
-          <div style={{ ...fadeUp(120), display: "flex", justifyContent: "center" }}>
+          <div style={{ ...fadeUp(120), display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <div style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.15em",
+              color: "#8C97A3",
+              fontWeight: 600,
+              textTransform: "uppercase",
+            }}>
+              Example
+            </div>
             <TradeCard reduced={reduced} />
           </div>
         </div>
