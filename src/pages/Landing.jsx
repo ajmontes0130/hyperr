@@ -8,28 +8,24 @@ const MARKUP = `
   <!-- symbol defs -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="hyperr-swap" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M24 34 H58" /><path d="M50 24 L71 34 L50 44" /><path d="M76 66 H42" /><path d="M50 56 L29 66 L50 76" /></g></symbol>
+    <symbol id="hyperr-whale" viewBox="0 0 240 96"><path d="M16,56 C16,44 30,38 52,37 C104,34 150,34 188,40 C200,42 210,40 220,34 L236,22 C228,33 226,38 232,44 L236,68 C226,60 214,58 200,58 C150,62 104,64 56,60 C30,58 16,68 16,56 Z"></path><path d="M84,60 C92,74 110,80 122,75 C112,69 98,64 92,59 Z"></path></symbol>
   </svg>
 
-  <!-- SUBTLE BACKGROUND TINT -->
+  <!-- FIXED DEEP PARALLAX LAYERS -->
   <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;">
-    <div style="position:absolute;inset:0;background:radial-gradient(125% 90% at 50% -10%, rgba(37,99,235,0.05), transparent 55%);"></div>
-    <div data-floatwrap style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .9s ease .2s;">
-      <div data-px data-sy="-0.20" data-fade="0.0016" data-base-op="0.95" data-mx="32" data-my="22" style="position:absolute;left:6%;top:23%;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;border:1px solid #E4E7EC;border-radius:999px;padding:8px 13px;box-shadow:0 6px 20px rgba(15,23,42,.06);">
-        <span style="width:7px;height:7px;border-radius:50%;background:#1D4ED8;"></span>
-        <span style="font-family:Inter,sans-serif;font-size:12px;font-weight:500;color:#111827;">$150 · free dinner</span>
-      </div>
-      <div data-px data-sy="-0.28" data-fade="0.0017" data-base-op="0.95" data-mx="20" data-my="15" style="position:absolute;right:30%;top:15%;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;border:1px solid #E4E7EC;border-radius:999px;padding:8px 13px;box-shadow:0 6px 20px rgba(15,23,42,.06);">
-        <span style="font-family:Inter,sans-serif;font-size:12px;color:#6B7280;">reach</span>
-        <span style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;color:#111827;">957K</span>
-      </div>
-      <div data-px data-sy="-0.22" data-fade="0.0015" data-base-op="0.95" data-mx="-22" data-my="24" style="position:absolute;right:5%;top:74%;display:inline-flex;align-items:center;gap:8px;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:999px;padding:8px 13px;box-shadow:0 6px 20px rgba(5,150,105,.08);">
-        <span style="width:7px;height:7px;border-radius:50%;background:#059669;"></span>
-        <span style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;color:#059669;letter-spacing:.02em;">trade complete</span>
-      </div>
-      <div data-px data-sy="-0.16" data-fade="0.0019" data-base-op="0.9" data-mx="26" data-my="-14" style="position:absolute;left:40%;top:9%;display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;border:1px solid #E4E7EC;border-radius:999px;padding:7px 12px;box-shadow:0 6px 20px rgba(15,23,42,.06);">
-        <span style="font-family:Inter,sans-serif;font-size:12px;color:#6B7280;">$270 · 3-mo pass</span>
-      </div>
+    <div data-px data-sy="0.018" data-mx="-14" data-my="-10" style="position:absolute;inset:-10% -10% -10% -10%;background-image:linear-gradient(rgba(45,212,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,255,.05) 1px,transparent 1px);background-size:66px 66px;-webkit-mask-image:radial-gradient(120% 80% at 50% 18%,#000,transparent 72%);mask-image:radial-gradient(120% 80% at 50% 18%,#000,transparent 72%);"></div>
+    <div data-px data-sy="0.05" data-mx="-30" data-my="-22" style="position:absolute;left:50%;top:34%;width:min(900px,120vw);height:min(900px,120vw);transform:translate(-50%,-50%);">
+      <div data-glow style="position:absolute;inset:0;background:radial-gradient(circle,rgba(45,212,255,.18),rgba(45,212,255,0) 62%);filter:blur(10px);"></div>
     </div>
+    <div data-px data-sy="0.09" data-mx="22" data-my="16" style="position:absolute;left:74%;top:64%;width:min(620px,90vw);height:min(620px,90vw);transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,77,109,.09),rgba(255,77,109,0) 64%);filter:blur(14px);"></div>
+    <div data-whales data-px data-sy="0.06" data-my="10" style="position:absolute;inset:0;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 84%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 84%,transparent);">
+      <div data-whale data-speed="20" data-dir="-1" data-bob="5" data-phase="2.3" style="position:absolute;left:0;top:24%;width:230px;opacity:.06;filter:blur(5px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#173343;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="24" data-dir="1" data-bob="6" data-phase="0.2" style="position:absolute;left:0;top:15%;width:262px;opacity:.085;filter:blur(4px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#173343;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="33" data-dir="-1" data-bob="7" data-phase="1.1" style="position:absolute;left:0;top:58%;width:300px;opacity:.1;filter:blur(3px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1A3A4D;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="44" data-dir="1" data-bob="9" data-phase="0.6" style="position:absolute;left:0;top:42%;width:360px;opacity:.12;filter:blur(2px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1C404F;"><use href="#hyperr-whale"></use></svg></div>
+      <div data-whale data-speed="56" data-dir="1" data-bob="10" data-phase="1.7" style="position:absolute;left:0;top:78%;width:420px;opacity:.14;filter:blur(1.5px);will-change:transform;"><svg viewBox="0 0 240 96" style="width:100%;height:auto;display:block;fill:#1E4658;"><use href="#hyperr-whale"></use></svg></div>
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,14,20,.55),rgba(10,14,20,0) 22%,rgba(10,14,20,0) 70%,rgba(10,14,20,.8));"></div>
   </div>
 
   <!-- FOREGROUND -->
@@ -38,80 +34,98 @@ const MARKUP = `
     <!-- NAV -->
     <nav data-nav style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px clamp(20px,5vw,64px);border-bottom:1px solid transparent;transition:background .25s ease,border-color .25s ease,backdrop-filter .25s ease;">
       <a href="#top" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;">
-         <svg viewBox="0 0 100 100" style="height:24px;width:auto;color:#1D4ED8;"><use href="#hyperr-swap"></use></svg>
-         <span style="font-family:Inter,sans-serif;font-weight:700;font-size:23px;letter-spacing:-.04em;color:#111827;">hyperr</span>
+         <svg viewBox="0 0 100 100" style="height:24px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 7px rgba(45,212,255,.65)) drop-shadow(0 0 16px rgba(45,212,255,.32));"><use href="#hyperr-swap"></use></svg>
+         <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
        </a>
       <div data-navlinks style="display:flex;align-items:center;gap:30px;">
-        <a href="#how" style="color:#6B7280;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#111827;">How it works</a>
-        <a href="/marketplace" style="color:#6B7280;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#111827;">Browse marketplace</a>
-        <a href="#creators" style="color:#6B7280;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#111827;">For creators</a>
-        <a href="#business" style="color:#6B7280;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#111827;">For businesses</a>
-        <a href="#tiers" style="color:#6B7280;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#111827;">Tiers</a>
+        <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
+        <a href="/marketplace" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">Browse marketplace</a>
+        <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
+        <a href="#business" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">For businesses</a>
+        <a href="#tiers" style="color:#8C97A3;text-decoration:none;font-size:14.5px;font-weight:500;transition:color .15s ease;" data-h="color:#EAF1F7;">Tiers</a>
       </div>
       <div style="display:flex;align-items:center;gap:12px;">
-        <a href="/login" style="color:#111827;text-decoration:none;font-size:14.5px;font-weight:600;padding:9px 16px;border-radius:10px;border:1px solid #E4E7EC;background:#fff;transition:background .15s ease,border-color .15s ease;" data-h="background:#F7F8FA;border-color:#D1D5DB;">Log in</a>
-        <a href="/register" style="color:#fff;background:#1D4ED8;text-decoration:none;font-size:14.5px;font-weight:600;padding:10px 18px;border-radius:10px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#1E40AF;transform:translateY(-2px);box-shadow:0 8px 22px rgba(29,78,216,.22);">Sign up</a>
+        <a href="/login" style="color:#EAF1F7;text-decoration:none;font-size:14.5px;font-weight:600;padding:9px 16px;border-radius:10px;border:1px solid #34404F;transition:background .15s ease,border-color .15s ease;" data-h="background:rgba(255,255,255,.05);">Log in</a>
+        <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:14.5px;font-weight:600;padding:10px 18px;border-radius:10px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 8px 22px rgba(45,212,255,.3);">Sign up</a>
       </div>
     </nav>
 
     <!-- HERO STAGE -->
     <header id="top" style="position:relative;min-height:clamp(660px,94vh,940px);max-width:1280px;margin:0 auto;padding:clamp(120px,16vh,176px) clamp(20px,5vw,64px) clamp(40px,6vh,72px);display:flex;align-items:center;overflow:visible;">
       <div data-px data-sy="0.14" data-mx="-46" data-my="-30" style="position:absolute;left:clamp(-40px,3vw,40px);top:46%;transform:translateY(-50%);pointer-events:none;z-index:0;">
-        <svg viewBox="0 0 100 100" style="height:min(112vh,940px);width:auto;color:#1D4ED8;opacity:.04;"><use href="#hyperr-swap"></use></svg>
+        <svg viewBox="0 0 100 100" style="height:min(112vh,940px);width:auto;color:#2DD4FF;opacity:.05;filter:blur(2px) drop-shadow(0 0 60px rgba(45,212,255,.35));"><use href="#hyperr-swap"></use></svg>
+      </div>
+      <div data-floatwrap style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .9s ease .2s;">
+        <div data-px data-sy="-0.20" data-fade="0.0016" data-base-op="0.55" data-mx="32" data-my="22" style="position:absolute;left:6%;top:23%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2DD4FF;box-shadow:0 0 9px #2DD4FF;"></span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">$150 · free dinner</span>
+        </div>
+
+        <div data-px data-sy="-0.28" data-fade="0.0017" data-base-op="0.55" data-mx="20" data-my="15" style="position:absolute;right:30%;top:15%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.72);border:1px solid #25303F;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#8C97A3;">reach</span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#EAF1F7;letter-spacing:.02em;">957K</span>
+        </div>
+        <div data-px data-sy="-0.22" data-fade="0.0015" data-base-op="0.5" data-mx="-22" data-my="24" style="position:absolute;right:5%;top:74%;display:inline-flex;align-items:center;gap:8px;background:rgba(6,48,59,.66);border:1px solid #2EE6A6;border-radius:999px;padding:8px 13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(0,0,0,.4);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2EE6A6;"></span>
+          <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;color:#2EE6A6;letter-spacing:.04em;">trade complete</span>
+        </div>
+        <div data-px data-sy="-0.16" data-fade="0.0019" data-base-op="0.42" data-mx="26" data-my="-14" style="position:absolute;left:40%;top:9%;display:inline-flex;align-items:center;gap:8px;background:rgba(18,24,35,.7);border:1px solid #25303F;border-radius:999px;padding:7px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <span style="font-family:JetBrains Mono,monospace;font-size:11px;color:#8C97A3;letter-spacing:.02em;">$270 · 3-mo pass</span>
+        </div>
       </div>
       <div style="position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,72px);width:100%;">
         <div data-px data-sy="0.05" data-my="6" style="flex:1 1 440px;min-width:300px;">
-          <div data-hero="rise" data-hero-delay="0" style="display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border:1px solid #E4E7EC;border-radius:999px;background:#F7F8FA;">
-            <span style="width:7px;height:7px;border-radius:50%;background:#1D4ED8;"></span>
-            <span style="font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.14em;color:#6B7280;text-transform:uppercase;">The barter marketplace</span>
+          <div data-hero="rise" data-hero-delay="0" style="display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border:1px solid #25303F;border-radius:999px;background:rgba(18,24,35,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2DD4FF;box-shadow:0 0 10px #2DD4FF;"></span>
+            <span style="font-family:JetBrains Mono,monospace;font-size:11.5px;letter-spacing:.14em;color:#8C97A3;">THE BARTER MARKETPLACE</span>
           </div>
-          <h1 data-hero="rise" data-hero-delay="90" style="font-family:Inter,sans-serif;font-weight:800;font-size:clamp(44px,6.4vw,76px);line-height:1.05;letter-spacing:-.03em;color:#0F172A;margin:22px 0 0;">Trade products for <span style="color:#1D4ED8;">promotion.</span></h1>
-          <p data-hero="rise" data-hero-delay="180" style="color:#475569;font-size:clamp(16px,1.5vw,19px);line-height:1.6;max-width:480px;margin:22px 0 0;">hyperr connects businesses and creators to swap real value — products, services, experiences — for content and reach. Cash potential.</p>
+          <h1 data-hero="rise" data-hero-delay="90" style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:clamp(44px,6.4vw,80px);line-height:1.0;letter-spacing:-.04em;margin:22px 0 0;">Trade products for <span style="color:#2DD4FF;text-shadow:0 0 24px rgba(45,212,255,.45);">promotion.</span></h1>
+          <p data-hero="rise" data-hero-delay="180" style="color:#2DD4FF;text-shadow:0 0 24px rgba(45,212,255,.45);font-size:clamp(16px,1.5vw,19px);line-height:1.55;max-width:480px;margin:22px 0 0;">hyperr connects businesses and creators to swap real value — products, services, experiences — for content and reach. Cash potential.</p>
           <div data-hero="rise" data-hero-delay="270" style="display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;">
-            <a href="/register" style="color:#fff;background:#1D4ED8;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#1E40AF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(29,78,216,.22);">Join as a creator <span style="font-size:17px;">→</span></a>
-            <a href="/register" style="color:#1D4ED8;background:#fff;border:1px solid #1D4ED8;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease;" data-h="background:#EFF6FF;transform:translateY(-2px);">List your business</a>
+            <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,109,.32);">Join as a creator <span style="font-size:17px;">→</span></a>
+            <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 24px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,255,.32);">List your business</a>
           </div>
           <div data-hero="rise" data-hero-delay="360" style="margin-top:16px;">
-            <a href="/marketplace" style="color:#1D4ED8;text-decoration:none;font-size:14.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .15s ease;" data-h="gap:10px;">Browse the marketplace <span style="font-size:16px;">→</span></a>
+            <a href="/marketplace" style="color:#2DD4FF;text-decoration:none;font-size:14.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .15s ease;" data-h="gap:10px;">Browse the marketplace <span style="font-size:16px;">→</span></a>
           </div>
         </div>
         <div style="flex:1 1 430px;min-width:300px;display:flex;justify-content:center;perspective:1200px;">
           <div data-hero="right" data-hero-delay="120" style="position:relative;width:100%;max-width:540px;">
             <div data-px data-sy="-0.06" data-mx="20" data-my="14" data-rx="5.5" data-ry="7" style="position:relative;transform-style:preserve-3d;will-change:transform;">
               <div data-hero="pill" data-hero-delay="1000" style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);z-index:4;">
-                <div style="display:inline-flex;align-items:center;gap:8px;background:#ECFDF5;color:#059669;border:1px solid #A7F3D0;padding:7px 15px;border-radius:999px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.06em;box-shadow:0 8px 24px rgba(5,150,105,.12);">
-                  <span style="width:7px;height:7px;border-radius:50%;background:#059669;"></span>COMPLETED
+                <div style="display:inline-flex;align-items:center;gap:8px;background:#06303B;color:#2EE6A6;border:1px solid #2EE6A6;padding:7px 15px;border-radius:999px;font-family:JetBrains Mono,monospace;font-size:11.5px;font-weight:600;letter-spacing:.08em;box-shadow:0 8px 24px rgba(46,230,166,.22);">
+                  <span style="width:7px;height:7px;border-radius:50%;background:#2EE6A6;"></span>COMPLETED
                 </div>
               </div>
               <div style="position:relative;z-index:2;display:flex;align-items:center;gap:0;">
-                <div data-hero="left" data-hero-delay="180" style="flex:1 1 0;min-width:0;background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:18px;box-shadow:0 12px 32px rgba(15,23,42,.06);">
-                  <div style="font-family:Inter,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.12em;color:#1D4ED8;text-transform:uppercase;">Business offer</div>
-                  <div style="font-family:Inter,sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em;margin-top:11px;line-height:1.2;color:#0F172A;">Free dinner for 2</div>
-                  <div style="color:#6B7280;font-size:12.5px;margin-top:5px;">Lumen Bistro · Austin</div>
-                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #F1F3F6;display:flex;align-items:baseline;gap:7px;">
-                    <span data-count data-prefix="$" data-target="150" style="font-family:Inter,sans-serif;font-size:22px;font-weight:700;color:#0F172A;">$150</span>
-                    <span style="color:#9CA3AF;font-size:11.5px;">est. value</span>
+                <div data-hero="left" data-hero-delay="180" style="flex:1 1 0;min-width:0;background:#121823;border:1px solid #25303F;border-radius:16px;padding:18px;box-shadow:0 24px 56px rgba(0,0,0,.5);">
+                  <div style="font-family:JetBrains Mono,monospace;font-size:10.5px;letter-spacing:.1em;color:#2DD4FF;">BUSINESS OFFER</div>
+                  <div style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em;margin-top:11px;line-height:1.15;">Free dinner for 2</div>
+                  <div style="color:#8C97A3;font-size:12.5px;margin-top:5px;">Lumen Bistro · Austin</div>
+                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #25303F;display:flex;align-items:baseline;gap:7px;">
+                    <span data-count data-prefix="$" data-target="150" style="font-family:JetBrains Mono,monospace;font-size:22px;font-weight:600;color:#EAF1F7;">$150</span>
+                    <span style="color:#5C6672;font-size:11.5px;">est. value</span>
                   </div>
                 </div>
                 <div data-hero="swap" data-hero-delay="520" style="flex:0 0 auto;margin:0 -16px;z-index:3;">
-                  <div style="width:48px;height:48px;border-radius:50%;background:#fff;border:1px solid #E4E7EC;display:flex;align-items:center;justify-content:center;font-size:22px;color:#1D4ED8;box-shadow:0 8px 22px rgba(15,23,42,.08);">⇄</div>
+                  <div style="width:48px;height:48px;border-radius:50%;background:#1B2330;border:1px solid #34404F;display:flex;align-items:center;justify-content:center;font-size:22px;color:#2DD4FF;box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 18px rgba(45,212,255,.25);">⇄</div>
                 </div>
-                <div data-hero="right" data-hero-delay="240" style="flex:1 1 0;min-width:0;background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:18px;box-shadow:0 12px 32px rgba(15,23,42,.06);">
+                <div data-hero="right" data-hero-delay="240" style="flex:1 1 0;min-width:0;background:#121823;border:1px solid #25303F;border-radius:16px;padding:18px;box-shadow:0 24px 56px rgba(0,0,0,.5);">
                   <div style="display:flex;align-items:center;gap:11px;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:#EFF6FF;border:1px solid #DBEAFE;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#1D4ED8;flex:0 0 auto;">KT</div>
+                    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1B2330,#25303F);border:1px solid #34404F;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;font-size:13px;font-weight:600;color:#7FE9FF;flex:0 0 auto;">KT</div>
                     <div style="min-width:0;">
-                      <div style="font-family:Inter,sans-serif;font-weight:700;font-size:17px;letter-spacing:-.02em;color:#0F172A;">Kai Tanaka</div>
-                      <div style="font-family:Inter,sans-serif;font-size:11px;color:#CA8A04;font-weight:600;letter-spacing:.04em;margin-top:1px;">◆ GOLD</div>
+                      <div style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;letter-spacing:-.02em;">Kai Tanaka</div>
+                      <div style="font-family:JetBrains Mono,monospace;font-size:11px;color:#FFC247;letter-spacing:.04em;margin-top:1px;">◆ GOLD</div>
                     </div>
                   </div>
-                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #F1F3F6;display:flex;flex-direction:column;gap:9px;">
+                  <div style="margin-top:15px;padding-top:13px;border-top:1px solid #25303F;display:flex;flex-direction:column;gap:9px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;">
-                      <span style="color:#6B7280;font-size:12px;">Instagram</span>
-                      <span data-count data-suffix="K" data-target="445" style="font-family:Inter,sans-serif;font-size:16px;font-weight:700;color:#0F172A;">445K</span>
+                      <span style="color:#8C97A3;font-size:12px;">Instagram</span>
+                      <span data-count data-suffix="K" data-target="445" style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:600;color:#EAF1F7;">445K</span>
                     </div>
                     <div style="display:flex;align-items:center;justify-content:space-between;">
-                      <span style="color:#6B7280;font-size:12px;">YouTube</span>
-                      <span data-count data-suffix="K" data-target="512" style="font-family:Inter,sans-serif;font-size:16px;font-weight:700;color:#0F172A;">512K</span>
+                      <span style="color:#8C97A3;font-size:12px;">YouTube</span>
+                      <span data-count data-suffix="K" data-target="512" style="font-family:JetBrains Mono,monospace;font-size:16px;font-weight:600;color:#EAF1F7;">512K</span>
                     </div>
                   </div>
                 </div>
@@ -121,46 +135,46 @@ const MARKUP = `
         </div>
       </div>
       <div data-px data-fade="0.004" data-base-op="1" style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;pointer-events:none;">
-        <span style="font-family:Inter,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.18em;color:#9CA3AF;text-transform:uppercase;">Scroll</span>
-        <span data-bounce style="width:22px;height:34px;border:1.5px solid #D1D5DB;border-radius:12px;display:flex;justify-content:center;padding-top:6px;"><span style="width:3px;height:7px;border-radius:2px;background:#1D4ED8;"></span></span>
+        <span style="font-family:JetBrains Mono,monospace;font-size:10.5px;letter-spacing:.18em;color:#5C6672;">SCROLL</span>
+        <span data-bounce style="width:22px;height:34px;border:1.5px solid #34404F;border-radius:12px;display:flex;justify-content:center;padding-top:6px;"><span style="width:3px;height:7px;border-radius:2px;background:#2DD4FF;"></span></span>
       </div>
     </header>
 
     <!-- THIN BAND -->
-    <div style="position:relative;border-top:1px solid #E4E7EC;border-bottom:1px solid #E4E7EC;background:#F7F8FA;">
+    <div style="position:relative;border-top:1px solid #25303F;border-bottom:1px solid #25303F;background:rgba(12,17,26,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
       <div style="max-width:1280px;margin:0 auto;padding:18px clamp(20px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px;text-align:center;font-size:14.5px;">
-        <span data-band style="font-family:Inter,sans-serif;font-size:14px;font-weight:500;color:#6B7280;">Products</span>
-        <span style="color:#D1D5DB;">·</span>
-        <span data-band style="font-family:Inter,sans-serif;font-size:14px;font-weight:500;color:#6B7280;">Services</span>
-        <span style="color:#D1D5DB;">·</span>
-        <span data-band style="font-family:Inter,sans-serif;font-size:14px;font-weight:500;color:#6B7280;">Experiences</span>
-        <span style="color:#D1D5DB;">·</span>
-        <span data-band style="font-family:Inter,sans-serif;font-size:14px;font-weight:500;color:#6B7280;">Exposure</span>
-        <span style="color:#9CA3AF;margin-left:6px;">— traded directly, no invoices.</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Products</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Services</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Experiences</span>
+        <span style="color:#34404F;">·</span>
+        <span data-band style="font-family:JetBrains Mono,monospace;font-size:14px;color:#EAF1F7;">Exposure</span>
+        <span style="color:#5C6672;margin-left:6px;">— traded directly, no invoices.</span>
       </div>
     </div>
 
     <!-- HOW IT WORKS -->
     <section id="how" style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(72px,11vh,120px) clamp(20px,5vw,64px);">
       <div data-reveal style="margin-bottom:48px;">
-        <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;color:#1D4ED8;text-transform:uppercase;">How it works</div>
-        <h2 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;color:#0F172A;margin:14px 0 0;max-width:580px;line-height:1.1;">Three steps from sign-up to settled trade.</h2>
+        <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">HOW IT WORKS</div>
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 0;max-width:580px;line-height:1.05;">Three steps from sign-up to settled trade.</h2>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
-        <div data-reveal data-reveal-delay="0" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:26px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#1D4ED8;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="font-family:Inter,sans-serif;font-size:28px;font-weight:700;color:#1D4ED8;">01</div>
-          <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;color:#0F172A;margin:16px 0 8px;">Build your profile</h3>
-          <p style="color:#475569;font-size:14.5px;line-height:1.6;margin:0;">Connect your socials and show what you offer. We verify the numbers so trust is built in.</p>
+        <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">01</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Build your profile</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Connect your socials and show what you offer. We verify the numbers so trust is built in.</p>
         </div>
-        <div data-reveal data-reveal-delay="90" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:26px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#1D4ED8;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="font-family:Inter,sans-serif;font-size:28px;font-weight:700;color:#1D4ED8;">02</div>
-          <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;color:#0F172A;margin:16px 0 8px;">Find your match</h3>
-          <p style="color:#475569;font-size:14.5px;line-height:1.6;margin:0;">Browse offers and creators. Filter by reach, niche, and the value on the table.</p>
+        <div data-reveal data-reveal-delay="90" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">02</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Find your match</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Browse offers and creators. Filter by reach, niche, and the value on the table.</p>
         </div>
-        <div data-reveal data-reveal-delay="180" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:26px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#1D4ED8;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="font-family:Inter,sans-serif;font-size:28px;font-weight:700;color:#1D4ED8;">03</div>
-          <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;color:#0F172A;margin:16px 0 8px;">Trade and track</h3>
-          <p style="color:#475569;font-size:14.5px;line-height:1.6;margin:0;">Agree the terms, deliver, and track every trade end to end in one place.</p>
+        <div data-reveal data-reveal-delay="180" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:26px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:600;color:#2DD4FF;">03</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em;margin:16px 0 8px;">Trade and track</h3>
+          <p style="color:#8C97A3;font-size:14.5px;line-height:1.55;margin:0;">Agree the terms, deliver, and track every trade end to end in one place.</p>
         </div>
       </div>
     </section>
@@ -168,27 +182,27 @@ const MARKUP = `
     <!-- DUAL VALUE PROPS -->
     <section style="position:relative;max-width:1280px;margin:0 auto;padding:0 clamp(20px,5vw,64px) clamp(40px,6vh,70px);">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;">
-        <div id="creators" data-reveal style="background:#fff;border:1px solid #E4E7EC;border-radius:20px;padding:clamp(26px,3.5vw,40px);box-shadow:0 1px 3px rgba(15,23,42,.04);">
-          <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#1D4ED8;text-transform:uppercase;">For creators</div>
-          <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(24px,3vw,30px);letter-spacing:-.02em;color:#0F172A;margin:14px 0 22px;line-height:1.15;">Earn from the content you'd make anyway.</h3>
+        <div id="creators" data-reveal style="background:linear-gradient(165deg,rgba(255,77,109,.12),rgba(18,24,35,.66));border:1px solid rgba(255,77,109,.28);border-radius:20px;padding:clamp(26px,3.5vw,40px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.12em;color:#FF4D6D;">FOR CREATORS</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:14px 0 22px;line-height:1.08;">Earn from the content you'd make anyway.</h3>
           <div style="display:flex;flex-direction:column;gap:15px;margin-bottom:30px;">
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Get paid in products you'd post about anyway.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Keep full creative control of every post.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Build a verified record that earns you tiers.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Cash deals optional — stack them on top.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Get paid in products you'd post about anyway.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Keep full creative control of every post.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Build a verified record that earns you tiers.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#FF4D6D;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Cash deals optional — stack them on top.</span></div>
           </div>
-          <a href="/register" style="color:#fff;background:#1D4ED8;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#1E40AF;transform:translateY(-2px);box-shadow:0 10px 26px rgba(29,78,216,.2);">Join as a creator <span style="font-size:16px;">→</span></a>
+          <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 26px rgba(255,77,109,.3);">Join as a creator <span style="font-size:16px;">→</span></a>
         </div>
-        <div id="business" data-reveal data-reveal-delay="90" style="background:#fff;border:1px solid #E4E7EC;border-radius:20px;padding:clamp(26px,3.5vw,40px);box-shadow:0 1px 3px rgba(15,23,42,.04);">
-          <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#1D4ED8;text-transform:uppercase;">For businesses</div>
-          <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(24px,3vw,30px);letter-spacing:-.02em;color:#0F172A;margin:14px 0 22px;line-height:1.15;">Reach real audiences without ad spend.</h3>
+        <div id="business" data-reveal data-reveal-delay="90" style="background:linear-gradient(165deg,rgba(45,212,255,.12),rgba(18,24,35,.66));border:1px solid rgba(45,212,255,.28);border-radius:20px;padding:clamp(26px,3.5vw,40px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.12em;color:#2DD4FF;">FOR BUSINESSES</div>
+          <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:14px 0 22px;line-height:1.08;">Reach real audiences without ad spend.</h3>
           <div style="display:flex;flex-direction:column;gap:15px;margin-bottom:30px;">
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Pay in what you already make — not cash.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Match with creators whose numbers are verified.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Put your product in front of the right niche.</span></div>
-            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#1D4ED8;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#334155;line-height:1.5;">Track results on every trade, start to finish.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Pay in what you already make — not cash.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Match with creators whose numbers are verified.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Put your product in front of the right niche.</span></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;"><span style="color:#2DD4FF;flex:0 0 auto;margin-top:1px;">◆</span><span style="font-size:15px;color:#EAF1F7;line-height:1.45;">Track results on every trade, start to finish.</span></div>
           </div>
-          <a href="/register" style="color:#1D4ED8;background:#fff;border:1px solid #1D4ED8;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease;" data-h="background:#EFF6FF;transform:translateY(-2px);">List your business <span style="font-size:16px;">→</span></a>
+          <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15px;font-weight:600;padding:13px 22px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 26px rgba(45,212,255,.3);">List your business <span style="font-size:16px;">→</span></a>
         </div>
       </div>
     </section>
@@ -196,66 +210,66 @@ const MARKUP = `
     <!-- TIERS -->
     <section id="tiers" style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(40px,6vh,70px) clamp(20px,5vw,64px) clamp(72px,11vh,120px);">
       <div data-reveal style="text-align:center;margin-bottom:44px;">
-        <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;color:#1D4ED8;text-transform:uppercase;">Creator tiers</div>
-        <h2 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;color:#0F172A;margin:14px 0 10px;line-height:1.1;">Tiers are earned, not bought.</h2>
-        <p style="color:#475569;font-size:15px;margin:0;">Your tier reflects verified reach and a real trade record — nothing you can pay for.</p>
+        <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">CREATOR TIERS</div>
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 10px;line-height:1.05;">Tiers are earned, not bought.</h2>
+        <p style="color:#8C97A3;font-size:15px;margin:0;">Your tier reflects verified reach and a real trade record — nothing you can pay for.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;">
-        <div data-reveal data-reveal-delay="0" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="width:18px;height:18px;background:#0891B2;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;"></div>
-          <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:#0891B2;letter-spacing:.06em;">DIAMOND</div>
-          <p style="color:#475569;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Top-tier reach with a flawless trade record.</p>
+        <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(127,233,255,.16);">
+          <div style="width:18px;height:18px;background:#7FE9FF;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(127,233,255,.5);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#7FE9FF;letter-spacing:.06em;">DIAMOND</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Top-tier reach with a flawless trade record.</p>
         </div>
-        <div data-reveal data-reveal-delay="70" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="width:18px;height:18px;background:#64748B;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;"></div>
-          <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:#64748B;letter-spacing:.06em;">PLATINUM</div>
-          <p style="color:#475569;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Proven creators with consistent results.</p>
+        <div data-reveal data-reveal-delay="70" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(201,214,227,.14);">
+          <div style="width:18px;height:18px;background:#C9D6E3;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(201,214,227,.4);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#C9D6E3;letter-spacing:.06em;">PLATINUM</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Proven creators with consistent results.</p>
         </div>
-        <div data-reveal data-reveal-delay="140" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="width:18px;height:18px;background:#CA8A04;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;"></div>
-          <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:#CA8A04;letter-spacing:.06em;">GOLD</div>
-          <p style="color:#475569;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Established reach and reliable delivery.</p>
+        <div data-reveal data-reveal-delay="140" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(255,194,71,.16);">
+          <div style="width:18px;height:18px;background:#FFC247;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(255,194,71,.45);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#FFC247;letter-spacing:.06em;">GOLD</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Established reach and reliable delivery.</p>
         </div>
-        <div data-reveal data-reveal-delay="210" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="width:18px;height:18px;background:#6B7280;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;"></div>
-          <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:#6B7280;letter-spacing:.06em;">SILVER</div>
-          <p style="color:#475569;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Growing audience with a solid history.</p>
+        <div data-reveal data-reveal-delay="210" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(168,178,189,.14);">
+          <div style="width:18px;height:18px;background:#A8B2BD;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(168,178,189,.4);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#A8B2BD;letter-spacing:.06em;">SILVER</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">Growing audience with a solid history.</p>
         </div>
-        <div data-reveal data-reveal-delay="280" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,23,42,.08);">
-          <div style="width:18px;height:18px;background:#B45309;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;"></div>
-          <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:#B45309;letter-spacing:.06em;">BRONZE</div>
-          <p style="color:#475569;font-size:13.5px;line-height:1.5;margin:10px 0 0;">New to hyperr, building a track record.</p>
+        <div data-reveal data-reveal-delay="280" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:22px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);box-shadow:0 14px 34px rgba(208,138,90,.16);">
+          <div style="width:18px;height:18px;background:#D08A5A;transform:rotate(45deg);border-radius:3px;margin-bottom:16px;box-shadow:0 0 14px rgba(208,138,90,.45);"></div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:#D08A5A;letter-spacing:.06em;">BRONZE</div>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:10px 0 0;">New to hyperr, building a track record.</p>
         </div>
       </div>
     </section>
 
     <!-- TRUST -->
-    <section style="position:relative;background:#F7F8FA;border-top:1px solid #E4E7EC;border-bottom:1px solid #E4E7EC;">
+    <section style="position:relative;background:rgba(12,17,26,.72);border-top:1px solid #25303F;border-bottom:1px solid #25303F;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
       <div style="max-width:1280px;margin:0 auto;padding:clamp(72px,11vh,120px) clamp(20px,5vw,64px);">
         <div data-reveal style="margin-bottom:44px;">
-          <div style="font-family:Inter,sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;color:#1D4ED8;text-transform:uppercase;">Trust &amp; safety</div>
-          <h2 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;color:#0F172A;margin:14px 0 0;max-width:600px;line-height:1.1;">Every trade is verified, tracked, and backed.</h2>
+          <div style="font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.14em;color:#2DD4FF;">TRUST &amp; SAFETY</div>
+          <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);letter-spacing:-.03em;margin:14px 0 0;max-width:600px;line-height:1.05;">Every trade is verified, tracked, and backed.</h2>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;">
-          <div data-reveal data-reveal-delay="0" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);">
-            <div style="width:40px;height:40px;border-radius:11px;background:#EFF6FF;border:1px solid #DBEAFE;display:flex;align-items:center;justify-content:center;font-size:19px;color:#1D4ED8;margin-bottom:16px;">✓</div>
-            <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:17px;color:#0F172A;margin:0 0 7px;">Verified socials</h3>
-            <p style="color:#475569;font-size:13.5px;line-height:1.6;margin:0;">Every follower count is checked against the platform itself.</p>
+          <div data-reveal data-reveal-delay="0" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:19px;color:#2DD4FF;margin-bottom:16px;">✓</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Verified socials</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Every follower count is checked against the platform itself.</p>
           </div>
-          <div data-reveal data-reveal-delay="70" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);">
-            <div style="width:40px;height:40px;border-radius:11px;background:#EFF6FF;border:1px solid #DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1D4ED8;margin-bottom:16px;">⇄</div>
-            <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:17px;color:#0F172A;margin:0 0 7px;">Tracked trades</h3>
-            <p style="color:#475569;font-size:13.5px;line-height:1.6;margin:0;">Each deal is logged end to end, with timestamps you can both see.</p>
+          <div data-reveal data-reveal-delay="70" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">⇄</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Tracked trades</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Each deal is logged end to end, with timestamps you can both see.</p>
           </div>
-          <div data-reveal data-reveal-delay="140" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);">
-            <div style="width:40px;height:40px;border-radius:11px;background:#EFF6FF;border:1px solid #DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1D4ED8;margin-bottom:16px;">★</div>
-            <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:17px;color:#0F172A;margin:0 0 7px;">Honest reviews</h3>
-            <p style="color:#475569;font-size:13.5px;line-height:1.6;margin:0;">Reviews only unlock after a completed trade. No fakes, no padding.</p>
+          <div data-reveal data-reveal-delay="140" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">★</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Honest reviews</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">Reviews only unlock after a completed trade. No fakes, no padding.</p>
           </div>
-          <div data-reveal data-reveal-delay="210" style="background:#fff;border:1px solid #E4E7EC;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#D1D5DB;transform:translateY(-4px);">
-            <div style="width:40px;height:40px;border-radius:11px;background:#EFF6FF;border:1px solid #DBEAFE;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1D4ED8;margin-bottom:16px;">⛨</div>
-            <h3 style="font-family:Inter,sans-serif;font-weight:700;font-size:17px;color:#0F172A;margin:0 0 7px;">Dispute support</h3>
-            <p style="color:#475569;font-size:13.5px;line-height:1.6;margin:0;">If a trade goes sideways, our team steps in to make it right.</p>
+          <div data-reveal data-reveal-delay="210" style="background:rgba(18,24,35,.82);border:1px solid #25303F;border-radius:16px;padding:24px;transition:border-color .2s ease,transform .2s ease;" data-h="border-color:#34404F;transform:translateY(-4px);">
+            <div style="width:40px;height:40px;border-radius:11px;background:#1B2330;border:1px solid #25303F;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2DD4FF;margin-bottom:16px;">⛨</div>
+            <h3 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:17px;margin:0 0 7px;">Dispute support</h3>
+            <p style="color:#8C97A3;font-size:13.5px;line-height:1.5;margin:0;">If a trade goes sideways, our team steps in to make it right.</p>
           </div>
         </div>
       </div>
@@ -263,81 +277,81 @@ const MARKUP = `
 
     <!-- FINAL CTA -->
     <section style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(80px,12vh,130px) clamp(20px,5vw,64px);">
-      <div data-reveal style="position:relative;background:radial-gradient(circle at 50% 0%, rgba(37,99,235,0.06), #fff 60%);border:1px solid #E4E7EC;border-radius:24px;padding:clamp(44px,7vw,76px) clamp(24px,5vw,64px);text-align:center;overflow:hidden;">
-        <h2 style="font-family:Inter,sans-serif;font-weight:800;font-size:clamp(34px,5vw,56px);letter-spacing:-.035em;color:#0F172A;margin:0;line-height:1.05;">Ready to start trading?</h2>
-        <p style="color:#475569;font-size:clamp(15px,1.5vw,18px);margin:18px auto 0;max-width:440px;">Set up your profile in minutes. The first trade is closer than you think.</p>
+      <div data-reveal style="position:relative;background:radial-gradient(circle at 50% 0%,rgba(45,212,255,.14),rgba(18,24,35,.66) 60%);border:1px solid #25303F;border-radius:24px;padding:clamp(44px,7vw,76px) clamp(24px,5vw,64px);text-align:center;overflow:hidden;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:clamp(34px,5vw,58px);letter-spacing:-.035em;margin:0;line-height:1.02;">Ready to start trading?</h2>
+        <p style="color:#8C97A3;font-size:clamp(15px,1.5vw,18px);margin:18px auto 0;max-width:440px;">Set up your profile in minutes. The first trade is closer than you think.</p>
         <div style="display:flex;flex-wrap:wrap;gap:13px;justify-content:center;margin-top:34px;">
-          <a href="/register" style="color:#fff;background:#1D4ED8;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#1E40AF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(29,78,216,.22);">Join as a creator <span style="font-size:17px;">→</span></a>
-          <a href="/register" style="color:#1D4ED8;background:#fff;border:1px solid #1D4ED8;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease;" data-h="background:#EFF6FF;transform:translateY(-2px);">List your business</a>
+          <a href="/register" style="color:#4B1320;background:#FF4D6D;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#FF6B85;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,109,.3);">Join as a creator <span style="font-size:17px;">→</span></a>
+          <a href="/register" style="color:#06303B;background:#2DD4FF;text-decoration:none;font-size:15.5px;font-weight:600;padding:14px 26px;border-radius:11px;display:inline-flex;align-items:center;gap:9px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,255,.3);">List your business</a>
         </div>
       </div>
     </section>
 
     <!-- NEWSLETTER SIGNUP -->
     <section style="position:relative;max-width:1280px;margin:0 auto;padding:clamp(64px,10vh,96px) clamp(20px,5vw,64px);">
-      <div data-reveal style="background:#F7F8FA;border:1px solid #E4E7EC;border-radius:20px;padding:clamp(40px,5vw,60px) clamp(24px,5vw,48px);text-align:center;">
-        <h2 style="font-family:Inter,sans-serif;font-weight:700;font-size:clamp(24px,3.5vw,36px);letter-spacing:-.02em;margin:0 0 12px;color:#0F172A;">Stay in the loop</h2>
-        <p style="color:#475569;font-size:clamp(14px,1.2vw,16px);margin:0 0 24px;max-width:520px;margin-left:auto;margin-right:auto;">Get updates on new creators, features, and trades from hyperr. No spam, just the good stuff.</p>
+      <div data-reveal style="background:linear-gradient(165deg,rgba(45,212,255,.08),rgba(18,24,35,.72));border:1px solid rgba(45,212,255,.24);border-radius:20px;padding:clamp(40px,5vw,60px) clamp(24px,5vw,48px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-align:center;">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-weight:700;font-size:clamp(24px,3.5vw,36px);letter-spacing:-.02em;margin:0 0 12px;color:#EAF1F7;">Stay in the loop</h2>
+        <p style="color:#8C97A3;font-size:clamp(14px,1.2vw,16px);margin:0 0 24px;max-width:520px;margin-left:auto;margin-right:auto;">Get updates on new creators, features, and trades from hyperr. No spam, just the good stuff.</p>
         <form data-newsletter-form style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:480px;margin:0 auto;">
-          <input type="email" name="email" placeholder="Enter your email" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid #E4E7EC;border-radius:11px;background:#fff;color:#111827;font-size:14px;font-family:inherit;transition:border-color .2s ease,box-shadow .2s ease;" data-h="border-color:#1D4ED8;box-shadow:0 0 0 3px rgba(37,99,235,.12);" />
-          <button type="submit" style="padding:14px 26px;background:#1D4ED8;border:none;border-radius:11px;color:#fff;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;white-space:nowrap;" data-h="background:#1E40AF;transform:translateY(-2px);box-shadow:0 8px 20px rgba(29,78,216,.2);">Subscribe</button>
+          <input type="email" name="email" placeholder="Enter your email" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid rgba(45,212,255,.3);border-radius:11px;background:rgba(12,17,26,.8);color:#EAF1F7;font-size:14px;font-family:inherit;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .2s ease,box-shadow .2s ease;" data-h="border-color:rgba(45,212,255,.6);box-shadow:0 0 0 3px rgba(45,212,255,.15);" />
+          <button type="submit" style="padding:14px 26px;background:#2DD4FF;border:none;border-radius:11px;color:#06303B;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;white-space:nowrap;" data-h="background:#5CDEFF;transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,212,255,.24);">Subscribe</button>
         </form>
-        <p data-newsletter-error style="color:#DC2626;font-size:13px;margin:10px 0 0;display:none;font-family:Inter,sans-serif;"></p>
-        <p style="color:#9CA3AF;font-size:12px;margin:16px 0 0;">We respect your inbox. Unsubscribe anytime.</p>
+        <p data-newsletter-error style="color:#FF6B85;font-size:13px;margin:10px 0 0;display:none;font-family:Inter,sans-serif;"></p>
+        <p style="color:#5C6672;font-size:12px;margin:16px 0 0;">We respect your inbox. Unsubscribe anytime.</p>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer style="position:relative;border-top:1px solid #E4E7EC;background:#F7F8FA;">
+    <footer style="position:relative;border-top:1px solid #25303F;background:rgba(12,17,26,.82);">
       <div style="max-width:1280px;margin:0 auto;padding:clamp(48px,7vh,72px) clamp(20px,5vw,64px) 40px;display:grid;grid-template-columns:minmax(200px,1.4fr) repeat(auto-fit,minmax(130px,1fr));gap:36px;">
         <div>
           <div style="display:inline-flex;align-items:center;gap:9px;">
-             <svg viewBox="0 0 100 100" style="height:22px;width:auto;color:#1D4ED8;"><use href="#hyperr-swap"></use></svg>
-             <span style="font-family:Inter,sans-serif;font-weight:700;font-size:23px;letter-spacing:-.04em;color:#111827;">hyperr</span>
+             <svg viewBox="0 0 100 100" style="height:22px;width:auto;color:#2DD4FF;filter:drop-shadow(0 0 6px rgba(45,212,255,.55));"><use href="#hyperr-swap"></use></svg>
+             <span style="font-family:Bricolage Grotesque,sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:#2DD4FF;">hyperr</span>
            </div>
-          <p style="color:#6B7280;font-size:13.5px;line-height:1.6;margin:14px 0 0;max-width:260px;">The barter marketplace where businesses and creators trade value for promotion.</p>
+          <p style="color:#8C97A3;font-size:13.5px;line-height:1.55;margin:14px 0 0;max-width:260px;">The barter marketplace where businesses and creators trade value for promotion.</p>
         </div>
         <div>
-          <div style="font-family:Inter,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:#9CA3AF;margin-bottom:16px;text-transform:uppercase;">Product</div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">PRODUCT</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            <a href="#how" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">How it works</a>
-            <a href="#creators" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">For creators</a>
-            <a href="#business" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">For businesses</a>
-            <a href="#tiers" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">Tiers</a>
+            <a href="#how" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">How it works</a>
+            <a href="#creators" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">For creators</a>
+            <a href="#business" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">For businesses</a>
+            <a href="#tiers" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Tiers</a>
           </div>
         </div>
         <div>
-          <div style="font-family:Inter,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:#9CA3AF;margin-bottom:16px;text-transform:uppercase;">Company</div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">COMPANY</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            <a href="/contact" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">Contact</a>
+            <a href="/contact" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Contact</a>
           </div>
         </div>
         <div>
-          <div style="font-family:Inter,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:#9CA3AF;margin-bottom:16px;text-transform:uppercase;">Legal</div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.1em;color:#5C6672;margin-bottom:16px;">LEGAL</div>
           <div style="display:flex;flex-direction:column;gap:11px;">
-            <a href="/terms" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">Terms of Service</a>
-            <a href="/privacy" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">Privacy Policy</a>
-            <a href="/cookie-policy" style="color:#475569;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#1D4ED8;">Cookie Policy</a>
+            <a href="/terms" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Terms of Service</a>
+            <a href="/privacy" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Privacy Policy</a>
+            <a href="/cookie-policy" style="color:#8C97A3;text-decoration:none;font-size:14px;transition:color .15s ease;" data-h="color:#EAF1F7;">Cookie Policy</a>
           </div>
         </div>
       </div>
-      <div style="max-width:1280px;margin:0 auto;padding:20px clamp(20px,5vw,64px) 36px;border-top:1px solid #E4E7EC;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;">
-        <div style="color:#9CA3AF;font-size:13px;font-family:Inter,sans-serif;">© 2026 hyperr. All rights reserved.</div>
-        <div style="color:#9CA3AF;font-size:13px;">Made for creators &amp; businesses.</div>
+      <div style="max-width:1280px;margin:0 auto;padding:20px clamp(20px,5vw,64px) 36px;border-top:1px solid #1B2330;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;">
+        <div style="color:#5C6672;font-size:13px;font-family:JetBrains Mono,monospace;">© 2026 hyperr. All rights reserved.</div>
+        <div style="color:#5C6672;font-size:13px;">Made for creators &amp; businesses.</div>
       </div>
     </footer>
 
   </div>
 `;
 
-const FONT_HREF = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
+const FONT_HREF = "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap";
 
-const BASE_CSS = `html,body{margin:0;padding:0;background:#FFFFFF;}*{box-sizing:border-box;}::selection{background:#1D4ED8;color:#fff;}:focus-visible{outline:2px solid #1D4ED8;outline-offset:3px;border-radius:6px;}::placeholder{color:#9CA3AF;}@media (max-width:840px){[data-navlinks]{display:none !important;}}@media (prefers-reduced-motion: reduce){*{animation:none !important;}}.js-anim [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1);will-change:opacity,transform;}.js-anim [data-reveal].revealed{opacity:1;transform:none;}.js-anim [data-hero]{opacity:0;}`;
+const BASE_CSS = `html,body{margin:0;padding:0;background:#0A0E14;}*{box-sizing:border-box;}::selection{background:#2DD4FF;color:#06303B;}:focus-visible{outline:2px solid #2DD4FF;outline-offset:3px;border-radius:6px;}::placeholder{color:#5C6672;}@media (max-width:840px){[data-navlinks]{display:none !important;}}@media (prefers-reduced-motion: reduce){*{animation:none !important;}}.js-anim [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1);will-change:opacity,transform;}.js-anim [data-reveal].revealed{opacity:1;transform:none;}.js-anim [data-hero]{opacity:0;}`;
 
 const rootStyle = {
   position: "relative",
-  background: "#FFFFFF",
-  color: "#111827",
+  background: "#0A0E14",
+  color: "#EAF1F7",
   fontFamily: "Inter, system-ui, sans-serif",
   minHeight: "100vh",
   overflowX: "hidden",
@@ -386,10 +400,10 @@ export default function Landing() {
     const onScrollNav = () => {
       if (!nav) return;
       const on = window.scrollY > 24;
-      nav.style.background = on ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0)";
+      nav.style.background = on ? "rgba(10,14,20,0.82)" : "rgba(10,14,20,0)";
       nav.style.backdropFilter = on ? "blur(14px)" : "blur(0px)";
       nav.style.webkitBackdropFilter = on ? "blur(14px)" : "blur(0px)";
-      nav.style.borderBottomColor = on ? "#E4E7EC" : "transparent";
+      nav.style.borderBottomColor = on ? "#25303F" : "transparent";
     };
     window.addEventListener("scroll", onScrollNav, { passive: true });
     onScrollNav();
@@ -429,9 +443,9 @@ export default function Landing() {
     let band = null;
     const bandWords = Array.prototype.slice.call(root.querySelectorAll("[data-band]"));
     if (!reduce && bandWords.length) {
-      bandWords.forEach((w) => { w.style.transition = "color .45s ease"; });
+      bandWords.forEach((w) => { w.style.transition = "color .45s ease, text-shadow .45s ease"; });
       let bi = 0;
-      band = setInterval(() => { bandWords.forEach((w, i) => { const on = (i === bi); w.style.color = on ? "#1D4ED8" : "#6B7280"; w.style.fontWeight = on ? 600 : 500; }); bi = (bi + 1) % bandWords.length; }, 950);
+      band = setInterval(() => { bandWords.forEach((w, i) => { const on = (i === bi); w.style.color = on ? "#2DD4FF" : "#EAF1F7"; w.style.textShadow = on ? "0 0 14px rgba(45,212,255,.5)" : "none"; }); bi = (bi + 1) % bandWords.length; }, 950);
     }
 
     const bounce = root.querySelector("[data-bounce] > span");
@@ -452,7 +466,7 @@ export default function Landing() {
         if (!email) return;
 
         if (!emailRegex.test(email)) {
-          if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.color = "#DC2626"; errEl.style.display = "block"; }
+          if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.color = "#FF6B85"; errEl.style.display = "block"; }
           return;
         }
         clearError();
@@ -464,13 +478,13 @@ export default function Landing() {
           const res = await base44.functions.invoke('sendNewsletterWelcome', { email });
           if (res.data?.error) throw new Error(res.data.error);
           input.value = "";
-          if (errEl) { errEl.textContent = "You're in — check your inbox"; errEl.style.color = "#059669"; errEl.style.display = "block"; }
+          if (errEl) { errEl.textContent = "You're in — check your inbox"; errEl.style.color = "#2EE6A6"; errEl.style.display = "block"; }
           btn.textContent = "✓ Subscribed";
           setTimeout(() => { btn.textContent = "Subscribe"; btn.disabled = false; if (errEl) { errEl.style.display = "none"; } }, 5000);
         } catch (err) {
           console.error("Newsletter signup failed:", err);
           const msg = err?.response?.data?.error || err?.message || "Something went wrong. Please try again.";
-          if (errEl) { errEl.textContent = msg; errEl.style.color = "#DC2626"; errEl.style.display = "block"; }
+          if (errEl) { errEl.textContent = msg; errEl.style.color = "#FF6B85"; errEl.style.display = "block"; }
           btn.textContent = "Subscribe";
           btn.disabled = false;
         }
@@ -480,11 +494,19 @@ export default function Landing() {
     // parallax engine
     const pxEls = Array.prototype.slice.call(root.querySelectorAll("[data-px]")).map((el) => ({ el, sy: parseFloat(el.dataset.sy) || 0, mx: parseFloat(el.dataset.mx) || 0, my: parseFloat(el.dataset.my) || 0, rx: parseFloat(el.dataset.rx) || 0, ry: parseFloat(el.dataset.ry) || 0, fade: parseFloat(el.dataset.fade) || 0, baseOp: (el.dataset.baseOp != null) ? parseFloat(el.dataset.baseOp) : null }));
     const floatWrap = root.querySelector("[data-floatwrap]");
+    const glow = root.querySelector("[data-glow]");
+    const whaleWrap = root.querySelector("[data-whales]");
+    const whales = Array.prototype.slice.call(root.querySelectorAll("[data-whale]")).map((el) => ({ el, dir: parseFloat(el.dataset.dir) || 1, speed: parseFloat(el.dataset.speed) || 30, bob: parseFloat(el.dataset.bob) || 6, phase: parseFloat(el.dataset.phase) || 0, x: 0, w: 0 }));
+    const layoutWhales = () => { const vw = whaleWrap ? whaleWrap.clientWidth : window.innerWidth; whales.forEach((wh, i) => { wh.w = wh.el.offsetWidth || 300; wh.x = -wh.w + ((i + 0.5) / whales.length) * (vw + wh.w); }); };
+    layoutWhales();
+    window.addEventListener("resize", layoutWhales);
+
     let raf = null, onScroll = null, onMove = null;
 
     if (reduce) {
       if (floatWrap) floatWrap.style.opacity = "1";
       pxEls.forEach((p) => { if (p.baseOp != null) p.el.style.opacity = String(p.baseOp); });
+      whales.forEach((wh) => { wh.el.style.transform = "translateX(" + wh.x.toFixed(0) + "px) scaleX(" + (-wh.dir) + ")"; });
     } else {
       if (floatWrap) floatWrap.style.transition = "none";
       let tScroll = window.scrollY, cScroll = window.scrollY;
@@ -505,7 +527,16 @@ export default function Landing() {
           p.el.style.transform = tr;
           if (p.fade || p.baseOp != null) { const base = (p.baseOp != null) ? p.baseOp : 1; const f = p.fade ? Math.max(0, 1 - cScroll * p.fade) : 1; p.el.style.opacity = (base * f).toFixed(3); }
         }
+        if (glow) { const k = (Math.sin(t / 2.7 * Math.PI) + 1) / 2; glow.style.opacity = (0.55 + 0.35 * k).toFixed(3); }
         if (bounce) bounce.style.transform = "translateY(" + (Math.sin(t * 2.4) * 3).toFixed(2) + "px)";
+        const vw = whaleWrap ? whaleWrap.clientWidth : window.innerWidth;
+        for (let i = 0; i < whales.length; i++) {
+          const wh = whales[i]; wh.x += wh.dir * wh.speed * 0.016;
+          if (wh.dir > 0 && wh.x > vw + 60) wh.x = -wh.w - 60;
+          if (wh.dir < 0 && wh.x < -wh.w - 60) wh.x = vw + 60;
+          const bobY = Math.sin(t * 0.5 + wh.phase) * wh.bob;
+          wh.el.style.transform = "translate(" + wh.x.toFixed(1) + "px," + bobY.toFixed(1) + "px) scaleX(" + (-wh.dir) + ")";
+        }
         raf = requestAnimationFrame(frame);
       };
       raf = requestAnimationFrame(frame);
@@ -522,6 +553,7 @@ export default function Landing() {
       window.removeEventListener("scroll", onScrollNav);
       if (onScroll) window.removeEventListener("scroll", onScroll);
       if (onMove) window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("resize", layoutWhales);
       if (io) io.disconnect();
       if (hio) hio.disconnect();
       if (ctTimer) clearTimeout(ctTimer);
