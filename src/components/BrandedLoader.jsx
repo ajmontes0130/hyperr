@@ -9,7 +9,7 @@ export default function BrandedLoader() {
         strokeWidth="9"
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={{ filter: "drop-shadow(0 0 8px rgba(45,212,255,.5))" }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(29,78,216,.35))" }}
       >
         <path d="M24 34H58" />
         <path d="M50 24L71 34L50 44" />
