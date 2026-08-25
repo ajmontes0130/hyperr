@@ -45,39 +45,6 @@
   }
 }
 
-/* Light mode overrides — only when OS is in light mode */
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: 210 20% 96%;
-    --foreground: 214 30% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 214 30% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 214 30% 10%;
-    --primary: 192 80% 42%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 16% 90%;
-    --secondary-foreground: 214 30% 10%;
-    --muted: 210 16% 90%;
-    --muted-foreground: 210 14% 42%;
-    --accent: 347 80% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 210 16% 82%;
-    --input: 210 16% 92%;
-    --ring: 192 80% 42%;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 214 30% 10%;
-    --sidebar-primary: 192 80% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 16% 92%;
-    --sidebar-accent-foreground: 192 80% 42%;
-    --sidebar-border: 210 16% 82%;
-    --sidebar-ring: 192 80% 42%;
-  }
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
