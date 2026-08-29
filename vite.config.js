@@ -16,6 +16,10 @@ export default defineConfig({
     }),
     react(),
   ],
+  cacheDir: '/tmp/vite-cache',
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client', 'scheduler']
+  },
   build: {
     rollupOptions: {
       output: {
