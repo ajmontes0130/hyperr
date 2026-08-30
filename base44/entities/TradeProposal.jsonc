@@ -81,5 +81,55 @@
     "message",
     "proposed_promotion",
     "platform"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.listing_owner_id": "{{user.id}}"
+        },
+        {
+          "data.proposer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.proposer_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.listing_owner_id": "{{user.id}}"
+        },
+        {
+          "data.proposer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.listing_owner_id": "{{user.id}}"
+        },
+        {
+          "data.proposer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }

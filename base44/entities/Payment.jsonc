@@ -104,5 +104,35 @@
     "amount",
     "platform",
     "deliverables"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.business_user_id": "{{user.id}}"
+        },
+        {
+          "data.creator_user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.business_user_id": "{{user.id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

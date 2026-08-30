@@ -42,5 +42,35 @@
     "reviewer_id",
     "reviewee_id",
     "rating"
-  ]
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "data.reviewer_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.reviewer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.reviewer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }
