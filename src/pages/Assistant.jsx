@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import { Send, Loader2, Sparkles, ArrowRight } from "lucide-react";
+import { Send, Sparkles, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import MessageBubble from "@/components/assistant/MessageBubble";
 import { useSEO } from "@/hooks/useSEO";
 
@@ -14,6 +15,22 @@ const SUGGESTIONS = [
   "Find businesses in the Restaurant & Food category",
 ];
 
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1.5 px-1">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="w-2 h-2 rounded-full bg-primary"
+          animate={{ opacity: [0.25, 1, 0.25], scale: [0.75, 1.15, 0.75] }}
+          transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+          style={{ boxShadow: "0 0 8px rgba(45,212,255,0.85)" }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Assistant() {
   useSEO({ title: "Assistant | hyperr", description: "AI assistant to help you find creators, businesses, and listings on hyperr." });
 
@@ -22,6 +39,7 @@ export default function Assistant() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [userName, setUserName] = useState("");
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
@@ -32,6 +50,9 @@ export default function Assistant() {
 
     (async () => {
       try {
+        const me = await base44.auth.me().catch(() => null);
+        if (!cancelled && me?.full_name) setUserName(me.full_name);
+
         const existing = await base44.agents.listConversations({ agent_name: AGENT_NAME });
         if (cancelled) return;
 
@@ -130,116 +151,198 @@ export default function Assistant() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-32">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="relative flex justify-center py-32">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(circle at 50% 25%, rgba(16,48,80,0.55), transparent 60%)" }}
+        />
+        <TypingDots />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 mb-3">
-          <Sparkles className="w-7 h-7 text-primary" />
-        </div>
-        <h1 className="font-display font-bold text-3xl tracking-tight mb-1">
-          <span className="text-primary">hyperr Assistant</span>
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Tell me what you're looking for — I'll find it and take you there.
-        </p>
-      </div>
-
-      {/* Chat container */}
+    <div className="relative mx-auto max-w-2xl" style={{ minHeight: "calc(100vh - 80px)" }}>
+      {/* Radial blue glow background */}
       <div
-        className="bg-card rounded-2xl border border-border overflow-hidden flex flex-col"
-        style={{ height: "calc(100vh - 300px)", minHeight: "420px" }}
-      >
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && !sending && (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <Sparkles className="w-10 h-10 mb-3 text-primary/40" />
-              <p className="text-sm font-medium mb-3 text-foreground">Ask me anything</p>
-              <div className="flex flex-col gap-2 w-full max-w-sm">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleSend(s)}
-                    className="text-left text-sm px-3.5 py-2.5 rounded-xl border border-border bg-background/50 hover:bg-secondary hover:border-primary/30 transition-colors text-muted-foreground hover:text-foreground"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(circle at 50% 22%, rgba(16,48,80,0.6), transparent 58%)" }}
+      />
 
-          {messages.map((msg, idx) => {
-            const navBlocks = msg.role === "assistant" ? parseNavBlocks(msg.content) : [];
-            const displayContent = msg.role === "assistant" ? cleanContent(msg.content) : msg.content;
-            return (
-              <div key={idx}>
-                <MessageBubble message={{ ...msg, content: displayContent }} />
-                {navBlocks.length > 0 && (
-                  <div className="ml-9 mt-2 space-y-2">
-                    {navBlocks.map((block, i) => {
-                      const url = buildUrl(block);
-                      const label = block.path === "/explore" && block.params && Object.keys(block.params).length > 0
-                        ? "View filtered results"
-                        : "Go to page";
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => navigate(url)}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
-                        >
-                          {label} <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {sending && (
-            <div className="flex justify-start">
-              <div className="flex gap-2 max-w-[85%]">
-                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mt-0.5">
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                </div>
-                <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">Thinking…</span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+      <div className="relative flex flex-col" style={{ height: "calc(100vh - 80px)" }}>
+        {/* Header */}
+        <div className="text-center pt-2 pb-5">
+          <div
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3"
+            style={{
+              background: "rgba(10, 26, 46, 0.7)",
+              border: "1px solid rgba(45, 212, 255, 0.3)",
+              boxShadow: "0 0 24px rgba(45, 212, 255, 0.35), inset 0 0 14px rgba(45, 212, 255, 0.18)",
+            }}
+          >
+            <Sparkles
+              className="w-7 h-7 text-primary"
+              style={{ filter: "drop-shadow(0 0 6px rgba(45,212,255,0.7))" }}
+            />
+          </div>
+          <h1 className="font-display font-bold text-3xl tracking-tight mb-1">
+            <span className="text-primary" style={{ textShadow: "0 0 18px rgba(45,212,255,0.5)" }}>
+              hyperr Assistant
+            </span>
+          </h1>
+          <p className="text-[#8C97A3] text-sm">
+            Tell me what you're looking for — I'll find it and take you there.
+          </p>
         </div>
 
-        {/* Input */}
-        <div className="border-t border-border p-3">
-          <div className="flex items-end gap-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask me to find creators, filter your explore page, or help you navigate…"
-              rows={1}
-              className="flex-1 resize-none rounded-xl border border-input bg-transparent px-4 py-2.5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring max-h-32"
-              style={{ minHeight: "42px" }}
-            />
-            <button
-              onClick={() => handleSend()}
-              disabled={!input.trim() || sending}
-              className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-40 hover:bg-primary/90 transition-colors"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+        {/* Chat container */}
+        <div
+          className="flex-1 overflow-y-auto rounded-2xl flex flex-col min-h-0"
+          style={{
+            background: "rgba(5, 8, 14, 0.5)",
+            border: "1px solid rgba(45, 212, 255, 0.1)",
+            boxShadow: "inset 0 0 40px rgba(16, 48, 80, 0.25)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+          }}
+        >
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-5">
+            {messages.length === 0 && !sending && (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <Sparkles
+                  className="w-10 h-10 mb-3 text-primary/50"
+                  style={{ filter: "drop-shadow(0 0 8px rgba(45,212,255,0.4))" }}
+                />
+                <p className="text-sm font-medium mb-4 text-[#E0F0FF]">Ask me anything</p>
+                <div className="flex flex-col gap-2 w-full max-w-sm">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => handleSend(s)}
+                      className="text-left text-sm px-3.5 py-2.5 rounded-xl transition-all text-[#8C97A3] hover:text-[#E0F0FF]"
+                      style={{
+                        background: "rgba(21, 53, 85, 0.25)",
+                        border: "1px solid rgba(45, 212, 255, 0.12)",
+                      }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {messages.map((msg, idx) => {
+              const navBlocks = msg.role === "assistant" ? parseNavBlocks(msg.content) : [];
+              const displayContent = msg.role === "assistant" ? cleanContent(msg.content) : msg.content;
+              return (
+                <div key={idx}>
+                  <MessageBubble message={{ ...msg, content: displayContent }} userName={userName} />
+                  {navBlocks.length > 0 && (
+                    <div className="mr-0 mt-2 flex justify-end">
+                      <div className="space-y-2">
+                        {navBlocks.map((block, i) => {
+                          const url = buildUrl(block);
+                          const label =
+                            block.path === "/explore" && block.params && Object.keys(block.params).length > 0
+                              ? "View filtered results"
+                              : "Go to page";
+                          return (
+                            <button
+                              key={i}
+                              onClick={() => navigate(url)}
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                              style={{
+                                background: "rgba(45, 212, 255, 0.15)",
+                                border: "1px solid rgba(45, 212, 255, 0.4)",
+                                color: "#E0F0FF",
+                                boxShadow: "0 0 16px rgba(45, 212, 255, 0.25)",
+                              }}
+                            >
+                              {label} <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {sending && (
+              <div className="flex justify-end">
+                <div className="flex gap-3 max-w-[82%] flex-row-reverse">
+                  <div
+                    className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center mt-5"
+                    style={{
+                      background: "rgba(10, 26, 46, 0.85)",
+                      border: "1px solid rgba(45, 212, 255, 0.35)",
+                      boxShadow: "0 0 18px rgba(45, 212, 255, 0.45), inset 0 0 12px rgba(45, 212, 255, 0.22)",
+                    }}
+                  >
+                    <Sparkles
+                      className="w-4 h-4 text-primary"
+                      style={{ filter: "drop-shadow(0 0 5px rgba(45,212,255,0.85))" }}
+                    />
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span
+                      className="text-xs font-medium mb-1.5 text-[#E0F0FF]/90"
+                      style={{ textShadow: "0 0 8px rgba(45,212,255,0.4)" }}
+                    >
+                      AI Agent
+                    </span>
+                    <div
+                      className="rounded-2xl rounded-br-md px-4 py-3.5"
+                      style={{
+                        background: "rgba(21, 53, 85, 0.42)",
+                        border: "1px solid rgba(45, 212, 255, 0.16)",
+                        boxShadow: "0 0 26px rgba(21, 53, 85, 0.38), inset 0 0 14px rgba(45, 212, 255, 0.06)",
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <TypingDots />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="p-3" style={{ borderTop: "1px solid rgba(45, 212, 255, 0.1)" }}>
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask me to find creators, filter your explore page, or help you navigate…"
+                rows={1}
+                className="flex-1 resize-none rounded-xl px-4 py-2.5 text-sm text-[#E0F0FF] placeholder:text-[#5C6672] focus-visible:outline-none max-h-32"
+                style={{
+                  minHeight: "42px",
+                  background: "rgba(10, 21, 37, 0.6)",
+                  border: "1px solid rgba(45, 212, 255, 0.18)",
+                  boxShadow: "inset 0 0 12px rgba(16, 48, 80, 0.3)",
+                }}
+              />
+              <button
+                onClick={() => handleSend()}
+                disabled={!input.trim() || sending}
+                className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center disabled:opacity-40 transition-all"
+                style={{
+                  background: "rgba(45, 212, 255, 0.18)",
+                  border: "1px solid rgba(45, 212, 255, 0.4)",
+                  boxShadow: "0 0 16px rgba(45, 212, 255, 0.3)",
+                }}
+              >
+                <Send className="w-4 h-4 text-primary" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
