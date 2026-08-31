@@ -194,15 +194,14 @@ export default function Assistant() {
           </p>
         </div>
 
-        {/* Chat container */}
+        {/* Chat container — soft tint that fades into the ambient glow */}
         <div
           className="flex-1 overflow-y-auto rounded-2xl flex flex-col min-h-0"
           style={{
-            background: "rgba(5, 8, 14, 0.5)",
-            border: "1px solid rgba(45, 212, 255, 0.1)",
-            boxShadow: "inset 0 0 40px rgba(16, 48, 80, 0.25)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
+            background: "radial-gradient(ellipse at 50% 35%, rgba(10, 21, 37, 0.38), rgba(10, 21, 37, 0.12) 55%, transparent 80%)",
+            boxShadow: "inset 0 0 60px rgba(16, 48, 80, 0.22), 0 0 50px rgba(16, 48, 80, 0.18)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
           }}
         >
           {/* Messages */}
@@ -313,7 +312,7 @@ export default function Assistant() {
           </div>
 
           {/* Input */}
-          <div className="p-3" style={{ borderTop: "1px solid rgba(45, 212, 255, 0.1)" }}>
+          <div className="p-3" style={{ borderTop: "1px solid transparent", boxShadow: "0 -1px 12px rgba(16, 48, 80, 0.25)" }}>
             <div className="flex items-end gap-2">
               <textarea
                 value={input}
