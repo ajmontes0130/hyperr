@@ -73,7 +73,7 @@ export default function Layout() {
       {/* Ambient radial blue glow — shared across all pages */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
-        style={{ background: "radial-gradient(circle at 50% 18%, rgba(16,48,80,0.55), transparent 58%)" }}
+        style={{ background: "radial-gradient(circle at 50% 16%, rgba(16,48,80,0.5), rgba(16,48,80,0.16) 42%, transparent 78%)" }}
       />
       <header
         className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl border-b border-border"

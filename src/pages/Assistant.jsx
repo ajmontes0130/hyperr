@@ -162,12 +162,6 @@ export default function Assistant() {
 
   return (
     <div className="relative mx-auto max-w-2xl" style={{ minHeight: "calc(100vh - 80px)" }}>
-      {/* Radial blue glow background */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 50% 22%, rgba(16,48,80,0.6), transparent 58%)" }}
-      />
-
       <div className="relative flex flex-col" style={{ height: "calc(100vh - 80px)" }}>
         {/* Header */}
         <div className="text-center pt-2 pb-5">
@@ -194,15 +188,9 @@ export default function Assistant() {
           </p>
         </div>
 
-        {/* Chat container — soft tint that fades into the ambient glow */}
+        {/* Chat area — fully transparent; only the ambient glow shows through, no box edges */}
         <div
-          className="flex-1 overflow-y-auto rounded-2xl flex flex-col min-h-0"
-          style={{
-            background: "radial-gradient(ellipse at 50% 35%, rgba(10, 21, 37, 0.38), rgba(10, 21, 37, 0.12) 55%, transparent 80%)",
-            boxShadow: "inset 0 0 60px rgba(16, 48, 80, 0.22), 0 0 50px rgba(16, 48, 80, 0.18)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-          }}
+          className="flex-1 overflow-y-auto flex flex-col min-h-0"
         >
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-5 space-y-5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -312,7 +300,7 @@ export default function Assistant() {
           </div>
 
           {/* Input */}
-          <div className="p-3" style={{ borderTop: "1px solid transparent", boxShadow: "0 -1px 12px rgba(16, 48, 80, 0.25)" }}>
+          <div className="p-3">
             <div className="flex items-end gap-2">
               <textarea
                 value={input}
