@@ -12,7 +12,6 @@ const SUGGESTIONS = [
   "Find food content creators in Orlando, FL",
   "Show me fashion creators with a mid-size audience",
   "Filter my explore page for fitness creators",
-  "Find businesses in the Restaurant & Food category",
 ];
 
 function TypingDots() {
@@ -207,7 +206,7 @@ export default function Assistant() {
           }}
         >
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          <div className="flex-1 overflow-y-auto p-5 space-y-5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {messages.length === 0 && !sending && (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <Sparkles
