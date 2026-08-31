@@ -69,7 +69,12 @@ export default function Layout() {
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Ambient radial blue glow — shared across all pages */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{ background: "radial-gradient(circle at 50% 18%, rgba(16,48,80,0.55), transparent 58%)" }}
+      />
       <header
         className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl border-b border-border"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
@@ -216,7 +221,7 @@ export default function Layout() {
       </header>
 
       <main
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
         style={{ paddingBottom: isMobile && user ? "calc(4rem + env(safe-area-inset-bottom))" : undefined }}
       >
         <Outlet />
