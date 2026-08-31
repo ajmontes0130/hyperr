@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, Users, Building2, SlidersHorizontal, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -26,9 +26,10 @@ export default function Explore() {
   const [user, setUser] = useState(null);
   const [userType, setUserType] = useState(null); // "creator" | "business" | null
   const [showFilters, setShowFilters] = useState(false);
-  const [filterNiche, setFilterNiche] = useState("All");
-  const [filterAudience, setFilterAudience] = useState("all");
-  const [filterLocation, setFilterLocation] = useState("");
+  const [searchParams] = useSearchParams();
+  const [filterNiche, setFilterNiche] = useState(() => searchParams.get("niche") || "All");
+  const [filterAudience, setFilterAudience] = useState(() => searchParams.get("audience") || "all");
+  const [filterLocation, setFilterLocation] = useState(() => searchParams.get("location") || "");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -86,6 +87,16 @@ export default function Explore() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Sync filters when URL params change (e.g., navigating from Assistant)
+  useEffect(() => {
+    const niche = searchParams.get("niche");
+    const location = searchParams.get("location");
+    const audience = searchParams.get("audience");
+    if (niche) { setFilterNiche(niche); setShowFilters(true); }
+    if (location) { setFilterLocation(location); setShowFilters(true); }
+    if (audience) { setFilterAudience(audience); setShowFilters(true); }
+  }, [searchParams]);
 
   const audienceMatch = (reach, band) => {
     if (band === "all") return true;

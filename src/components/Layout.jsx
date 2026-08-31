@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // Profile + secondary items live in the avatar dropdown menu.
 const primaryNav = [
   { label: "Home", path: "/", icon: Home },
+  { label: "Assistant", path: "/assistant", icon: Sparkles },
   { label: "Explore", path: "/explore", icon: Compass },
   { label: "Marketplace", path: "/marketplace", icon: Search },
   { label: "Messages", path: "/messages", icon: MessageCircle },

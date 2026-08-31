@@ -35,6 +35,7 @@ const ROUTE_TITLES = {
   '/privacy': 'Privacy Policy | hyperr',
   '/cookie-policy': 'Cookie Policy | hyperr',
   '/contact': 'Contact Us | hyperr',
+  '/assistant': 'Assistant | hyperr',
 };
 
 import Login from '@/pages/Login';
@@ -68,6 +69,7 @@ const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
 const Contact = lazy(() => import('@/pages/Contact'));
+const Assistant = lazy(() => import('@/pages/Assistant'));
 const Support = lazy(() => import('@/pages/Support'));
 
 const AuthenticatedApp = () => {
@@ -163,6 +165,7 @@ const AuthenticatedApp = () => {
           <Route path="/saved-creators" element={<SavedCreators />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
+          <Route path="/assistant" element={<Assistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
