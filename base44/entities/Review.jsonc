@@ -5,6 +5,18 @@
     "trade_proposal_id": {
       "type": "string"
     },
+    "trade_id": {
+      "type": "string",
+      "description": "Links this review to a completed TradeProposal."
+    },
+    "business_id": {
+      "type": "string",
+      "description": "The BusinessProfile this review is about."
+    },
+    "creator_id": {
+      "type": "string",
+      "description": "The CreatorProfile who wrote (or is referenced by) this review."
+    },
     "reviewer_id": {
       "type": "string"
     },
@@ -29,10 +41,27 @@
       ]
     },
     "rating": {
-      "type": "number"
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "text": {
+      "type": "string",
+      "description": "Review body text."
     },
     "comment": {
       "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs of images attached to the review."
+    },
+    "helpful_count": {
+      "type": "number",
+      "default": 0
     },
     "collab_title": {
       "type": "string"
@@ -41,7 +70,9 @@
   "required": [
     "reviewer_id",
     "reviewee_id",
-    "rating"
+    "rating",
+    "business_id",
+    "creator_id"
   ],
   "rls": {
     "read": {},
