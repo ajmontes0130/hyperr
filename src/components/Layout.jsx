@@ -6,6 +6,7 @@ import { Search, PlusCircle, Handshake, User, LogOut, Menu, X, Users, DollarSign
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import NotificationBell from "@/components/NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -107,6 +108,7 @@ export default function Layout() {
 
                 {/* Avatar dropdown menu — profile link + secondary items */}
                 <div className="hidden lg:flex items-center gap-2 flex-shrink-0 ml-2">
+                  <NotificationBell />
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className={`flex items-center gap-2 pl-1.5 pr-2 py-1 rounded-full text-sm font-medium transition-all select-none ${
@@ -150,13 +152,16 @@ export default function Layout() {
                   </DropdownMenu>
                 </div>
 
-                {/* Mobile hamburger */}
-                <button
-                  className="lg:hidden p-2 rounded-lg hover:bg-muted select-none"
-                  onClick={() => setMobileOpen(!mobileOpen)}
-                >
-                  {mobileOpen ? <X className="w-5 h-5 select-none" /> : <Menu className="w-5 h-5 select-none" />}
-                </button>
+                {/* Mobile hamburger + notifications */}
+                <div className="lg:hidden flex items-center gap-1">
+                  <NotificationBell />
+                  <button
+                    className="p-2 rounded-lg hover:bg-muted select-none"
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                  >
+                    {mobileOpen ? <X className="w-5 h-5 select-none" /> : <Menu className="w-5 h-5 select-none" />}
+                  </button>
+                </div>
               </>
             ) : (
               <>

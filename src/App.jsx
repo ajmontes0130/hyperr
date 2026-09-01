@@ -36,6 +36,7 @@ const ROUTE_TITLES = {
   '/cookie-policy': 'Cookie Policy | hyperr',
   '/contact': 'Contact Us | hyperr',
   '/assistant': 'Assistant | hyperr',
+  '/notifications': 'Notifications | hyperr',
 };
 
 import Login from '@/pages/Login';
@@ -71,6 +72,7 @@ const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const CookiePolicy = lazy(() => import('@/pages/CookiePolicy'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Assistant = lazy(() => import('@/pages/Assistant'));
+const Notifications = lazy(() => import('@/pages/Notifications'));
 const Support = lazy(() => import('@/pages/Support'));
 
 // Reviews components
@@ -176,6 +178,7 @@ const AuthenticatedApp = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
           <Route path="/assistant" element={<Assistant />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reviews" element={<ReviewsExplore />} />
           <Route path="/reviews/create" element={<ReviewCreate />} />
