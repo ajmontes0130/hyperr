@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "properties": {
+    "business_id": {
+      "type": "string",
+      "title": "Business ID",
+      "description": "Link to BusinessProfile"
+    },
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "description": "Promotion title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Detailed description of the discount offer"
+    },
+    "requirements": {
+      "type": "string",
+      "title": "Requirements",
+      "description": "What creators need to do to qualify (e.g., tag business, post link)"
+    },
+    "discount_amount": {
+      "type": "number",
+      "title": "Discount Amount",
+      "description": "Amount or percentage of discount"
+    },
+    "discount_type": {
+      "type": "string",
+      "title": "Discount Type",
+      "enum": [
+        "percentage",
+        "fixed"
+      ],
+      "description": "Percentage or fixed dollar amount"
+    },
+    "code_prefix": {
+      "type": "string",
+      "title": "Code Prefix",
+      "description": "Prefix for generated discount codes"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Start Date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "title": "End Date"
+    },
+    "auto_approval": {
+      "type": "boolean",
+      "title": "Auto Approval",
+      "description": "Auto-approve submissions if AI verification passes",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "business_id",
+    "title",
+    "description",
+    "requirements",
+    "discount_amount",
+    "discount_type",
+    "code_prefix"
+  ],
+  "name": "Promotion"
+}

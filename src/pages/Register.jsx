@@ -10,6 +10,7 @@ import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import LocationInput from "@/components/LocationInput";
 import { toast } from "@/components/ui/use-toast";
+import { safeReturnTo } from "@/lib/authReturnTo";
 
 function getPasswordStrength(pw) {
   if (!pw) return { score: 0, label: "", color: "" };
@@ -40,7 +41,7 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [searchParams] = useSearchParams();
-  const redirectAfter = searchParams.get("redirect") || null;
+  const redirectAfter = searchParams.get("returnTo") ? safeReturnTo() : null;
 
   const strength = getPasswordStrength(password);
 

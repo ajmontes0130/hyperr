@@ -8,6 +8,7 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import AppleIcon from "@/components/AppleIcon";
+import { safeReturnTo } from "@/lib/authReturnTo";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const redirectAfter = searchParams.get("redirect") || null;
+  const redirectAfter = searchParams.get("returnTo") ? safeReturnTo() : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

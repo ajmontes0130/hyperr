@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "properties": {
+    "promotion_id": {
+      "type": "string",
+      "title": "Promotion ID",
+      "description": "Link to Promotion"
+    },
+    "creator_id": {
+      "type": "string",
+      "title": "Creator ID",
+      "description": "Link to CreatorProfile"
+    },
+    "proof_image_url": {
+      "type": "string",
+      "title": "Proof Image URL",
+      "description": "URL of uploaded proof image in Base44 storage"
+    },
+    "submission_status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Current status of submission"
+    },
+    "ai_verification_result": {
+      "type": "object",
+      "title": "AI Verification Result",
+      "description": "JSON result from Claude Vision API containing: business_tag_visible, person_visible, appears_genuine, image_quality, overall_pass, confidence_score, reasoning"
+    },
+    "manual_notes": {
+      "type": "string",
+      "title": "Manual Notes",
+      "description": "Business notes on the submission"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Approved Date"
+    }
+  },
+  "required": [
+    "promotion_id",
+    "creator_id",
+    "proof_image_url"
+  ],
+  "name": "PromotionSubmission"
+}

@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "submission_id": {
+      "type": "string",
+      "title": "Submission ID",
+      "description": "Link to PromotionSubmission"
+    },
+    "code": {
+      "type": "string",
+      "title": "Discount Code",
+      "description": "Unique discount code (e.g., PROMO-ABC123)"
+    },
+    "is_used": {
+      "type": "boolean",
+      "title": "Is Used",
+      "description": "Whether the code has been redeemed",
+      "default": false
+    },
+    "used_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Used Date",
+      "description": "Date the code was redeemed"
+    }
+  },
+  "required": [
+    "submission_id",
+    "code"
+  ],
+  "name": "DiscountCode"
+}
