@@ -1,0 +1,70 @@
+{
+  "name": "UserReport",
+  "type": "object",
+  "properties": {
+    "reporter_id": {
+      "type": "string",
+      "description": "The user who submitted the report."
+    },
+    "reported_id": {
+      "type": "string",
+      "description": "The user being reported."
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "Spam",
+        "Harassment",
+        "Inappropriate Content",
+        "Scam or Fraud",
+        "Impersonation",
+        "Other"
+      ]
+    },
+    "details": {
+      "type": "string",
+      "description": "Optional free-text description of the issue."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "resolved"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "reporter_id",
+    "reported_id",
+    "reason"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.reporter_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.reporter_id": "{{user.id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

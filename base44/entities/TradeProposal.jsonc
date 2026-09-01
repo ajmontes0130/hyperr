@@ -46,6 +46,7 @@
         "pending",
         "accepted",
         "in_progress",
+        "proof_submitted",
         "delivered",
         "completed",
         "declined",
@@ -73,6 +74,28 @@
     },
     "delivery_url": {
       "type": "string"
+    },
+    "proof_image_url": {
+      "type": "string",
+      "description": "URL of the creator's uploaded proof image showing content delivery."
+    },
+    "proof_submitted_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the creator submitted proof of delivery."
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the trade was marked completed."
+    },
+    "business_notes": {
+      "type": "string",
+      "description": "Feedback / notes left by the business."
+    },
+    "creator_notes": {
+      "type": "string",
+      "description": "Feedback / notes left by the creator."
     }
   },
   "required": [

@@ -1,0 +1,59 @@
+{
+  "name": "UserBlock",
+  "type": "object",
+  "properties": {
+    "blocker_id": {
+      "type": "string",
+      "description": "The user who initiated the block."
+    },
+    "blocked_id": {
+      "type": "string",
+      "description": "The user who was blocked."
+    }
+  },
+  "required": [
+    "blocker_id",
+    "blocked_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.blocker_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.blocker_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.blocker_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.blocker_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
