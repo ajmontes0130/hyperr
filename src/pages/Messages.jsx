@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import OfferModal from "@/components/messages/OfferModal";
 import OfferBubble from "@/components/messages/OfferBubble";
+import BlockReportMenu from "@/components/BlockReportMenu";
 import { getDateLabel, formatMessageTime, getDateKey } from "@/lib/messageDates";
 
 function makeThreadId(a, b) {
@@ -269,6 +270,13 @@ export default function Messages() {
                 {activeThread.tradeTitle && (
                   <p className="text-xs text-muted-foreground">Re: {activeThread.tradeTitle}</p>
                 )}
+              </div>
+              <div className="ml-auto">
+                <BlockReportMenu
+                  targetUserId={activeThread.otherId}
+                  targetName={activeThread.otherName}
+                  currentUserId={user?.id}
+                />
               </div>
             </div>
 

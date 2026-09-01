@@ -7,6 +7,7 @@ import StarRating from "@/components/creator/StarRating";
 import CashOfferModal from "@/components/creator/CashOfferModal";
 import ReviewModal from "@/components/creator/ReviewModal";
 import SignupPrompt from "@/components/SignupPrompt";
+import BlockReportMenu from "@/components/BlockReportMenu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
@@ -230,6 +231,12 @@ export default function CreatorProfilePage() {
               <Button variant="ghost" className="w-full rounded-xl h-11 text-muted-foreground" onClick={() => user ? setReviewOpen(true) : setSignupOpen(true)}>
                 Leave a Review
               </Button>
+              <BlockReportMenu
+                targetUserId={creator.created_by_id}
+                targetName={creator.display_name}
+                currentUserId={user?.id}
+                variant="full"
+              />
             </div>
           )}
           {isOwner && (
