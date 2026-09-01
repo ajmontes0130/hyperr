@@ -73,6 +73,14 @@ const Contact = lazy(() => import('@/pages/Contact'));
 const Assistant = lazy(() => import('@/pages/Assistant'));
 const Support = lazy(() => import('@/pages/Support'));
 
+// Reviews components
+const ReviewsExplore = lazy(() => import('@/components/reviews/ReviewsExplore'));
+const ReviewCreate = lazy(() => import('@/components/reviews/ReviewCreate'));
+const ReviewsFeed = lazy(() => import('@/components/reviews/ReviewsFeed'));
+const TopReviewers = lazy(() => import('@/components/reviews/TopReviewers'));
+const BusinessPage = lazy(() => import('@/components/reviews/BusinessPage'));
+const UserReviewProfile = lazy(() => import('@/components/reviews/UserReviewProfile'));
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated } = useAuth();
   const location = useLocation();
@@ -169,6 +177,12 @@ const AuthenticatedApp = () => {
           <Route path="/proposal-templates" element={<ProposalTemplates />} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reviews" element={<ReviewsExplore />} />
+          <Route path="/reviews/create" element={<ReviewCreate />} />
+          <Route path="/reviews/feed" element={<ReviewsFeed />} />
+          <Route path="/reviews/reviewers" element={<TopReviewers />} />
+          <Route path="/reviews/business/:id" element={<BusinessPage />} />
+          <Route path="/reviews/user/:userId" element={<UserReviewProfile />} />
         </Route>
       </Route>
 
