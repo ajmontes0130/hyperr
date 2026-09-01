@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "follower_id": {
+      "type": "string"
+    },
+    "following_id": {
+      "type": "string"
+    },
+    "follow_type": {
+      "type": "string"
+    },
+    "created_date": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "follower_id",
+    "following_id"
+  ],
+  "name": "ReviewFollow"
+}

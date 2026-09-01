@@ -26,6 +26,10 @@
     "content": {
       "type": "string"
     },
+    "trade_id": {
+      "type": "string",
+      "description": "References a Trade/TradeProposal for trade-specific messages. Omit for general conversations."
+    },
     "read": {
       "type": "boolean",
       "default": false
