@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { getPricing } from "../../shared/subscriptionPricing.ts";
 
 // Stripe signature verification using Web Crypto API (timing-safe)
 async function verifyStripeSignature(
@@ -70,10 +71,111 @@ Deno.serve(async (req) => {
         const session = event.data.object;
         const paymentId = session.metadata?.payment_id;
         if (paymentId) {
+          // Escrow funding flow (existing)
           await base44.asServiceRole.entities.Payment.update(paymentId, {
             status: 'held',
             funded_date: new Date().toISOString(),
             stripe_payment_intent_id: session.payment_intent,
+          });
+          break;
+        }
+
+        // Subscription checkout flow
+        const subType = session.metadata?.subscription_type;
+        const userId = session.metadata?.user_id;
+        if (subType && userId) {
+          const billingCycle = session.metadata?.billing_cycle || 'monthly';
+          const pricing = getPricing(subType, billingCycle);
+          if (!pricing) break;
+
+          const now = new Date().toISOString();
+          const features = pricing.features;
+          const isVerification = subType === 'creator_verification';
+
+          const sub = await base44.asServiceRole.entities.Subscription.create({
+            user_id: userId,
+            subscription_type: subType,
+            status: 'active',
+            tier_level: 'pro',
+            stripe_customer_id: session.customer || '',
+            stripe_subscription_id: session.subscription || '',
+            billing_cycle: isVerification ? 'monthly' : billingCycle,
+            price_monthly: isVerification ? 0 : (billingCycle === 'annual' ? 0 : pricing.amount),
+            price_annual: isVerification ? 0 : (billingCycle === 'annual' ? pricing.amount : 0),
+            activated_date: now,
+            pro_since: now,
+            verification_status: isVerification ? 'pending' : 'none',
+            features_unlocked: features,
+          });
+
+          await base44.asServiceRole.entities.User.update(userId, {
+            subscription_status: isVerification ? 'verified' : 'pro',
+            subscription_id: sub.id,
+            pro_features: features,
+            verification_status: isVerification ? 'pending' : 'none',
+          });
+
+          await base44.asServiceRole.entities.BillingEvent.create({
+            user_id: userId,
+            subscription_id: sub.id,
+            event_type: 'subscription_created',
+            amount: pricing.amount,
+            currency: 'USD',
+            stripe_event_id: event.id,
+            details: JSON.stringify({ subscription_type: subType, billing_cycle: billingCycle }),
+          });
+        }
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const stripeSub = event.data.object;
+        const subs = await base44.asServiceRole.entities.Subscription.filter(
+          { stripe_subscription_id: stripeSub.id },
+          "-created_date",
+          5
+        );
+        if (subs && subs.length) {
+          const sub = subs[0];
+          await base44.asServiceRole.entities.Subscription.update(sub.id, {
+            status: 'canceled',
+            canceled_date: new Date().toISOString(),
+          });
+          await base44.asServiceRole.entities.User.update(sub.user_id, {
+            subscription_status: 'free',
+            pro_features: [],
+          });
+          await base44.asServiceRole.entities.BillingEvent.create({
+            user_id: sub.user_id,
+            subscription_id: sub.id,
+            event_type: 'subscription_canceled',
+            amount: 0,
+            currency: 'USD',
+            stripe_event_id: event.id,
+          });
+        }
+        break;
+      }
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object;
+        const subs = await base44.asServiceRole.entities.Subscription.filter(
+          { stripe_subscription_id: invoice.subscription },
+          "-created_date",
+          5
+        );
+        if (subs && subs.length) {
+          const sub = subs[0];
+          await base44.asServiceRole.entities.Subscription.update(sub.id, { status: 'payment_failed' });
+          await base44.asServiceRole.entities.User.update(sub.user_id, {
+            subscription_status: 'free',
+            pro_features: [],
+          });
+          await base44.asServiceRole.entities.BillingEvent.create({
+            user_id: sub.user_id,
+            subscription_id: sub.id,
+            event_type: 'payment_failed',
+            amount: 0,
+            currency: 'USD',
+            stripe_event_id: event.id,
           });
         }
         break;
