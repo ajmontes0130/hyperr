@@ -16,6 +16,10 @@ export default defineConfig({
     }),
     react(),
   ],
+  server: {
+    host: true,
+    allowedHosts: true,
+  },
   cacheDir: '/tmp/vite-cache',
   optimizeDeps: {
     include: ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client', 'scheduler']
