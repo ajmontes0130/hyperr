@@ -1,0 +1,162 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "References the User who owns this subscription."
+    },
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "creator_pro",
+        "business_pro",
+        "creator_verification"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "canceled",
+        "expired",
+        "payment_failed"
+      ],
+      "default": "active"
+    },
+    "tier_level": {
+      "type": "string",
+      "enum": [
+        "free",
+        "pro"
+      ],
+      "default": "pro"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_subscription_id": {
+      "type": "string"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "price_monthly": {
+      "type": "number",
+      "description": "Monthly price in cents (e.g. 900 for $9)."
+    },
+    "price_annual": {
+      "type": "number",
+      "description": "Annual price in cents (e.g. 7900 for $79)."
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ]
+    },
+    "activated_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "renewal_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "canceled_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only after admin approves a creator_verification subscription."
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "none"
+    },
+    "verification_notes": {
+      "type": "string",
+      "description": "Admin notes on the verification decision."
+    },
+    "features_unlocked": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "featured_profile",
+          "advanced_analytics",
+          "verified_badge",
+          "no_platform_fees",
+          "priority_support",
+          "direct_outreach"
+        ]
+      }
+    },
+    "pro_since": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the user first went pro \u2014 used to sort featured profiles."
+    }
+  },
+  "required": [
+    "user_id",
+    "subscription_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

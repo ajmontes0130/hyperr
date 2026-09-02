@@ -20,6 +20,42 @@
       "type": "boolean",
       "default": false,
       "description": "Admin-set flag. When true, the user is suspended from the marketplace."
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "free",
+        "pro",
+        "verified"
+      ],
+      "default": "free",
+      "description": "Denormalized current subscription tier for fast access."
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "References the user's active Subscription record."
+    },
+    "is_verified_creator": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once a creator_verification subscription is admin-approved."
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "none"
+    },
+    "pro_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Denormalized list of unlocked features for fast checks."
     }
   },
   "required": [
